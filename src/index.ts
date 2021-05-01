@@ -11,7 +11,11 @@ const winston = require('winston')
 /*
 require("./startup/logging")();
 */
-
+shell.exec('`cd /home/pi/.local/bin && idasen-controller --server`', function(code: any, stdout: any, stderr: any) {
+    console.log('Exit code:', code);
+    console.log('Program output:', stdout);
+    console.log('Program stderr:', stderr);
+});
 
 
 const app = express()
