@@ -35,7 +35,7 @@ app.post('/move/:position', async(req, res) => {
         child.stdout.on('data', function(data) {
             // handle stdout as `data`
         });*/
-        shell.exec('sh ./moveDesk.sh --forward --stand')
+        shell.exec(`d /home/pi/.local/bin && idasen-controller --forward --move-to ${req.params.position}` );
 
     }
     catch (e) {
