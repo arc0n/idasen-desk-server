@@ -24,7 +24,7 @@ const port = 3000
 
 app.get('/', (req, res) => {
     const { stdout, stderr, code } = shell.exec('idasen-controller --monitor', { silent: true })
-    res.send(const)
+    res.send(stdout)
 })
 
 app.post('/move/:position', async(req, res) => {
