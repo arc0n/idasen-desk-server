@@ -5,19 +5,13 @@ var cp = require('child_process');
 const shell = require('shelljs')
 
 
-/*
-const winston = require('winston')
-*/
-/*
-require("./startup/logging")();
-*/
-let position = 0;
-shell.exec(`idasen-controller --server`, function(code: any, stdout: any, stderr: any) {
+let position = "";
+/*shell.exec(`idasen-controller --server`, function(code: any, stdout: any, stderr: any) {
     console.log('Exit code:', code);
     console.log('Program output:', stdout);
     console.log('Program stderr:', stderr);
     position = stdout;
-});
+});*/
 
 console.log("idasen server started")
 
@@ -43,8 +37,15 @@ app.post('/move/:position', async(req, res) => {
         child.stdout.on('data', function(data) {
             // handle stdout as `data`
         });*/
-        shell.exec(`idasen-controller --forward --move-to ${req.params.position}` );
+        shell.exec(`idasen-controller --move-to ${req.params.position}`, function(code: any, stdout: any, stderr: any) {
+            console.log('Exit code:', code);
+            console.log('Program output:', stdout);
+            console.log('Program stderr:', stderr);
+            position = stdout;
+            console.log(stdout)
+        });
 
+        /*--forward */
 
 
     }
