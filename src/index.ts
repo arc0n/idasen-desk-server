@@ -11,10 +11,12 @@ const winston = require('winston')
 /*
 require("./startup/logging")();
 */
+let position = 0;
 shell.exec(`idasen-controller --server`, function(code: any, stdout: any, stderr: any) {
     console.log('Exit code:', code);
     console.log('Program output:', stdout);
     console.log('Program stderr:', stderr);
+    position = stdout;
 });
 
 console.log("idasen server started")
@@ -23,8 +25,8 @@ const app = express()
 const port = 3000
 
 app.get('/', (req, res) => {
-    const { stdout, stderr, code } = shell.exec('idasen-controller --monitor', { silent: true })
-    res.send(stdout)
+    //const { stdout, stderr, code } = shell.exec('idasen-controller')
+    res.send(position)
 })
 
 app.post('/move/:position', async(req, res) => {
