@@ -43,9 +43,6 @@ app.post('/move/:position', async(req, res) => {
         });*/
         shell.exec(`idasen-controller --forward --move-to ${req.params.position}` );
 
-        shell.exec('idasen-controller --forward --monitor', function(code: any, stdout: any, stderr: any) {
-            console.log('Program output:', stdout);
-        });
 
 
     }
