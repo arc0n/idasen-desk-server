@@ -11,7 +11,7 @@ const winston = require('winston')
 /*
 require("./startup/logging")();
 */
-shell.exec(`cd /home/pi/.local/bin && idasen-controller --server`, function(code: any, stdout: any, stderr: any) {
+shell.exec(`idasen-controller --server`, function(code: any, stdout: any, stderr: any) {
     console.log('Exit code:', code);
     console.log('Program output:', stdout);
     console.log('Program stderr:', stderr);
@@ -23,7 +23,8 @@ const app = express()
 const port = 3000
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    const { stdout, stderr, code } = shell.exec('idasen-controller --monitor', { silent: true })
+    res.send(const)
 })
 
 app.post('/move/:position', async(req, res) => {
@@ -40,12 +41,10 @@ app.post('/move/:position', async(req, res) => {
         child.stdout.on('data', function(data) {
             // handle stdout as `data`
         });*/
-        shell.exec(`cd /home/pi/.local/bin && idasen-controller --forward --move-to ${req.params.position}` );
+        shell.exec(`idasen-controller --forward --move-to ${req.params.position}` );
 
-        shell.exec('`cd /home/pi/.local/bin && idasen-controller --forward --monitor`', function(code: any, stdout: any, stderr: any) {
-            console.log('Exit code:', code);
+        shell.exec('idasen-controller --forward --monitor', function(code: any, stdout: any, stderr: any) {
             console.log('Program output:', stdout);
-            console.log('Program stderr:', stderr);
         });
 
 
