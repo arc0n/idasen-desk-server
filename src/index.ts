@@ -1,6 +1,8 @@
 import express from "express";
 import {ExecException} from "child_process";
 var cp = require('child_process');
+const {chunksToLinesAsync, chomp} = require('@rauschma/stringio');
+
 
 const shell = require('shelljs')
 
@@ -35,15 +37,18 @@ app.post('/move/:position', async(req, res) => {
 
     try  {
 
-        var child = cp.spawn(`idasen-controller --move-to ${req.params.position}`, [], {shell: true});
-        child.stdout.on('data', function(data: any) {
-            console.log(data)
+        var child = cp.spawn(`idasen-controller --move-to ${req.params.position}`, [], {shell: true, stdio: ['ignore', 'pipe', process.stderr]});
+/*        child.stdout.on('data', function(data: any) {
+            console.log(data.toString())
             // handle stdout as `data`
-        });
+        });*/
 /*        shell.spawn(`idasen-controller --move-to ${req.params.position}`, function(code: any, stdout: any, stderr: any) {
             console.log()
             position = extractPosition(stdout);
         });*/
+        await echoReadable(child.stdout);
+
+
 
     }
     catch (e) {
@@ -57,7 +62,11 @@ app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 });
 
-
+async function echoReadable(readable: any) {
+    for await (const line of chunksToLinesAsync(readable)) { // (C)
+        console.log('LINE: '+chomp(line))
+    }
+}
 function extractPosition(input: string): number {
     const index = input.lastIndexOf('Final height:');
     const filteredByNumbers = input.substring(index, input.lastIndexOf('(')).match(/\d.*/);
