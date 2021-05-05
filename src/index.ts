@@ -21,6 +21,11 @@ const app = express()
 const port = 3000
 let idasenChildProzess: any;
 
+
+// start server
+shell.exec(`idasen-controller --server`);
+
+
 app.get('/', (req, res) => {
     //const { stdout, stderr, code } = shell.exec('idasen-controller')
     res.send({position})
@@ -40,18 +45,20 @@ app.post('/move/:position', async(req, res) => {
 
         // start idasen server process and listen to output
         if (!idasenChildProzess) {
-            idasenChildProzess = cp.spawn(`idasen-controller --server`, [], {shell: true, stdio: [ 'pipe', process.stderr, process.stdin]});
+            idasenChildProzess = cp.spawn(`idasen-controller --monitor`, [], {shell: true, stdio: [ 'pipe', process.stderr, process.stdin]});
         }
 
         // LISTEN TO OUTPUT LINE BY LINE https://gist.github.com/TooTallNate/1785026#file-emitlines-js
+        // maybe move to a init method
         emitLines(process.stdin)
         process.stdin.resume()
         process.stdin.setEncoding('utf8')
         process.stdin.on('line', function (line) {
             console.log('line event:', line)
+            position = extractPosition(line);
         })
 
-        cp.spawn(`idasen-controller --forward --move-to ${req.params.position}`, []);
+        shell.exec(`idasen-controller --server --move-to ${req.params.position}`);
     }
 
 
@@ -72,7 +79,7 @@ app.listen(port, () => {
     }
 }*/
 function extractPosition(input: string): number {
-    const index = input.lastIndexOf('Final height:');
+    const index = input.lastIndexOf('Height:');
     const filteredByNumbers = input.substring(index, input.lastIndexOf('(')).match(/\d.*/);
     try {
         const parsed: number = parseInt(filteredByNumbers[0]);
