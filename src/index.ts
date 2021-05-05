@@ -20,7 +20,7 @@ const port = 3000
 
 app.get('/', (req, res) => {
     //const { stdout, stderr, code } = shell.exec('idasen-controller')
-    res.send(position)
+    res.send({position})
 })
 
 
