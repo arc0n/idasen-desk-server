@@ -39,7 +39,7 @@ app.post('/move/:position', async(req, res) => {
             // handle stdout as `data`
         });*/
         shell.exec(`idasen-controller --move-to ${req.params.position}`, function(code: any, stdout: any, stderr: any) {
-            extractPosition(stdout);
+            position = extractPosition(stdout);
         });
 
         /*--forward */
@@ -64,11 +64,8 @@ app.listen(port, () => {
 function extractPosition(input: string): number {
     const index = input.lastIndexOf('Final height:');
     const filteredByNumbers = input.substring(index, input.lastIndexOf('(')).match(/\d.*/);
-    console.log("index", input.substring(index, input.lastIndexOf('(')))
-
     try {
         const parsed: number = parseInt(filteredByNumbers[0]);
-        console.log("parsed input",parsed)
         return parsed;
     }
     catch (e) {return -1};
