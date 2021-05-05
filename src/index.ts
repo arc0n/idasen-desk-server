@@ -63,7 +63,7 @@ app.listen(port, () => {
 
 function extractPosition(input: string): number {
     const index = input.lastIndexOf('final height:');
-    const filteredByNumbers = input.substring(index, input.lastIndexOf('(')).match(/\d/);
+    const filteredByNumbers = input.substring(index, input.lastIndexOf('(')).match(/\d.*/);
     try {
         const parsed: number = parseInt(filteredByNumbers[0]);
         console.log("parsed input",parsed)
