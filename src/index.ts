@@ -34,24 +34,21 @@ app.post('/move/:position', async(req, res) => {
     console.log(req.params.position)
 
     try  {
-/*        var child = cp.spawn('./myScript.sh', [args]);
-        child.stdout.on('data', function(data) {
+
+        var child = cp.spawn(`idasen-controller --move-to ${req.params.position}`, [], {shell: true});
+        child.stdout.on('data', function(data: any) {
+            console.log(data)
             // handle stdout as `data`
-        });*/
-        shell.exec(`idasen-controller --move-to ${req.params.position}`, function(code: any, stdout: any, stderr: any) {
-            position = extractPosition(stdout);
         });
-
-        /*--forward */
-
+/*        shell.spawn(`idasen-controller --move-to ${req.params.position}`, function(code: any, stdout: any, stderr: any) {
+            console.log()
+            position = extractPosition(stdout);
+        });*/
 
     }
     catch (e) {
         console.log(e)
     }
-
-
-
     // await some movement
     res.send(true);
 });
