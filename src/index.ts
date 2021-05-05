@@ -37,7 +37,14 @@ app.post('/move/:position', async(req, res) => {
 
     try  {
 
-        var child = cp.spawn(`idasen-controller --move-to ${req.params.position}`, [], {shell: true, stdio: ['ignore', 'pipe', process.stderr]});
+        var child = cp.spawn(`idasen-controller --move-to ${req.params.position}`, [], {shell: true, stdio: [ 'pipe', process.stderr, process.stdin]});
+
+   emitLines(process.stdin)
+          process.stdin.resume()
+          process.stdin.setEncoding('utf8')
+          process.stdin.on('line', function (line) {
+           console.log('line event:', line)
+             })
 /*        child.stdout.on('data', function(data: any) {
             console.log(data.toString())
             // handle stdout as `data`
@@ -46,7 +53,7 @@ app.post('/move/:position', async(req, res) => {
             console.log()
             position = extractPosition(stdout);
         });*/
-        await echoReadable(child.stdout);
+
 
 
 
@@ -62,11 +69,11 @@ app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 });
 
-async function echoReadable(readable: any) {
+/*async function echoReadable(readable: any) {
     for await (const line of chunksToLinesAsync(readable)) { // (C)
         console.log('LINE: '+chomp(line))
     }
-}
+}*/
 function extractPosition(input: string): number {
     const index = input.lastIndexOf('Final height:');
     const filteredByNumbers = input.substring(index, input.lastIndexOf('(')).match(/\d.*/);
@@ -75,4 +82,23 @@ function extractPosition(input: string): number {
         return parsed;
     }
     catch (e) {return -1};
+}
+
+function emitLines (stream: any) {
+    var backlog = ''
+    stream.on('data', function (data: any) {
+        backlog += data
+        var n = backlog.indexOf('\n')
+        // got a \n? emit one or more 'line' events
+        while (~n) {
+            stream.emit('line', backlog.substring(0, n))
+            backlog = backlog.substring(n + 1)
+            n = backlog.indexOf('\n')
+        }
+    })
+    stream.on('end', function () {
+        if (backlog) {
+            stream.emit('line', backlog)
+        }
+    })
 }
