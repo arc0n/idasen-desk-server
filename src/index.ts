@@ -5,7 +5,7 @@ var cp = require('child_process');
 const shell = require('shelljs')
 
 
-let position = "";
+let position = -1;
 /*shell.exec(`idasen-controller --server`, function(code: any, stdout: any, stderr: any) {
     console.log('Exit code:', code);
     console.log('Program output:', stdout);
@@ -23,8 +23,9 @@ app.get('/', (req, res) => {
     res.send(position)
 })
 
+
 app.post('/move/:position', async(req, res) => {
-/*    const { error } = validate(req.body);
+ /*    const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     winston.info("Position: ", req.body,  "posted")
 */
@@ -38,11 +39,7 @@ app.post('/move/:position', async(req, res) => {
             // handle stdout as `data`
         });*/
         shell.exec(`idasen-controller --move-to ${req.params.position}`, function(code: any, stdout: any, stderr: any) {
-            console.log('Exit code:', code);
-            console.log('Program output:', stdout);
-            console.log('Program stderr:', stderr);
-            position = stdout;
-            console.log(stdout)
+            extractPosition(stdout);
         });
 
         /*--forward */
@@ -62,3 +59,15 @@ app.post('/move/:position', async(req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 });
+
+
+function extractPosition(input: string): number {
+    const index = input.lastIndexOf('final height:');
+    const filteredByNumbers = input.substr(index, input.lastIndexOf('(')).match(/\d/);
+    try {
+        const parsed: number = parseInt(filteredByNumbers[0]);
+        console.log("parsed input",parsed)
+        return parsed;
+    }
+    catch (e) {return -1};
+}
