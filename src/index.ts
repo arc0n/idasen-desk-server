@@ -19,6 +19,7 @@ console.log("idasen server started")
 
 const app = express()
 const port = 3000
+let idasenChildProzess: any;
 
 app.get('/', (req, res) => {
     //const { stdout, stderr, code } = shell.exec('idasen-controller')
@@ -33,31 +34,27 @@ app.post('/move/:position', async(req, res) => {
 */
 
     // validate position
-    console.log(req.params.position)
+    console.log("received new target position: ", req.params.position)
 
     try  {
 
-        var child = cp.spawn(`idasen-controller --move-to ${req.params.position}`, [], {shell: true, stdio: [ 'pipe', process.stderr, process.stdin]});
+        // start idasen server process and listen to output
+        if (!idasenChildProzess) {
+            idasenChildProzess = cp.spawn(`idasen-controller --server`, [], {shell: true, stdio: [ 'pipe', process.stderr, process.stdin]});
+        }
 
-   emitLines(process.stdin)
-          process.stdin.resume()
-          process.stdin.setEncoding('utf8')
-          process.stdin.on('line', function (line) {
-           console.log('line event:', line)
-             })
-/*        child.stdout.on('data', function(data: any) {
-            console.log(data.toString())
-            // handle stdout as `data`
-        });*/
-/*        shell.spawn(`idasen-controller --move-to ${req.params.position}`, function(code: any, stdout: any, stderr: any) {
-            console.log()
-            position = extractPosition(stdout);
-        });*/
+        // LISTEN TO OUTPUT LINE BY LINE https://gist.github.com/TooTallNate/1785026#file-emitlines-js
+        emitLines(process.stdin)
+        process.stdin.resume()
+        process.stdin.setEncoding('utf8')
+        process.stdin.on('line', function (line) {
+            console.log('line event:', line)
+        })
 
-
-
-
+        cp.spawn(`idasen-controller --forward --move-to ${req.params.position}`, []);
     }
+
+
     catch (e) {
         console.log(e)
     }
@@ -84,6 +81,7 @@ function extractPosition(input: string): number {
     catch (e) {return -1};
 }
 
+/** helper method to listen to output line by line, source: https://gist.github.com/TooTallNate/1785026#file-emitlines-js */
 function emitLines (stream: any) {
     var backlog = ''
     stream.on('data', function (data: any) {
