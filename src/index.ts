@@ -21,9 +21,25 @@ const app = express()
 const port = 3000
 let idasenChildProzess: any;
 
+// start idasen server process and listen to output
+// https://stackoverflow.com/questions/9962197/node-js-readline-not-waiting-for-a-full-line-on-socket-connections/10012306#10012306
+if (!idasenChildProzess) {
+    idasenChildProzess = cp.spawn(`idasen-controller --monitor`, [], {shell: true, stdio: ['pipe', process.stderr, process.stdin]}, (data:any)=> {
+        console.log("i am here")
+    });
+}
 
-// start server
-shell.exec(`idasen-controller --server`);
+// LISTEN TO OUTPUT LINE BY LINE https://gist.github.com/TooTallNate/1785026#file-emitlines-js
+// maybe move to a init method
+emitLines(process.stdin)
+process.stdin.resume()
+process.stdin.setEncoding('utf8')
+process.stdin.on('line', function (line) {
+    //console.log('line event:', line)
+    position = extractPosition(line);
+    console.log('hey')
+})
+
 
 
 app.get('/', (req, res) => {
@@ -42,23 +58,7 @@ app.post('/move/:position', async(req, res) => {
     console.log("received new target position: ", req.params.position)
 
     try  {
-
-        // start idasen server process and listen to output
-        if (!idasenChildProzess) {
-            idasenChildProzess = cp.spawn(`idasen-controller --monitor`, [], {shell: true, stdio: [ 'pipe', process.stderr, process.stdin]});
-        }
-
-        // LISTEN TO OUTPUT LINE BY LINE https://gist.github.com/TooTallNate/1785026#file-emitlines-js
-        // maybe move to a init method
-        emitLines(process.stdin)
-        process.stdin.resume()
-        process.stdin.setEncoding('utf8')
-        process.stdin.on('line', function (line) {
-            console.log('line event:', line)
-            position = extractPosition(line);
-        })
-
-        shell.exec(`idasen-controller --server --move-to ${req.params.position}`);
+      shell.exec(`idasen-controller --server --move-to ${req.params.position}`);
     }
 
 
