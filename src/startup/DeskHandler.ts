@@ -6,9 +6,9 @@ export class DeskHandler {
     private desk = new Desk();
 
     constructor() {
-        this.desk.onPositionChange((event: Event)=> {
+/*        this.desk.onPositionChange((event: Event)=> {
             console.log("event", event)
-        })
+        })*/
     }
 
     async getCurrentPosition() {
