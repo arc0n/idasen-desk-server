@@ -1,6 +1,8 @@
 // source: https://github.com/nconrad/idasen-desk-controller/blob/master/src/components/Desk.js
 
 import 'regenerator-runtime/runtime'
+const Bluetooth	= require('node-web-bluetooth');
+
 
 const serviceID = '99fa0001-338a-1024-8a49-009c0215f78a'
 const charID = '99fa0002-338a-1024-8a49-009c0215f78a'
@@ -30,7 +32,7 @@ export class Desk {
                 namePrefix: 'Desk'
             }]
         };
-        return navigator.bluetooth.requestDevice(options)
+        return Bluetooth.requestDevice(options)
             .then((device: BluetoothDevice) => {
                 this.device = device;
                 this.device.addEventListener('gattserverdisconnected', this.onDisconnected);
