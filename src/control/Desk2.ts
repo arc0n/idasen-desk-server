@@ -1,10 +1,11 @@
 // source https://github.com/mitsuhiko/idasen-control/blob/master/src/desk.js
 import {Peripheral} from "@abandonware/noble";
+import {Utils} from "./utils";
 
 const EventEmitter = require("events");
 const schedule = require("node-schedule");
 
-const { sleep } = require("./utils");
+// const { sleep } = require("./utils");
 
 export interface DeskData
 { readInt16LE: () => number; readUInt16LE: (arg0: number) => any; }
@@ -179,7 +180,7 @@ export class Desk extends EventEmitter {
                     lastCommand = +new Date();
                 }
 
-                await sleep(100);
+                await Utils.sleep(100);
 
                 await this.readPosition();
 
