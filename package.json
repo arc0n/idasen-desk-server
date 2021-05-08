@@ -14,8 +14,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@abandonware/noble": "^1.9.2-13",
     "@rauschma/stringio": "^1.4.0",
     "express": "^4.17.1",
+    "node-schedule": "^2.0.0",
     "node-web-bluetooth": "^1.2.0",
     "regenerator-runtime": "^0.13.7",
     "shelljs": "^0.8.4",

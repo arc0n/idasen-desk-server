@@ -7,8 +7,8 @@ const port = 3000
 const deskHandler = new DeskHandler();
 
 app.get('/', async(req, res) => {
-    const pos = await deskHandler.getCurrentPosition();
-    res.send(pos)
+    await deskHandler.scanForDesk();
+    res.send()
 });
 
 

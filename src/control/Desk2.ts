@@ -1,4 +1,6 @@
 // source https://github.com/mitsuhiko/idasen-control/blob/master/src/desk.js
+import {Peripheral} from "@abandonware/noble";
+
 const EventEmitter = require("events");
 const schedule = require("node-schedule");
 
@@ -6,7 +8,6 @@ const { sleep } = require("./utils");
 
 export interface DeskData
 { readInt16LE: () => number; readUInt16LE: (arg0: number) => any; }
-
 
 export class Desk extends EventEmitter {
     static services() {
@@ -30,7 +31,7 @@ export class Desk extends EventEmitter {
         };
     }
 
-    constructor(peripheral: any, positionMax: any) {
+    constructor(peripheral: Peripheral, positionMax: any) {
         super();
 
         this.peripheral = peripheral;

@@ -1,4 +1,4 @@
-/*
+import {Peripheral} from "@abandonware/noble";
 
 const noble = require("@abandonware/noble");
 const schedule = require("node-schedule");
@@ -7,10 +7,7 @@ const EventEmitter = require("events");
 const { Desk } = require("./desk");
 const { log } = require("./utils");
 
-interface Peripheral {
-    address: any;
-    advertisement: { serviceUuids: string | any[]; };
-}
+
 
 export class DeskManager extends EventEmitter {
     constructor(config: any) {
@@ -105,7 +102,7 @@ export class DeskManager extends EventEmitter {
         );
     }
 
-    async processPeripheral(peripheral: Ph) {
+    async processPeripheral(peripheral: Peripheral) {
         if (this.desk || !this.isDeskPeripheral(peripheral)) {
             return;
         }
@@ -146,4 +143,3 @@ export class DeskManager extends EventEmitter {
         }
     }
 }
-*/
