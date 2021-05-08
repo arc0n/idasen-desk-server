@@ -11,7 +11,6 @@ const positionCharID = '99fa0021-338a-1024-8a49-009c0215f78a'
 
 export class Desk {
 
-
     device: BluetoothDevice;
     server: BluetoothRemoteGATTServer;
     service: BluetoothRemoteGATTService;
@@ -83,7 +82,7 @@ export class Desk {
         return value.buffer;
     }
 
-    async onPositionChange(callback: (this:BluetoothRemoteGATTCharacteristic, ev: Event) => void) {
+    async onPositionChange(callback: (ev: Event) => void) {
         const service = await this.server.getPrimaryService(positionServiceID);
         const char = await service.getCharacteristic(positionCharID);
 
