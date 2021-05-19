@@ -11,7 +11,6 @@ const net = require("net");
 const process = require("process");
 const {spawn} = require("child_process");
 
-const ConfigHelper = require("../control/config");
 const {DeskManager} = require("../control/deskService");
 const {promisify} = require("util");
 const fs = require("fs");
@@ -27,7 +26,7 @@ const CHECK_INTERVAL = 5.0; // for start server
 
 // scan for desks
 module.exports.scanForDesk = async function scanForDesk() {
-    const config = ConfigHelper.getConfig()
+    const config = await getConfig()
     console.log("Scanning for desks");
     const manager = new DeskManager({
         verbose: false,
@@ -122,7 +121,7 @@ module.exports.startDeskServer = async function startDeskServer() {
 
 
 module.exports.stopDeskServer = async function stopDeskServer() {
-    const config = await ConfigHelper.getConfig()
+    const config = await getConfig()
     const pid = await readPid();
     if (pid !== null) {
         console.log("Stopping server");
@@ -162,7 +161,7 @@ async function readPid() {
 
 
 async function writePid() {
-    const config = ConfigHelper.getConfig()
+    const config = await getConfig()
     await writeFile(config.pidFilePath, `${process.pid}\n`);
 }
 
