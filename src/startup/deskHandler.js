@@ -1,3 +1,4 @@
+const ConfigHelper = require("../control/config");
 module.exports.scanForDesk = async function scanForDesk() {
          const config = ConfigHelper.getConfig()
         // here was the config TODO
