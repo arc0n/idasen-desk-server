@@ -1,17 +1,5 @@
-import {DeskManager} from "../control/DeskManagerForDesk2";
-import {Peripheral} from "@abandonware/noble";
-import {Config, ConfigHelper} from "../control/Config";
-
-
-export class DeskHandler {
-
-    private config: Config;
-
-    constructor() {
-        this.config = ConfigHelper.getConfig()
-    }
-
-    async scanForDesk() {
+module.exports.scanForDesk = async function scanForDesk() {
+         const config = ConfigHelper.getConfig()
         // here was the config TODO
         console.log("Scanning for desks");
         const manager = new DeskManager({
@@ -19,8 +7,8 @@ export class DeskHandler {
         });
 
         // open promise
-        let promiseResovleFn: () => void;
-        const donePromise = new Promise<void>((resolve) => {
+        let promiseResovleFn;
+        const donePromise = new Promise((resolve) => {
             promiseResovleFn = resolve;
         });
 
@@ -35,9 +23,9 @@ export class DeskHandler {
             }
         }, 1000);
 
-        let seen: {[key: string]: any} = {}; // store for seen devices
+        let seen // store for seen devices
         // TODO does this only print the devices?
-        manager.on("discover", (peripheral: Peripheral) => {
+        manager.on("discover", (peripheral) => {
             if ( // check if already not already soon and valid
                 peripheral.address &&
                 peripheral.advertisement.localName &&
@@ -66,6 +54,5 @@ export class DeskHandler {
                 "No desks found. Make sure to bring the desk to pairing mode before scanning."
             );
         }
-    }
-
 }
+

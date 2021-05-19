@@ -1,29 +1,9 @@
-// source https://github.com/mitsuhiko/idasen-control/blob/master/src/desk.js
-import {Characteristic, Peripheral} from "@abandonware/noble";
-import {Utils} from "./utils";
+const EventEmitter = require("events");
+const schedule = require("node-schedule");
 
-import schedule from "node-schedule";
-import EventEmitter from "events";
+const { sleep } = require("./utils");
 
-export interface DeskData
-{ readInt16LE: () => number; readUInt16LE: (arg0: number) => any; }
-
-export class Desk extends EventEmitter {
-    private peripheral: Peripheral;
-    private position: number;
-    private speed: number;
-    private positionMax: any;
-    private shouldDisconnect: boolean;
-    private isMoving: boolean;
-    private isConnected: boolean;
-    private controlChar: Characteristic;
-    private positionChar: Characteristic;
-
-
-    private movingPromise: Promise<void>;
-
-
-
+class Desk extends EventEmitter {
     static services() {
         return {
             position: {
@@ -45,7 +25,7 @@ export class Desk extends EventEmitter {
         };
     }
 
-    constructor(peripheral: Peripheral, positionMax: any) {
+    constructor(peripheral, positionMax) {
         super();
 
         this.peripheral = peripheral;
@@ -109,7 +89,7 @@ export class Desk extends EventEmitter {
         );
 
         const positionChar = characteristics.find(
-            (char: { uuid: string; }) => char.uuid === Desk.services().position.characteristicId
+            (char) => char.uuid == Desk.services().position.characteristicId
         );
         if (!positionChar) {
             throw new Error("Missing position service");
@@ -118,13 +98,13 @@ export class Desk extends EventEmitter {
         const data = await positionChar.readAsync();
         this.updatePosition(data);
 
-        positionChar.on("data", async (d: DeskData) => {
-            this.updatePosition(d);
+        positionChar.on("data", async (data) => {
+            this.updatePosition(data);
         });
         await positionChar.notifyAsync(true);
 
         const controlChar = characteristics.find(
-            (char: { uuid: string; }) => char.uuid === Desk.services().control.characteristicId
+            (char) => char.uuid == Desk.services().control.characteristicId
         );
         if (!controlChar) {
             throw new Error("Missing control service");
@@ -140,9 +120,9 @@ export class Desk extends EventEmitter {
         this.updatePosition(data);
     }
 
-    updatePosition(data: DeskData) {
+    updatePosition(data) {
         const position = data.readInt16LE() / 100;
-        if (this.position === position) {
+        if (this.position == position) {
             return;
         }
 
@@ -151,7 +131,7 @@ export class Desk extends EventEmitter {
         this.emit("position", this.position, this.speed);
     }
 
-    async moveTo(targetPosition: number) {
+    async moveTo(targetPosition) {
         await this.stopMoving();
         targetPosition = Math.min(targetPosition, this.positionMax);
 
@@ -167,7 +147,7 @@ export class Desk extends EventEmitter {
         await this.movingPromise;
     }
 
-    async performMoveTo(targetPosition: number) {
+    async performMoveTo(targetPosition) {
         this.isMoving = true;
 
         const isMovingUp = targetPosition > this.position;
@@ -184,7 +164,7 @@ export class Desk extends EventEmitter {
                 ((isMovingUp && this.position + stopThreshold < targetPosition) ||
                     (!isMovingUp && this.position - stopThreshold > targetPosition))
                 ) {
-                if (lastCommand === 0 || lastCommand < +new Date() - 300) {
+                if (lastCommand == 0 || lastCommand < +new Date() - 300) {
                     await this.ensureConnection();
                     await this.controlChar.writeAsync(
                         isMovingUp ? Desk.control().up : Desk.control().down,
@@ -193,13 +173,13 @@ export class Desk extends EventEmitter {
                     lastCommand = +new Date();
                 }
 
-                await Utils.sleep(100);
+                await sleep(100);
 
                 await this.readPosition();
 
                 if (
-                    lastPosition === this.position ||
-                    (lastSpeed !== 0 && this.speed === 0)
+                    lastPosition == this.position ||
+                    (lastSpeed != 0 && this.speed == 0)
                 ) {
                     shouldStopCounter += 1;
                 } else {
@@ -232,3 +212,4 @@ export class Desk extends EventEmitter {
     }
 }
 
+module.exports.Desk = Desk;

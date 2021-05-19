@@ -1,25 +1,12 @@
-// source https://github.com/mitsuhiko/idasen-control/blob/master/src/desk.js
+const noble = require("@abandonware/noble");
+const schedule = require("node-schedule");
+const EventEmitter = require("events");
 
-import {Peripheral} from "@abandonware/noble";
-import * as noble from "@abandonware/noble";
-import schedule from "node-schedule";
-import EventEmitter from "events";
-import {Desk} from "./Desk2";
-import {Utils} from "./utils";
+const { Desk } = require("./desk");
+const { log } = require("./utils");
 
-
-
-
-export class DeskManager extends EventEmitter {
-    private config: any;
-    private started: boolean;
-    private desk: any;
-
-    private _deskReadyPromise: Promise<void>;
-    private _deskReadyPromiseResolve: () => void;
-
-
-    constructor(config: any) {
+class DeskManager extends EventEmitter {
+    constructor(config) {
         super();
         this.config = config;
         this.started = false;
@@ -42,21 +29,19 @@ export class DeskManager extends EventEmitter {
         this.startNoble();
     }
 
-    log(...args: string[]) {
+    log(...args) {
         if (this.config.verbose) {
-            Utils.log(...args);
+            log(...args);
         }
     }
 
     startNoble() {
-        console.log("start noble") // TODO remove
-
         this.log("starting BLE");
-        noble.on("discover", async (peripheral: Peripheral) => {
+        noble.on("discover", async (peripheral) => {
             await this.processPeripheral(peripheral);
         });
 
-        noble.on("stateChange", async (state: string) => {
+        noble.on("stateChange", async (state) => {
             this.log("stateChange", state);
             if (state === "poweredOn") {
                 await this.scan();
@@ -72,7 +57,7 @@ export class DeskManager extends EventEmitter {
 
         noble.on("scanStop", async () => {
             this.log("scanStop");
-            if (!this.desk && noble.state === "poweredOn") {
+            if (!this.desk && noble.state == "poweredOn") {
                 this.scan();
             }
         });
@@ -93,14 +78,14 @@ export class DeskManager extends EventEmitter {
 
     scheduleScan() {
         schedule.scheduleJob(Date.now() + 5000, () => {
-            if (noble.state === "poweredOn") {
+            if (noble.state == "poweredOn") {
                 this.scan();
             }
         });
     }
 
-    isDeskPeripheral(peripheral: Peripheral) {
-        if (peripheral.address === this.config.deskAddress) {
+    isDeskPeripheral(peripheral) {
+        if (peripheral.address == this.config.deskAddress) {
             return true;
         }
 
@@ -113,8 +98,7 @@ export class DeskManager extends EventEmitter {
         );
     }
 
-    async processPeripheral(peripheral: Peripheral) {
-        console.log("found some device" ) // TODO remove
+    async processPeripheral(peripheral) {
         if (this.desk || !this.isDeskPeripheral(peripheral)) {
             return;
         }

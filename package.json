@@ -2,37 +2,28 @@
   "name": "idasen-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "src/index.js",
+  "dependencies": {
+    "@abandonware/noble": "^1.9.2-8",
+    "commander": "^5.1.0",
+    "desktop-idle": "^1.3.0",
+    "express": "^4.17.1",
+    "node-schedule": "^1.3.2",
+    "nodemon": "^2.0.7",
+    "pretty-ms": "^7.0.0"
+  },
+  "devDependencies": {},
   "scripts": {
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
-    "build": "tsc",
-    "prestart": "npm run build",
-    "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/21IsOnlyTheHalfTruth/idasen-backend.git"
+  },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@abandonware/noble": "^1.9.2-13",
-    "@rauschma/stringio": "^1.4.0",
-    "@types/node-schedule": "^1.3.1",
-    "express": "^4.17.1",
-    "install": "^0.13.0",
-    "noble": "^1.9.1",
-    "node-schedule": "^2.0.0",
-    "node-web-bluetooth": "^1.2.0",
-    "nodemon": "^2.0.7",
-    "regenerator-runtime": "^0.13.7",
-    "shelljs": "^0.8.4",
-    "winston": "^3.3.3"
+  "bugs": {
+    "url": "https://github.com/21IsOnlyTheHalfTruth/idasen-backend/issues"
   },
-  "devDependencies": {
-    "@types/express": "^4.17.11",
-    "@types/node": "^15.0.1",
-    "@types/web-bluetooth": "0.0.9",
-    "ts-node": "^9.1.1",
-    "tslint": "^6.1.3",
-    "typescript": "^4.2.4"
-  }
+  "homepage": "https://github.com/21IsOnlyTheHalfTruth/idasen-backend#readme"
 }

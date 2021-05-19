@@ -1,13 +1,12 @@
-import express from "express";
-import {DeskHandler} from "./startup/DeskHandler";
+const express = require("express");
+ const {scanForDesk} = require("./startup/deskHandler");
 
 const app = express()
 const port = 3000
 
-const deskHandler = new DeskHandler();
 
 app.get('/', async(req, res) => {
-    await deskHandler.scanForDesk();
+    await scanForDesk()
     res.send()
 });
 
