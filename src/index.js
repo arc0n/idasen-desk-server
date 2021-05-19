@@ -12,6 +12,7 @@ const port = 3000
 app.get('/', async(req, res) => {
     const address = await scanForDesk() // handle reject
     if(!!address) {
+        console.log(`Returned address is ${address}`);
         await connectToDesk(address);
         startDeskServer()
 

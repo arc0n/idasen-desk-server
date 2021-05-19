@@ -49,7 +49,7 @@ module.exports.scanForDesk = async function scanForDesk() {
     }, 1000);
 
     let seen = {}; // store for seen devices
-    let firstFoundDeskAddress;
+    let firstFoundDeskAddress = "";
     manager.on("discover", (peripheral) => {
         if ( // check if already not already soon and valid
             peripheral.address &&
