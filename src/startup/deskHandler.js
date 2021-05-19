@@ -15,6 +15,7 @@ const ConfigHelper = require("../control/config");
 const {DeskManager} = require("../control/deskService");
 const {promisify} = require("util");
 const fs = require("fs");
+const {saveConfig} = require("../control/config");
 
 const unlink = promisify(fs.unlink);
 const readFile = promisify(fs.readFile);
