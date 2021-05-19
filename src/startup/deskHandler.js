@@ -26,7 +26,7 @@ module.exports.scanForDesk = async function scanForDesk() {
             }
         }, 1000);
 
-        let seen // store for seen devices
+        let seen = {}; // store for seen devices
         // TODO does this only print the devices?
         manager.on("discover", (peripheral) => {
             if ( // check if already not already soon and valid
