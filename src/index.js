@@ -1,12 +1,25 @@
 const express = require("express");
- const {scanForDesk} = require("./startup/deskHandler");
+const {stopDeskServer} = require("./startup/deskHandler");
+const {startDeskServer} = require("./startup/deskHandler");
+const {connectToDesk} = require("./startup/deskHandler");
+const {scanForDesk} = require("./startup/deskHandler");
+
 
 const app = express()
 const port = 3000
 
 
 app.get('/', async(req, res) => {
-    await scanForDesk() // handle reject
+    const address = await scanForDesk() // handle reject
+    if(!!address) {
+        await connectToDesk(address);
+        startDeskServer()
+
+        setTimeout(()=> {
+            stopDeskServer()
+        },100000)
+
+    }
     res.send()
 });
 

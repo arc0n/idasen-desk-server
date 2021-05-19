@@ -1,6 +1,12 @@
+/*
 import * as net from "net";
 import {log, sleep} from "../control/utils";
 import {getConfig} from "../control/config";
+*/
+const { log, sleep } = require("../control/utils");
+const { getConfig } = require("../control/config");
+const net = require("net");
+
 
 const process = require("process");
 const {spawn} = require("child_process");
@@ -43,7 +49,7 @@ module.exports.scanForDesk = async function scanForDesk() {
     }, 1000);
 
     let seen = {}; // store for seen devices
-    // TODO does this only print the devices?
+    let firstFoundDeskAddress;
     manager.on("discover", (peripheral) => {
         if ( // check if already not already soon and valid
             peripheral.address &&
@@ -54,7 +60,7 @@ module.exports.scanForDesk = async function scanForDesk() {
             console.log(
                 `  Found "${peripheral.advertisement.localName}" [address: ${peripheral.address}]`
             );
-            found++;
+            firstFoundDeskAddress = peripheral.address
             scanUntil = +new Date() + 2000;
         }
     });
@@ -68,12 +74,12 @@ module.exports.scanForDesk = async function scanForDesk() {
                 found === 1 ? "" : "s"
             }.`
         );
-        return true
+        return firstFoundDeskAddress
     } else {
         console.log(
             "No desks found. Make sure to bring the desk to pairing mode before scanning."
         );
-        return false
+        return null
     }
 }
 
@@ -103,7 +109,7 @@ module.exports.startDeskServer = async function startDeskServer() {
 }
 
 
-module.exports.stopServer = async function stopDeskServer() {
+module.exports.stopDeskServer = async function stopDeskServer() {
     const pid = await readPid();
     if (pid !== null) {
         console.log("Stopping server");
@@ -198,6 +204,7 @@ async function runServer() {
             return false;
         }
     }).then(() => {
+        console.log("is ensured")
         manager.start();
     });
 
