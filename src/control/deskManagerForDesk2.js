@@ -139,3 +139,5 @@ class DeskManager extends EventEmitter {
         }
     }
 }
+
+module.exports.DeskManager = DeskManager;
