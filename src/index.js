@@ -6,7 +6,7 @@ const port = 3000
 
 
 app.get('/', async(req, res) => {
-    await scanForDesk()
+    await scanForDesk() // handle reject
     res.send()
 });
 

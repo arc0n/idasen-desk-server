@@ -5,7 +5,7 @@ const EventEmitter = require("events");
 const { Desk } = require("./desk");
 const { log } = require("./utils");
 
-class DeskManager extends EventEmitter {
+class DeskService extends EventEmitter {
     constructor(config) {
         super();
         this.config = config;
@@ -140,4 +140,4 @@ class DeskManager extends EventEmitter {
     }
 }
 
-module.exports.DeskManager = DeskManager;
+module.exports.DeskManager = DeskService;
