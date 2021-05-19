@@ -110,7 +110,7 @@ module.exports.startDeskServer = async function startDeskServer() {
         /*}*/
         await sleep(100);
 
-        if(process.env.IDASEN_START_SERVER === "1") {
+        if(/*process.env.IDASEN_START_SERVER === "1"*/true) {
             console.log("run server")
             runServer();
         }
