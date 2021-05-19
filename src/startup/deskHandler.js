@@ -105,6 +105,8 @@ module.exports.startDeskServer = async function startDeskServer() {
             });
         }
         await sleep(100);
+    } else {
+        console.log("already running")
     }
 }
 
