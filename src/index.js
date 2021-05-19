@@ -1,4 +1,5 @@
 const express = require("express");
+const {sendCommand} = require("./startup/deskHandler");
 const {stopDeskServer} = require("./startup/deskHandler");
 const {startDeskServer} = require("./startup/deskHandler");
 const {connectToDesk} = require("./startup/deskHandler");
@@ -15,7 +16,8 @@ app.get('/', async(req, res) => {
     if(!!address) {
         console.log(`Returned address is ${address}`);
         await connectToDesk(address);
-        startDeskServer()
+        await startDeskServer()
+        await sendCommand({ op: "moveTo", pos: 14 }, false); // wait promise?
 
         setTimeout(()=> {
             stopDeskServer()

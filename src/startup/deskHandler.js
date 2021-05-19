@@ -131,6 +131,38 @@ module.exports.stopDeskServer = async function stopDeskServer() {
     }
 }
 
+// send command to child process where server runs (?)
+module.exports.sendCommand = async function sendCommand(cmd, wait) {
+    wait = wait || false;
+    const config = getConfig();
+    return new Promise((resolve) => {
+        const client = net.createConnection({ path: config.socketPath }, () => {
+            client.write(JSON.stringify(cmd) + "\n", () => {
+                if (!wait) {
+                    resolve(undefined);
+                }
+            });
+        });
+        if (wait) {
+            client.on("data", (data) => {
+                resolve(JSON.parse(data));
+            });
+        }
+        client.on("end", () => {
+            // nothing
+        });
+    });
+}
+
+module.exports.getStatus = async function getStatus() {
+    const status = await Promise.race([
+        sendCommand({ op: "getStatus" }, true),
+        sleep(100),
+    ]);
+    return status || { ready: false };
+}
+
+
 async function serverIsRunning() {
     return (await readPid()) !== null;
 }
@@ -180,7 +212,7 @@ async function runServer() {
 
         // TODO what does this do?? only saving the sittingand standing time right?
         manager.getDesk().then((desk) => {
-            console.log("sth happend", desk.position)
+            console.log("new position in interval", desk.position)
             // someone did something
             const idleTime = getIdleTime();
             if (idleTime < CHECK_INTERVAL && desk.position < config.standThreshold) {
@@ -218,7 +250,7 @@ async function runServer() {
             return false;
         }
     }).then(() => {
-        console.log("is ensured")
+        console.log("#### ensureServer called ###")
         manager.start();
     });
 
@@ -285,7 +317,9 @@ async function ensureServer(onMessage) {
 
     return server;
 }
-// config must be set!
+
+
+// config must be set! only used on get status on ensureServer
 function describePosition(desk) {
     return desk.position >= getConfig().standThreshold ? "standing" : "sitting";
 }
