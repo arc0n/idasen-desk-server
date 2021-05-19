@@ -42,8 +42,11 @@ export class ConfigHelper {
         let config: Config = DEFAULT_CONFIG;
         try {
             config = { ...config, ...JSON.parse((await readFile(path)).toString()) };
+            console.log("Used stored config in ~/.idasen-control.json")
         } catch (e) {
             // ignore load errors
+            console.log("Used default Config, did not find any file with ~/.idasen-control.json")
+
         }
 
         this.cachedConfig = config;

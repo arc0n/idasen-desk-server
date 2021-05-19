@@ -19,18 +19,19 @@ export class DeskHandler {
         });
 
         // open promise
-        let promiseResovleFn: (val: any) => void;
-        const donePromise = new Promise<null>((resolve) => {
+        let promiseResovleFn: () => void;
+        const donePromise = new Promise<void>((resolve) => {
             promiseResovleFn = resolve;
         });
 
         // start scan
-        let scanUntil = +new Date() + 10000;
-        let found = 0;
 
+        let scanUntil = +new Date() + 50000;
+        let found = 0;
+        // check every second if date is already done, TODO maybe use rxjs
         setInterval(() => {
             if (scanUntil < +new Date()) {
-                promiseResovleFn(null);
+                promiseResovleFn();
             }
         }, 1000);
 
@@ -57,7 +58,7 @@ export class DeskHandler {
         if (found > 0) {
             console.log(
                 `Found ${found} desk${
-                    found == 1 ? "" : "s"
+                    found === 1 ? "" : "s"
                 }.  Connect with --connect-to` // TODO will give back some msg or connect to first desk
             );
         } else {

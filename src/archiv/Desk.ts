@@ -1,3 +1,4 @@
+/*
 // source: https://github.com/nconrad/idasen-desk-controller/blob/master/src/components/Desk.js
 
 import 'regenerator-runtime/runtime'
@@ -16,9 +17,9 @@ export class Desk {
     device: BluetoothDevice;
     server: BluetoothRemoteGATTServer;
     service: BluetoothRemoteGATTService;
-/*
+/!*
     onDisconnected = this.onDisconnected.bind(this); // TODO bind method to this, maybe not needed in ts
-*/
+*!/
 
     constructor() {
     }
@@ -102,3 +103,4 @@ function hexStrToArray(hexString: any) {
     }
     return new Uint8Array(decimals);
 }
+*/

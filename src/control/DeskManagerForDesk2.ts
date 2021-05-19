@@ -1,10 +1,10 @@
 // source https://github.com/mitsuhiko/idasen-control/blob/master/src/desk.js
 
 import {Peripheral} from "@abandonware/noble";
-
-const noble = require("@abandonware/noble");
-const schedule = require("node-schedule");
-const EventEmitter = require("events");
+import * as noble from "@abandonware/noble"
+//import noble from "@abandonware/noble";
+import schedule from "node-schedule";
+import EventEmitter from "events";
 
 const { Desk } = require("../archiv/Desk");
 const { log } = require("./utils");
@@ -50,6 +50,8 @@ export class DeskManager extends EventEmitter {
     }
 
     startNoble() {
+        console.log("start noble") // TODO remove
+
         this.log("starting BLE");
         noble.on("discover", async (peripheral: Peripheral) => {
             await this.processPeripheral(peripheral);
@@ -99,7 +101,7 @@ export class DeskManager extends EventEmitter {
     }
 
     isDeskPeripheral(peripheral: Peripheral) {
-        if (peripheral.address == this.config.deskAddress) {
+        if (peripheral.address === this.config.deskAddress) {
             return true;
         }
 
@@ -113,6 +115,7 @@ export class DeskManager extends EventEmitter {
     }
 
     async processPeripheral(peripheral: Peripheral) {
+        console.log("found some device" ) // TODO remove
         if (this.desk || !this.isDeskPeripheral(peripheral)) {
             return;
         }
