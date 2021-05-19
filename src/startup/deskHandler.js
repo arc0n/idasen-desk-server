@@ -87,13 +87,13 @@ module.exports.scanForDesk = async function scanForDesk() {
 
 // connect to desk with the given address
 module.exports.connectToDesk = async function connectToDesk(address) {
-    const config = await ConfigHelper.getConfig()
+    const config = await getConfig()
     config.deskAddress = address;
     await saveConfig()
 }
 // spawns a service for the desk
 module.exports.startDeskServer = async function startDeskServer() {
-    const config = await ConfigHelper.getConfig()
+    const config = await getConfig()
     if (!await serverIsRunning()) {
        /* if (process.env.IDASEN_NO_DAEMON === "1") { // what does this do? i think its a leftover
             console.log("run server")
