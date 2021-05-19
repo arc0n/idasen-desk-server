@@ -19,13 +19,14 @@ const fs = require("fs");
 const unlink = promisify(fs.unlink);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
-const config = ConfigHelper.getConfig()
+
 
 const { getIdleTime } = require('desktop-idle');
 const CHECK_INTERVAL = 5.0; // for start server
 
 // scan for desks
 module.exports.scanForDesk = async function scanForDesk() {
+    const config = ConfigHelper.getConfig()
     console.log("Scanning for desks");
     const manager = new DeskManager({
         verbose: false,
@@ -86,11 +87,13 @@ module.exports.scanForDesk = async function scanForDesk() {
 
 // connect to desk with the given address
 module.exports.connectToDesk = async function connectToDesk(address) {
+    const config = ConfigHelper.getConfig()
     config.deskAddress = address;
     await saveConfig()
 }
 // spawns a service for the desk
 module.exports.startDeskServer = async function startDeskServer() {
+    const config = ConfigHelper.getConfig()
     if (!await serverIsRunning()) {
         if (process.env.IDASEN_NO_DAEMON === "1") {
             console.log("run server")
@@ -113,6 +116,7 @@ module.exports.startDeskServer = async function startDeskServer() {
 
 
 module.exports.stopDeskServer = async function stopDeskServer() {
+    const config = ConfigHelper.getConfig()
     const pid = await readPid();
     if (pid !== null) {
         console.log("Stopping server");
@@ -152,7 +156,8 @@ async function readPid() {
 
 
 async function writePid() {
-    await writeFile(getConfig().pidFilePath, `${process.pid}\n`);
+    const config = ConfigHelper.getConfig()
+    await writeFile(config.pidFilePath, `${process.pid}\n`);
 }
 
 
