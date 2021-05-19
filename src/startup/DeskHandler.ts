@@ -1,14 +1,14 @@
-import {Desk} from "../control/Desk";
 import {DeskManager} from "../control/DeskManagerForDesk2";
 import {Peripheral} from "@abandonware/noble";
+import {Config, ConfigHelper} from "../control/Config";
 
 
 export class DeskHandler {
 
-    private desk = new Desk();
+    private config: Config;
 
     constructor() {
-        //         const config = getConfig(); TODO check out the config
+        this.config = ConfigHelper.getConfig()
     }
 
     async scanForDesk() {
@@ -24,6 +24,7 @@ export class DeskHandler {
             promiseResovleFn = resolve;
         });
 
+        // start scan
         let scanUntil = +new Date() + 10000;
         let found = 0;
 

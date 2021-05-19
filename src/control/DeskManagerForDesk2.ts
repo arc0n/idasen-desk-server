@@ -1,15 +1,25 @@
+// source https://github.com/mitsuhiko/idasen-control/blob/master/src/desk.js
+
 import {Peripheral} from "@abandonware/noble";
 
 const noble = require("@abandonware/noble");
 const schedule = require("node-schedule");
 const EventEmitter = require("events");
 
-const { Desk } = require("./desk");
+const { Desk } = require("../archiv/Desk");
 const { log } = require("./utils");
 
 
 
 export class DeskManager extends EventEmitter {
+    private config: any;
+    private started: boolean;
+    private desk: any;
+
+    private _deskReadyPromise: Promise<void>;
+    private _deskReadyPromiseResolve: () => void;
+
+
     constructor(config: any) {
         super();
         this.config = config;
