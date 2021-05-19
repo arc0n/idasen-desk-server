@@ -156,8 +156,9 @@ module.exports.sendCommand = async function sendCommand(cmd, wait) {
 }
 
 module.exports.getStatus = async function getStatus() {
+    // TODO ensure server running
     const status = await Promise.race([
-        sendCommand({ op: "getStatus" }, true),
+        module.exports.sendCommand({ op: "getStatus" }, true),
         sleep(100),
     ]);
     return status || { ready: false };
