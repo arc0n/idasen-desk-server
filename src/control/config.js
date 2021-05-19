@@ -35,7 +35,8 @@ module.exports.loadConfig = async function loadConfig() {
     cachedConfig = config;
 };
 
-module.exports.getConfig = function getConfig() {
+module.exports.getConfig = async function getConfig() {
+    if(!cachedConfig) await module.exports.loadConfig()
     return cachedConfig;
 };
 

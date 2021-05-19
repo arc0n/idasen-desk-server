@@ -78,14 +78,14 @@ class DeskService extends EventEmitter {
 
     scheduleScan() {
         schedule.scheduleJob(Date.now() + 5000, () => {
-            if (noble.state == "poweredOn") {
+            if (noble.state === "poweredOn") {
                 this.scan();
             }
         });
     }
 
     isDeskPeripheral(peripheral) {
-        if (peripheral.address == this.config.deskAddress) {
+        if (peripheral.address === this.config.deskAddress) {
             return true;
         }
 

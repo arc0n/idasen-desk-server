@@ -87,13 +87,13 @@ module.exports.scanForDesk = async function scanForDesk() {
 
 // connect to desk with the given address
 module.exports.connectToDesk = async function connectToDesk(address) {
-    const config = ConfigHelper.getConfig()
+    const config = await ConfigHelper.getConfig()
     config.deskAddress = address;
     await saveConfig()
 }
 // spawns a service for the desk
 module.exports.startDeskServer = async function startDeskServer() {
-    const config = ConfigHelper.getConfig()
+    const config = await ConfigHelper.getConfig()
     if (!await serverIsRunning()) {
         if (process.env.IDASEN_NO_DAEMON === "1") {
             console.log("run server")
@@ -116,7 +116,7 @@ module.exports.startDeskServer = async function startDeskServer() {
 
 
 module.exports.stopDeskServer = async function stopDeskServer() {
-    const config = ConfigHelper.getConfig()
+    const config = await ConfigHelper.getConfig()
     const pid = await readPid();
     if (pid !== null) {
         console.log("Stopping server");
@@ -131,7 +131,7 @@ async function serverIsRunning() {
 }
 
 async function readPid() {
-    const config = getConfig();
+    const config = await getConfig();
     try {
         const contents = await readFile(config.pidFilePath, "utf8");
         const pid = parseInt(contents.toString(), 10);
@@ -162,7 +162,7 @@ async function writePid() {
 
 
 async function runServer() {
-    const config = getConfig();
+    const config = await getConfig();
     let sittingTime = 0;
 
     const manager = new DeskManager({
@@ -231,7 +231,7 @@ async function runServer() {
 }
 
 async function ensureServer(onMessage) {
-    const config = getConfig();
+    const config = await getConfig();
 
     try {
         await unlink(config.socketPath);
@@ -279,7 +279,7 @@ async function ensureServer(onMessage) {
 
     return server;
 }
-
+// config must be set!
 function describePosition(desk) {
     return desk.position >= getConfig().standThreshold ? "standing" : "sitting";
 }
