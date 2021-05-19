@@ -134,8 +134,9 @@ module.exports.stopDeskServer = async function stopDeskServer() {
 // send command to child process where server runs (?)
 module.exports.sendCommand = async function sendCommand(cmd, wait) {
     wait = wait || false;
-    const config = getConfig();
+    const config = await getConfig();
     return new Promise((resolve) => {
+        console.log("create client")
         const client = net.createConnection({ path: config.socketPath }, () => {
             client.write(JSON.stringify(cmd) + "\n", () => {
                 if (!wait) {

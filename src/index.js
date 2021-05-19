@@ -20,7 +20,7 @@ app.get('/', async(req, res) => {
         await connectToDesk(address);
         await startDeskServer()
         await sleep(1000)
-        await sendCommand({ op: "moveTo", pos: 14 }, false); // wait promise?
+        console.log(await sendCommand({ op: "moveTo", pos: 14 }, true)); // wait is a bool
 
         setTimeout(()=> {
             stopDeskServer()
