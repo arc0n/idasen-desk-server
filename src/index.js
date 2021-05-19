@@ -1,4 +1,5 @@
 const express = require("express");
+const {getStatus} = require("./startup/deskHandler");
 const {sleep} = require("./control/utils");
 const {sendCommand} = require("./startup/deskHandler");
 const {stopDeskServer} = require("./startup/deskHandler");
@@ -29,12 +30,19 @@ app.post('/disconnect', async(req, res) => {
 });
 
 
-
-
 app.post('/move/:position', async(req, res) => {
-    const hasMoved = await sendCommand({ op: "moveTo", pos: 14 }, true); // wait is a bool
+    // TODO validate input
+    const hasMoved = await sendCommand({ op: "moveTo", pos: req.params.position }, true); // wait is a bool, must be set to true in this api
+    // TODO try if wait false works
     res.send(hasMoved);
 });
+app.get('/status', async(req, res) => {
+    // TODO validate input
+    const status = await getStatus();
+    // TODO try if wait false works
+    res.send(status);
+});
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
