@@ -3,7 +3,7 @@ export class Utils {
         return new Promise((resolve) => setTimeout(resolve, ms));
     };
 
-    static  log(...message: string[]) {
+    static log(...message: string[]) {
         console.log(`[${new Date().toISOString()}]`, ...message);
     };
 }

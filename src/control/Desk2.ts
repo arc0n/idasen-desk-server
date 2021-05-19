@@ -109,7 +109,7 @@ export class Desk extends EventEmitter {
         );
 
         const positionChar = characteristics.find(
-            (char: { uuid: string; }) => char.uuid == Desk.services().position.characteristicId
+            (char: { uuid: string; }) => char.uuid === Desk.services().position.characteristicId
         );
         if (!positionChar) {
             throw new Error("Missing position service");
@@ -118,8 +118,8 @@ export class Desk extends EventEmitter {
         const data = await positionChar.readAsync();
         this.updatePosition(data);
 
-        positionChar.on("data", async (data: DeskData) => {
-            this.updatePosition(data);
+        positionChar.on("data", async (d: DeskData) => {
+            this.updatePosition(d);
         });
         await positionChar.notifyAsync(true);
 

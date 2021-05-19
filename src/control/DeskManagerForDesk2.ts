@@ -6,8 +6,8 @@ import * as noble from "@abandonware/noble"
 import schedule from "node-schedule";
 import EventEmitter from "events";
 import {Desk} from "./Desk2";
+import {Utils} from "./utils";
 
-const { log } = require("./utils");
 
 
 
@@ -45,7 +45,7 @@ export class DeskManager extends EventEmitter {
 
     log(...args: string[]) {
         if (this.config.verbose) {
-            log(...args);
+            Utils.log(...args);
         }
     }
 
@@ -73,7 +73,7 @@ export class DeskManager extends EventEmitter {
 
         noble.on("scanStop", async () => {
             this.log("scanStop");
-            if (!this.desk && noble.state == "poweredOn") {
+            if (!this.desk && noble.state === "poweredOn") {
                 this.scan();
             }
         });
@@ -94,7 +94,7 @@ export class DeskManager extends EventEmitter {
 
     scheduleScan() {
         schedule.scheduleJob(Date.now() + 5000, () => {
-            if (noble.state == "poweredOn") {
+            if (noble.state === "poweredOn") {
                 this.scan();
             }
         });
