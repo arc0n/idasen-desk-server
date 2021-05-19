@@ -5,8 +5,8 @@ import * as noble from "@abandonware/noble"
 //import noble from "@abandonware/noble";
 import schedule from "node-schedule";
 import EventEmitter from "events";
+import {Desk} from "./Desk2";
 
-const { Desk } = require("../archiv/Desk");
 const { log } = require("./utils");
 
 

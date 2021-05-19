@@ -4,7 +4,6 @@ import {Utils} from "./utils";
 
 import schedule from "node-schedule";
 import EventEmitter from "events";
-// const { sleep } = require("./utils");
 
 export interface DeskData
 { readInt16LE: () => number; readUInt16LE: (arg0: number) => any; }
@@ -200,7 +199,7 @@ export class Desk extends EventEmitter {
 
                 if (
                     lastPosition === this.position ||
-                    (lastSpeed != 0 && this.speed === 0)
+                    (lastSpeed !== 0 && this.speed === 0)
                 ) {
                     shouldStopCounter += 1;
                 } else {
