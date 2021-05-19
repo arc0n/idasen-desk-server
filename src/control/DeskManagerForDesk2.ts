@@ -1,8 +1,7 @@
 // source https://github.com/mitsuhiko/idasen-control/blob/master/src/desk.js
 
 import {Peripheral} from "@abandonware/noble";
-import * as noble from "@abandonware/noble"
-//import noble from "@abandonware/noble";
+import * as noble from "@abandonware/noble";
 import schedule from "node-schedule";
 import EventEmitter from "events";
 import {Desk} from "./Desk2";
