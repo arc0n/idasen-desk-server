@@ -25,7 +25,7 @@ app.post('/connect', async(req, res) => {
     res.send("Error: No address found");
 });
 app.post('/disconnect', async(req, res) => {
-    await stopDeskServer().catch((err) => res.send(err));
+    stopDeskServer().catch((err) => res.send(err));
     res.send(true);
 });
 

@@ -1,8 +1,4 @@
-/*
-import * as net from "net";
-import {log, sleep} from "../control/utils";
-import {getConfig} from "../control/config";
-*/
+
 const { log, sleep } = require("../control/utils");
 const { getConfig } = require("../control/config");
 const net = require("net");
@@ -42,7 +38,7 @@ module.exports.scanForDesk = async function scanForDesk() {
 
     let scanUntil = +new Date() + 50000;
     let found = 0;
-    // check every second if date is already done, TODO maybe use rxjs
+    // check every second if time wait is already done, TODO maybe use rxjs
     setInterval(() => {
         if (scanUntil < +new Date()) {
             promiseResovleFn();
@@ -63,7 +59,7 @@ module.exports.scanForDesk = async function scanForDesk() {
             );
             firstFoundDeskAddress = peripheral.address
             found++
-            scanUntil = +new Date() + 2000;
+            scanUntil = +new Date() + 2000; // add more time if something has been found
         }
     });
     manager.start();
@@ -80,23 +76,23 @@ module.exports.scanForDesk = async function scanForDesk() {
     } else {
         console.log(
             "No desks found. Make sure to bring the desk to pairing mode before scanning."
-        );
+        ); // TODO return value for web req
         return null
     }
 }
 
-// connect to desk with the given address
+// write connection address of desk to config
 module.exports.connectToDesk = async function connectToDesk(address) {
     const config = await getConfig()
     config.deskAddress = address;
     await saveConfig()
 }
-// spawns a service for the desk
+
+// spawns a child pricess with socket for controlling the desk
 module.exports.startDeskServer = async function startDeskServer() {
     const config = await getConfig()
     if (!await serverIsRunning()) {
-       /* if (process.env.IDASEN_NO_DAEMON === "1") { // what does this do? i think its a leftover
-            console.log("run server")
+       /* if (process.env.IDASEN_NO_DAEMON === "1") { // what does this do? i think its a leftover for running a server directly
             runServer();
         } else {*/
             console.log("run process")
@@ -110,18 +106,18 @@ module.exports.startDeskServer = async function startDeskServer() {
         /*}*/
         await sleep(100);
 
-        if(/*process.env.IDASEN_START_SERVER === "1"*/true) {
             console.log("run server")
-            runServer();
-        }
+            await runServer();
+            return true
+
     } else {
         console.log("already running")
+        return false
     }
 }
 
-
+// kill desk server
 module.exports.stopDeskServer = async function stopDeskServer() {
-    const config = await getConfig()
     const pid = await readPid();
     if (pid !== null) {
         console.log("Stopping server");
@@ -131,7 +127,7 @@ module.exports.stopDeskServer = async function stopDeskServer() {
     }
 }
 
-// send command to child process where server runs (?)
+// send command to child process where desk socket runs
 module.exports.sendCommand = async function sendCommand(cmd, wait) {
     wait = wait || false;
     const config = await getConfig();
@@ -183,7 +179,7 @@ async function readPid() {
             }
         } catch (e) {
             if (e.code === "EPERM") {
-                console.log("eperm");
+                console.log("error when killing process:", e);
                 return pid;
             }
         }
