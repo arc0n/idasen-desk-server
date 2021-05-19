@@ -96,20 +96,25 @@ module.exports.connectToDesk = async function connectToDesk(address) {
 module.exports.startDeskServer = async function startDeskServer() {
     const config = await ConfigHelper.getConfig()
     if (!await serverIsRunning()) {
-        if (process.env.IDASEN_NO_DAEMON === "1") {
+       /* if (process.env.IDASEN_NO_DAEMON === "1") { // what does this do? i think its a leftover
             console.log("run server")
             runServer();
-        } else {
+        } else {*/
             console.log("run process")
-            const env = {...process.env, IDASEN_START_SERVER: "1"}; // what does this do?
+            const env = {...process.env, IDASEN_START_SERVER: "1"};
             const [_first, ...argv] = process.argv;
             spawn(process.execPath, argv, {
                 env,
                 detached: true,
                 stdio: "ignore",
             });
-        }
+        /*}*/
         await sleep(100);
+
+        if(process.env.IDASEN_START_SERVER === "1") {
+            console.log("run server")
+            runServer();
+        }
     } else {
         console.log("already running")
     }
@@ -176,6 +181,7 @@ async function runServer() {
 
         // TODO what does this do?? only saving the sittingand standing time right?
         manager.getDesk().then((desk) => {
+            console.log("sth happend", desk.position)
             // someone did something
             const idleTime = getIdleTime();
             if (idleTime < CHECK_INTERVAL && desk.position < config.standThreshold) {
