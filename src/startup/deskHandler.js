@@ -61,6 +61,7 @@ module.exports.scanForDesk = async function scanForDesk() {
                 `  Found "${peripheral.advertisement.localName}" [address: ${peripheral.address}]`
             );
             firstFoundDeskAddress = peripheral.address
+            found++
             scanUntil = +new Date() + 2000;
         }
     });
