@@ -21,13 +21,14 @@ app.post("/connect/:address", async (req, res) => {
   if (!!req.params.address) {
     try {
       console.log(`Attempt to connect to address  ${req.params.address}`);
-      await deskHandler.connectToDesk(req.params.address + "");
+      await deskHandler.setDeskAddressInConfig(req.params.address + "");
       await deskHandler.startDeskServer();
       res.send(true);
     } catch (e) {
       res.send("Error: Connection not possible: ", e);
     }
   }
+  res.send(404, "please pass a valid physical desk address");
 });
 app.post("/disconnect", async (req, res) => {
   deskHandler.stopDeskServer().catch((err) => res.send(err));

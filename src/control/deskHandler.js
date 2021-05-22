@@ -90,14 +90,15 @@ class DeskHandler {
    * @param address
    * @returns {Promise<void>}
    */
-  async connectToDesk(address) {
+  async setDeskAddressInConfig(address) {
     const config = await getConfig();
     config.deskAddress = address;
     await saveConfig();
   }
 
   /**
-   * spawn a child process to connect and hold a connection the the desk
+   * spawn a child process to connect and hold a connection the the desk, first use
+   * @see this.setDeskAddressInConfig
    * @returns {Promise<boolean>}
    */
   async startDeskServer() {
@@ -149,7 +150,7 @@ class DeskHandler {
    */
   async sendCommand(cmd, wait) {
     wait = wait || false;
-    const config = await this.getConfig();
+    const config = await getConfig();
     return new Promise((resolve) => {
       console.log("create client");
       const client = net.createConnection({ path: config.socketPath }, () => {
