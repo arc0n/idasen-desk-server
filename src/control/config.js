@@ -29,7 +29,7 @@ module.exports.loadConfig = async function loadConfig() {
   const path = getConfigPath();
   let config = getDefaultConfig();
   try {
-    config = { ...config, ...JSON.parse(await readFile(path)) };
+    config = { ...config, ...JSON.parse(await readFile(path).toString()) };
   } catch (e) {
     // ignore load errors
   }

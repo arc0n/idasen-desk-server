@@ -1,4 +1,5 @@
 const express = require("express");
+const { getConfig } = require("./control/config");
 /*
 const { sleep } = require("./control/utils");
 */
@@ -13,6 +14,17 @@ app.get("/search", async (req, res) => {
     res.send(err);
   });
   res.send(deskList);
+});
+
+app.get("/config", async (req, res) => {
+  // TODO catch if connected
+  const config = await getConfig()
+    .then(() => {
+      res.send(config);
+    })
+    .catch((e) => {
+      res.status(500).send(`Error occurred when getting config: ${e}`);
+    });
 });
 
 app.post("/connect/:address", async (req, res) => {
@@ -36,6 +48,8 @@ app.post("/disconnect", async (req, res) => {
 });
 
 app.post("/move/:position", async (req, res) => {
+  // TODO catch if connected
+
   // TODO validate input
   const hasMoved = await deskHandler.sendCommand(
     { op: "moveTo", pos: req.params.position },
@@ -46,6 +60,8 @@ app.post("/move/:position", async (req, res) => {
 });
 
 app.get("/status", async (req, res) => {
+  // TODO catch if connected
+
   // TODO validate input
   const status = await deskHandler.getStatus();
   res.send(status);
