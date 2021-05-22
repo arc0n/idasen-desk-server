@@ -309,7 +309,7 @@ class DeskHandler {
   }
 
   async _ensureServer(onMessage) {
-    const config = await this.getConfig();
+    const config = await getConfig();
 
     try {
       await unlink(config.socketPath);
