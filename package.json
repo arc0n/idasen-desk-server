@@ -1,7 +1,7 @@
 {
   "name": "idasen-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "REST APi for the Idasen Desk, based on https://github.com/mitsuhiko/idasen-control\n",
   "main": "src/index.js",
   "dependencies": {
     "@abandonware/noble": "^1.9.2-8",
