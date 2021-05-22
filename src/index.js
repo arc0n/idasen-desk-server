@@ -18,8 +18,8 @@ app.get("/search", async (req, res) => {
 
 app.get("/config", async (req, res) => {
   // TODO catch if connected
-  const config = await getConfig().then(
-    () => {
+  await getConfig().then(
+    (config) => {
       res.send(config);
     },
     (e) => {
