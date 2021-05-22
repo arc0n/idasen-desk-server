@@ -18,13 +18,14 @@ app.get("/search", async (req, res) => {
 
 app.get("/config", async (req, res) => {
   // TODO catch if connected
-  const config = await getConfig()
-    .then(() => {
+  const config = await getConfig().then(
+    () => {
       res.send(config);
-    })
-    .catch((e) => {
+    },
+    (e) => {
       res.status(500).send(`Error occurred when getting config: ${e}`);
-    });
+    }
+  );
 });
 
 app.post("/connect/:address", async (req, res) => {
