@@ -52,16 +52,12 @@ app.post("/move/:position", async (req, res) => {
   // TODO catch if connected
 
   // TODO validate input
-  const hasMoved = await deskHandler
-    .sendCommand({ op: "moveTo", pos: req.params.position }, true)
-    .then(
-      () => {
-        res.send(hasMoved);
-      },
-      (e) => {
-        res.status(500).send(`Error, not connected: ${e}`);
-      }
-    ); // wait is a bool, must be set to true in this api
+  const hasMoved = await deskHandler.sendCommand(
+    { op: "moveTo", pos: req.params.position },
+    true
+  );
+  // wait is a bool, must be set to true in this api
+  res.send(hasMoved);
   // TODO try if wait false works
 });
 
