@@ -67,7 +67,7 @@ class DeskBridge extends EventEmitter {
       this.emit("stop");
       this.emit("end");
       setTimeout(() => {
-        process.exit(0);
+        process.disconnect();
       }, 1000);
     });
   }

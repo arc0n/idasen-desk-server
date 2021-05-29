@@ -353,6 +353,7 @@ class DeskHandler {
           }
         });
         stream.on("end", () => {
+          console.log("stream on end");
           connected = false;
         });
       })
