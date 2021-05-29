@@ -296,10 +296,6 @@ class DeskHandler {
       deskBridge.start();
     });
 
-    process.on("stop", () => {
-      console.log("process on stop");
-    });
-
     process.on("exit", () => {
       console.log("process on exit");
       try {
@@ -328,6 +324,9 @@ class DeskHandler {
       .createServer((stream) => {
         let buffer = "";
         let connected = true;
+        stream.on("stop", () => {
+          console.log("process on stop");
+        });
         stream.on("data", async (data) => {
           buffer += data;
           while (true) {

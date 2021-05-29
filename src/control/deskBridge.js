@@ -65,6 +65,7 @@ class DeskBridge extends EventEmitter {
       }*/ // TODO ASYNC? AND RETURN FALSE
       // KILL
       this.emit("stop");
+      this.emit("end");
     });
   }
 
