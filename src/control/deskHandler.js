@@ -296,7 +296,12 @@ class DeskHandler {
       deskBridge.start();
     });
 
+    process.on("stop", () => {
+      console.log("process on stop");
+    });
+
     process.on("exit", () => {
+      console.log("process on exit");
       try {
         fs.unlinkSync(config.pidFilePath);
       } catch (e) {
