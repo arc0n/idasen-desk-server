@@ -73,7 +73,7 @@ class DeskBridge extends EventEmitter {
 
     this.log("Starting scan");
     try {
-      await noble.startScanningAsync([], true); // TODO maybe to false?
+      await noble.startScanningAsync([], false); // TODO maybe to false?
     } catch (err) {
       this.scheduleScan();
     }
