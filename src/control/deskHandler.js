@@ -17,6 +17,8 @@ const writeFile = promisify(fs.writeFile);
 const { getIdleTime } = require("desktop-idle");
 const CHECK_INTERVAL = 5.0; // for start server
 
+let server;
+
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
@@ -143,6 +145,8 @@ class DeskHandler {
         // ignore
         console.log("err socket path unlinking", e);
       }
+
+      this.sendCommand("stoooop", false);
       return false;
     }
   }
@@ -156,7 +160,7 @@ class DeskHandler {
     const pid = await this._readPid();
     if (pid !== null) {
       console.log("Stopping server");
-      process.kill(pid, 0);
+      process.kill(pid);
     } else {
       console.log("Server not running");
     }
@@ -225,6 +229,7 @@ class DeskHandler {
       }
       try {
         if (process.kill(pid, 0)) {
+          // TODO warum killt er hier?
           return pid;
         }
       } catch (e) {
@@ -284,7 +289,7 @@ class DeskHandler {
       });
     }, CHECK_INTERVAL * 1000);
 
-    this._ensureServer(async (message) => {
+    server = this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
       if (message.op === "moveTo") {
         const desk = await deskBridge.getDesk();
@@ -314,7 +319,7 @@ class DeskHandler {
     });
 
     process.on("exit", () => {
-      console.log("process on exit");
+      console.log("process on exit called");
       try {
         fs.unlinkSync(config.pidFilePath);
       } catch (e) {
