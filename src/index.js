@@ -8,24 +8,29 @@ const { DeskHandler } = require("./control/deskHandler");
 const app = express();
 const port = 3000;
 const deskHandler = new DeskHandler();
-
 app.get("/search", async (req, res) => {
   const deskList = await deskHandler.scanForDesk().catch((err) => {
-    res.send(err);
+    res.status(500).send(err);
   });
   res.send(deskList);
 });
 
 app.get("/config", async (req, res) => {
   // TODO catch if connected
-  await getConfig().then(
-    (config) => {
-      res.send(config);
-    },
-    (e) => {
-      res.status(500).send(`Error occurred when getting config: ${e}`);
-    }
-  );
+  if (await deskHandler.serverIsRunning()) {
+    await getConfig()
+      .then(
+        (config) => {
+          res.send(config);
+        },
+        (e) => {
+          res.status(500).send(`Error occurred when getting config: ${e}`);
+        }
+      )
+      .catch(res.status(500).send(`Error occurred when getting config: ${e}`));
+  } else {
+    res.send(false);
+  }
 });
 
 app.post("/connect/:address", async (req, res) => {
@@ -34,8 +39,10 @@ app.post("/connect/:address", async (req, res) => {
   if (!!req.params.address) {
     try {
       console.log(`Attempt to connect to address  ${req.params.address}`);
-      await deskHandler.setDeskAddressInConfig(req.params.address + "");
-      await deskHandler.startDeskServer();
+      await deskHandler
+        .setDeskAddressInConfig(req.params.address + "")
+        .catch((e) => console.log("err1"));
+      await deskHandler.startDeskServer().catch((e) => console.log("err2"));
       res.send(true);
     } catch (e) {
       res.status(500).send("Error: Connection not possible: ", e);
@@ -49,24 +56,35 @@ app.post("/disconnect", async (req, res) => {
 });
 
 app.post("/move/:position", async (req, res) => {
-  // TODO catch if connected
-
   // TODO validate input
-  const hasMoved = await deskHandler.sendCommand(
-    { op: "moveTo", pos: req.params.position },
-    true
-  );
-  // wait is a bool, must be set to true in this api
-  res.send(hasMoved);
-  // TODO try if wait false works
+  try {
+    if (await deskHandler.serverIsRunning()) {
+      const hasMoved = await deskHandler.sendCommand(
+        { op: "moveTo", pos: req.params.position },
+        true
+      );
+      // wait is a bool, must be set to true in this api
+      res.send(hasMoved);
+      // TODO try if wait false works
+    } else {
+      res.send(false);
+    }
+  } catch (e) {
+    res.status(500).send("Error: Connection not possible: ", e);
+  }
 });
 
 app.get("/status", async (req, res) => {
-  // TODO catch if connected
-
-  // TODO validate input
-  const status = await deskHandler.getStatus();
-  res.send(status);
+  try {
+    if (await deskHandler.serverIsRunning()) {
+      const status = await deskHandler.getStatus();
+      res.send(status);
+    } else {
+      res.send(false);
+    }
+  } catch (e) {
+    res.status(500).send("Error: Connection not possible: ", e);
+  }
 });
 
 app.listen(port, () => {
