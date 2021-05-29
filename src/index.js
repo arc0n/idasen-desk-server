@@ -25,9 +25,11 @@ app.get("/config", async (req, res) => {
         },
         (e) => {
           res.status(500).send(`Error occurred when getting config: ${e}`);
+          return;
         }
       )
       .catch(res.status(500).send(`Error occurred when getting config: ${e}`));
+    return;
   } else {
     res.send(false);
   }
@@ -44,8 +46,10 @@ app.post("/connect/:address", async (req, res) => {
         .catch((e) => console.log("err1"));
       await deskHandler.startDeskServer().catch((e) => console.log("err2"));
       res.send(true);
+      return;
     } catch (e) {
       res.status(500).send("Error: Connection not possible: ", e);
+      return;
     }
   }
   res.status(404).send("please pass a valid physical desk address");
