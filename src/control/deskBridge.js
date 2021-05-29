@@ -71,6 +71,12 @@ class DeskBridge extends EventEmitter {
       return;
     }
 
+    const scanUntil = new Promise((res, rej) => {
+      setTimeout(() => res(), 10000);
+    }).then(() => {
+      noble.stopScanning();
+    });
+
     this.log("Starting scan");
     try {
       await noble.startScanningAsync([], true); // TODO maybe to false?
@@ -80,6 +86,7 @@ class DeskBridge extends EventEmitter {
   }
 
   scheduleScan() {
+    // TODO stop scan
     schedule.scheduleJob(Date.now() + 5000, () => {
       if (noble.state === "poweredOn") {
         this.scan();
@@ -126,7 +133,7 @@ class DeskBridge extends EventEmitter {
 
       this.didUpdateDevice();
     } else {
-      // this.log("Discovered another desk at", peripheral.address);
+      this.log("Discovered Desk at", peripheral.address);
     }
   }
 
