@@ -127,6 +127,7 @@ class DeskHandler {
       return true;
     } else {
       console.log("already running");
+      this.stopDeskServer();
       return false;
     }
   }
@@ -140,7 +141,7 @@ class DeskHandler {
     const pid = await this._readPid();
     if (pid !== null) {
       console.log("Stopping server");
-      process.kill(pid);
+      process.kill(pid, 0);
     } else {
       console.log("Server not running");
     }
