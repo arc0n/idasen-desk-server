@@ -128,6 +128,19 @@ class DeskHandler {
     } else {
       console.log("already running");
       this.stopDeskServer();
+
+      try {
+        fs.unlinkSync(config.pidFilePath);
+      } catch (e) {
+        // ignore
+        console.log("err when unlinking");
+      }
+      try {
+        fs.unlinkSync(config.socketPath);
+      } catch (e) {
+        // ignore
+        console.log("err socket path unlinking");
+      }
       return false;
     }
   }
