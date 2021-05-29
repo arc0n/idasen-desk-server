@@ -64,7 +64,7 @@ class DeskHandler {
           deskAddress: peripheral.address,
           deskName: peripheral.advertisement.localName,
         });
-        scanUntil = +new Date() + 2000; // add more time if something has been found
+        //  scanUntil = +new Date() + 2000; // add more time if something has been found
       }
     });
     bridge.start();
