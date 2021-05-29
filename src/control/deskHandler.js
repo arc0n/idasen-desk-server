@@ -114,15 +114,13 @@ class DeskHandler {
              } else {*/
       console.log("run process");
       const env = { ...process.env, IDASEN_START_SERVER: "1" };
-      const [_first, ...argv] = process.argv;
+      const [_first, ...argv] = process.argv; // TODO what does this. env setten?
       server = spawn(process.execPath, argv, {
         env,
         detached: true,
         stdio: "ignore",
       });
-      server.on("exit", () => {
-        console.log("spawned exit called");
-      });
+
       await sleep(100);
 
       console.log("run server");
@@ -136,7 +134,6 @@ class DeskHandler {
       console.log("already running");
 
       await this.stopDeskServer();
-      server.kill();
       try {
         fs.unlinkSync(config.pidFilePath);
       } catch (e) {
