@@ -274,7 +274,7 @@ class DeskHandler {
 
     this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
-      if (message.op === "moveTo") {
+      if (message.op === "disconnect") {
         deskBridge.disconnect();
       }
       if (message.op === "moveTo") {
