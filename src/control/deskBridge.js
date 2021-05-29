@@ -60,9 +60,11 @@ class DeskBridge extends EventEmitter {
 
     noble.on("scanStop", async () => {
       this.log("scanStop");
-/*      if (!this.desk && noble.state === "poweredOn") {
+      /*      if (!this.desk && noble.state === "poweredOn") {
         this.scan();
-      }*/
+      }*/ // TODO ASYNC? AND RETURN FALSE
+      // KILL
+      process.exit(0);
     });
   }
 

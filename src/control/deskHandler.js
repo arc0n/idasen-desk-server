@@ -110,7 +110,7 @@ class DeskHandler {
 
                  runServer();
              } else {*/
-      /*      console.log("run process");
+      console.log("run process");
       const env = { ...process.env, IDASEN_START_SERVER: "1" };
       const [_first, ...argv] = process.argv;
       spawn(process.execPath, argv, {
@@ -118,8 +118,7 @@ class DeskHandler {
         detached: true,
         stdio: "ignore",
       });
-      /!*}*!/
-      await sleep(100);*/
+      await sleep(100);
 
       console.log("run server");
       await this._runServer().catch((e) => {
