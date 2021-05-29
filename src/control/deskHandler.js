@@ -131,9 +131,8 @@ class DeskHandler {
       const config = await getConfig();
 
       console.log("already running");
-      this.sendCommand("stoooop", false);
 
-      this.stopDeskServer();
+      await this.stopDeskServer();
 
       try {
         fs.unlinkSync(config.pidFilePath);
