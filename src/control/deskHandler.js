@@ -122,7 +122,7 @@ class DeskHandler {
       await sleep(100);
 
       console.log("run server");
-      await this._runServer();
+      await this._runServer().catch((e) => throw e);
       return true;
     } else {
       console.log("already running");
