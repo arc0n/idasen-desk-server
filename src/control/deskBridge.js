@@ -66,9 +66,7 @@ class DeskBridge extends EventEmitter {
       // KILL
       this.emit("stop");
       this.emit("end");
-      setTimeout(() => {
-        process.disconnect();
-      }, 1000);
+      // TODO kill process withouth kill whole server
     });
   }
 
