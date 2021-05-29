@@ -133,13 +133,13 @@ class DeskHandler {
         fs.unlinkSync(config.pidFilePath);
       } catch (e) {
         // ignore
-        console.log("err when unlinking");
+        console.log("err when unlinking", e);
       }
       try {
         fs.unlinkSync(config.socketPath);
       } catch (e) {
         // ignore
-        console.log("err socket path unlinking");
+        console.log("err socket path unlinking", e);
       }
       return false;
     }
