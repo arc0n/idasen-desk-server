@@ -115,10 +115,13 @@ class DeskHandler {
       console.log("run process");
       const env = { ...process.env, IDASEN_START_SERVER: "1" };
       const [_first, ...argv] = process.argv;
-      spawn(process.execPath, argv, {
+      server = spawn(process.execPath, argv, {
         env,
         detached: true,
         stdio: "ignore",
+      });
+      server.on("exit", () => {
+        console.log("spawned exit called");
       });
       await sleep(100);
 
@@ -133,7 +136,7 @@ class DeskHandler {
       console.log("already running");
 
       await this.stopDeskServer();
-
+      server.kill();
       try {
         fs.unlinkSync(config.pidFilePath);
       } catch (e) {
@@ -288,7 +291,7 @@ class DeskHandler {
       });
     }, CHECK_INTERVAL * 1000);
 
-    server = this._ensureServer(async (message) => {
+    this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
       if (message.op === "moveTo") {
         const desk = await deskBridge.getDesk();
