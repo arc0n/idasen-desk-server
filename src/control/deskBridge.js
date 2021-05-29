@@ -81,12 +81,12 @@ class DeskBridge extends EventEmitter {
     try {
       await noble.startScanningAsync([], true); // TODO maybe to false?
     } catch (err) {
-      this.scheduleScan();
+      console.log(err);
+      // this.scheduleScan();
     }
   }
 
   scheduleScan() {
-    // TODO stop scan
     schedule.scheduleJob(Date.now() + 5000, () => {
       if (noble.state === "poweredOn") {
         this.scan();
