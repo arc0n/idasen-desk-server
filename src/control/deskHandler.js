@@ -269,6 +269,7 @@ class DeskHandler {
     }, CHECK_INTERVAL * 1000);
 
     this._ensureServer(async (message) => {
+      console.log("debug message deshandler line 272", message);
       if (message.op === "moveTo") {
         const desk = await deskBridge.getDesk();
         await desk.moveTo(message.pos);
