@@ -168,6 +168,7 @@ class DeskHandler {
       }
       client.on("end", () => {
         // nothing
+        console.log("end called");
       });
     });
   }
