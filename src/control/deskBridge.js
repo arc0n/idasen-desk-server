@@ -126,7 +126,7 @@ class DeskBridge extends EventEmitter {
 
       this.didUpdateDevice();
     } else {
-      this.log("Discovered another desk at", peripheral.address);
+      // this.log("Discovered another desk at", peripheral.address);
     }
   }
 
