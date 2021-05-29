@@ -28,6 +28,15 @@ class DeskBridge extends EventEmitter {
     return this.desk;
   }
 
+  disconnect() {
+    if (this.desk) {
+      this.desk.disconnect();
+    }
+    this.desk = null;
+    this._createReadyPromise();
+    this.didUpdateDevice();
+  }
+
   start() {
     this.startNoble();
   }
@@ -60,18 +69,12 @@ class DeskBridge extends EventEmitter {
 
     noble.on("scanStop", async () => {
       this.log("scanStop");
-      if (this.desk) {
-        this.desk.disconnect();
-      }
-      this.desk = null;
-      this._createReadyPromise();
-      this.didUpdateDevice();
+
       /*      if (!this.desk && noble.state === "poweredOn") {
         this.scan();
       }*/ // TODO ASYNC? AND RETURN FALSE
       // KILL
-      this.emit("stop");
-      this.emit("end");
+
       // TODO kill process withouth kill whole server
     });
   }

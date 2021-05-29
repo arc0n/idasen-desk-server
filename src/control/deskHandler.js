@@ -17,8 +17,6 @@ const writeFile = promisify(fs.writeFile);
 const { getIdleTime } = require("desktop-idle");
 const CHECK_INTERVAL = 5.0; // for start server
 
-let server;
-
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
@@ -115,7 +113,7 @@ class DeskHandler {
       console.log("run process");
       const env = { ...process.env, IDASEN_START_SERVER: "1" };
       const [_first, ...argv] = process.argv; // TODO what does this. env setten?
-      server = spawn(process.execPath, argv, {
+      spawn(process.execPath, argv, {
         env,
         detached: true,
         stdio: "ignore",
@@ -129,23 +127,8 @@ class DeskHandler {
       });
       return true;
     } else {
-      const config = await getConfig();
-
       console.log("already running");
 
-      await this.stopDeskServer();
-      try {
-        fs.unlinkSync(config.pidFilePath);
-      } catch (e) {
-        // ignore
-        console.log("err when unlinking", e);
-      }
-      try {
-        fs.unlinkSync(config.socketPath);
-      } catch (e) {
-        // ignore
-        console.log("err socket path unlinking", e);
-      }
       return false;
     }
   }
@@ -156,6 +139,7 @@ class DeskHandler {
    * @returns {Promise<void>}
    */
   async stopDeskServer() {
+    await this.sendCommand({ op: "disconnect" }, true);
     const pid = await this._readPid();
     if (pid !== null) {
       console.log("Stopping server");
@@ -290,6 +274,9 @@ class DeskHandler {
 
     this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
+      if (message.op === "moveTo") {
+        deskBridge.disconnect();
+      }
       if (message.op === "moveTo") {
         const desk = await deskBridge.getDesk();
         await desk.moveTo(message.pos);
