@@ -126,6 +126,8 @@ class DeskHandler {
       });
       return true;
     } else {
+      const config = await getConfig();
+
       console.log("already running");
       this.stopDeskServer();
 
