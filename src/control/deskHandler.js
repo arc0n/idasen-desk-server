@@ -131,6 +131,8 @@ class DeskHandler {
       const config = await getConfig();
 
       console.log("already running");
+      this.sendCommand("stoooop", false);
+
       this.stopDeskServer();
 
       try {
@@ -145,8 +147,6 @@ class DeskHandler {
         // ignore
         console.log("err socket path unlinking", e);
       }
-
-      this.sendCommand("stoooop", false);
       return false;
     }
   }
