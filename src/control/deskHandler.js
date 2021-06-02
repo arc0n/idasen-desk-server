@@ -129,6 +129,7 @@ class DeskHandler {
 
     setInterval(()=>{
       deskBridge.getDesk().then((desk)=>{
+        if(desk == null) return;
         console.log("desk height", desk?.position)
       })
     }, 3000)
