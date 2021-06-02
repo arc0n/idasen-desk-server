@@ -129,8 +129,8 @@ class DeskHandler {
    // } else {
    //   console.log("already running");
 
-      return false;
-    }
+     // return false;
+   // }
   }
 
   /**
