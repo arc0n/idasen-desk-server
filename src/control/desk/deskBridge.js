@@ -25,7 +25,7 @@ class DeskBridge extends EventEmitter {
   }
 
   async getDesk() {
-    await new Promise.race([this._deskReadyPromise, sleep(1000)]);
+    await this._deskReadyPromise
     return this.desk;
   }
 
