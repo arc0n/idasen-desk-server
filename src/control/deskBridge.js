@@ -35,14 +35,12 @@ class DeskBridge extends EventEmitter {
     }
     this.desk = null;
     this.didUpdateDevice();
-    noble.reset();
+    //noble.reset();
 
   }
 
   start() {
-    console.log(noble.state)
     console.log("started prop", this.started)
-
  this.startNoble();
   }
 
@@ -61,6 +59,7 @@ class DeskBridge extends EventEmitter {
     noble.on("stateChange", async (state) => {
       this.log("stateChange", state);
       if (state === "poweredOn") {
+        console.log("state is poweredOn")
         await this.scan();
       } else {
         console.log("new state", state)
