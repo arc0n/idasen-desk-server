@@ -233,9 +233,10 @@ class DeskServer {
       verbose: true,
     });
 
-    setInterval(() => {
+    setInterval(async () => {
       // TODO what does this do?? only saving the sitting and standing time right?
-      Promise.race([deskBridge.getDesk(), sleep(200)]).then((desk) => {
+     const desk =  await Promise.race([deskBridge.getDesk(), sleep(200)]);
+      if((desk) => {
         if(desk) {
           console.log("new position in interval", desk.position);
           // someone did something
