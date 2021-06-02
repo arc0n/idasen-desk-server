@@ -6,8 +6,11 @@ $ sudo ufw allow 3000
 # install nodeJs https://tutorials-raspberrypi.de/raspberry-pi-nodejs-webserver-installieren-gpios-steuern/
 $ sudo apt-get update
 $ sudo apt-get full-upgrade
-$ sudo apt-get install -y nodejs
-$ node --version
+$ sudo su
+# Do not use node from the ubuntu appstore, use nvm to install correct version, install everything for root and standard user
+# https://www.freecodecamp.org/news/how-to-install-node-js-on-ubuntu-and-update-npm-to-the-latest-version/
+
+
 
 # the package libxss-dev is needed for one of the dependencies: https://www.npmjs.com/package/desktop-idle
 $ sudo apt install libxss-dev pkg-config
@@ -21,7 +24,7 @@ $ sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
 $ cd idasen-backend
 
 # Run node installer, within the project folder (or yarn install, if u have it installed)
-$ npm i 
+$ sudo npm i 
 
 # Run server, within the project folder
 $ sudo node src/index.js
@@ -30,9 +33,19 @@ $ sudo node src/index.js
 ## Known Errors:
 
 # Solution for Error 1
-$ libxss-dev, siehe oben
+# npm ERR! code 1
+# npm ERR! path /home/ubuntu/idasen-backend/node_modules/desktop-idle
+$ libxss-dev, see above for package libxss-dev
 # $ ~/idasen-backend$ apt-get install xscrnsaver # haven't worked
 # Or upgrade your node version!
+
+# Solution for Error 2 "/usr/bin/env: ‘node’: Permission denied"
+# in sudo su
+$ rm package-lock.json
+$ npm i -g yarn
+$ yarn install
+
+
 
 #Error 1:
 ubuntu@ubuntu:~/idasen-backend$ npm i
@@ -105,5 +118,29 @@ npm ERR! gyp ERR! not ok
 
 npm ERR! A complete log of this run can be found in:
 npm ERR!     /home/ubuntu/.npm/_logs/2021-05-29T10_47_13_737Z-debug.log
+
+
+# Error 2
+# Attempt: use yarn: $ npm i -g yarn
+/usr/bin/env: ‘node’: Permission denied
+sh: 1: node-gyp: Permission denied
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@~2.3.1 (node_modules/chokidar/node_modules/fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@2.3.2: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"arm"})
+
+npm ERR! code ELIFECYCLE
+npm ERR! syscall spawn
+npm ERR! file sh
+npm ERR! errno ENOENT
+npm ERR! usb@1.7.1 install: prebuild-install --runtime napi --target 4 --verbose || node-gyp rebuild
+npm ERR! spawn ENOENT
+npm ERR!
+npm ERR! Failed at the usb@1.7.1 install script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /root/.npm/_logs/2021-06-02T18_42_08_098Z-debug.log
+
+
+
 
 
