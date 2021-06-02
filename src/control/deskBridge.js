@@ -1,6 +1,7 @@
 const noble = require("@abandonware/noble");
 const schedule = require("node-schedule");
 const EventEmitter = require("events");
+const {state} = require("@abandonware/noble");
 
 const { Desk } = require("./desk");
 const { log } = require("./utils");
@@ -35,11 +36,13 @@ class DeskBridge extends EventEmitter {
     this.desk = null;
     this.didUpdateDevice();
     noble.reset();
-    noble.removeAllListeners();
   }
 
   start() {
-    this.startNoble();
+    console.log(state);
+    console.log(noble.state)
+    console.log("started prop", this.started)
+        this.startNoble();
   }
 
   log(...args) {
