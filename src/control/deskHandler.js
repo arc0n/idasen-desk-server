@@ -261,25 +261,26 @@ class DeskHandler {
       verbose: true,
     });
 
-    setInterval(() => {
-      // TODO what does this do?? only saving the sitting and standing time right?
-      deskBridge.getDesk().then((desk) => {
-        console.log("new position in interval", desk.position);
-        // someone did something
-        const idleTime = getIdleTime();
-        if (
-          idleTime < CHECK_INTERVAL &&
-          desk.position < config.standThreshold
-        ) {
-          sittingTime += CHECK_INTERVAL;
-        } else if (
-          desk.position >= config.standThreshold ||
-          idleTime >= config.sittingBreakTime
-        ) {
-          sittingTime = 0;
-        }
-      });
-    }, CHECK_INTERVAL * 1000);
+          setInterval(() => {
+          // TODO what does this do?? only saving the sitting and standing time right?
+        deskBridge.getDesk().then((desk) => {
+          if(deskBridge.started)
+            console.log("new position in interval", desk?.position);
+            // someone did something
+            const idleTime = getIdleTime();
+            if (
+              idleTime < CHECK_INTERVAL &&
+              desk.position < config.standThreshold
+            ) {
+              sittingTime += CHECK_INTERVAL;
+            } else if (
+              desk.position >= config.standThreshold ||
+              idleTime >= config.sittingBreakTime
+            ) {
+              sittingTime = 0;
+            }
+          });
+        }, CHECK_INTERVAL * 1000);
 
     this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
