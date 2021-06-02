@@ -41,7 +41,6 @@ class DeskBridge extends EventEmitter {
 
   start() {
     console.log(noble.state)
-    console.log(noble.state = 'somethingelse')
     console.log("started prop", this.started)
 
  this.startNoble();
@@ -130,6 +129,7 @@ class DeskBridge extends EventEmitter {
     if (peripheral.address === this.config.deskAddress) {
       this.log("Found configured desk", peripheral.address);
       this.desk = new Desk(peripheral, this.config.deskPositionMax);
+
       peripheral.on("disconnect", () => {
         if(this.desk === null) { // desk is already null, has been disconnected on purpose
           this.log("desk already disconnected");
