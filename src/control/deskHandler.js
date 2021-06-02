@@ -243,7 +243,9 @@ class DeskHandler {
     let sittingTime = 0;
 
     if(!!deskBridge) {
-      deskBridge.start();
+// send command scan
+      await this.sendCommand({ op: "reconnect" }, true);
+
       return;
     }
 
@@ -275,6 +277,9 @@ class DeskHandler {
 
     this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
+     if(message.op=== "reconnect") {
+        deskBridge.scan();
+     }
       if (message.op === "disconnect") {
         deskBridge.disconnect();
       }
