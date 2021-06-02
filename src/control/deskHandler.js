@@ -245,7 +245,6 @@ class DeskHandler {
     if(!!deskBridge) {
 // send command scan
       await this.sendCommand({ op: "reconnect" }, true);
-
       return;
     }
 
@@ -279,9 +278,11 @@ class DeskHandler {
       console.log("debug message deshandler line 272", message);
      if(message.op=== "reconnect") {
         deskBridge.scan();
+        return true;
      }
       if (message.op === "disconnect") {
         deskBridge.disconnect();
+        return true;
       }
       if (message.op === "moveTo") {
         const desk = await deskBridge.getDesk();

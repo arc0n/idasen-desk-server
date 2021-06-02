@@ -132,7 +132,9 @@ class DeskBridge extends EventEmitter {
       this.desk = new Desk(peripheral, this.config.deskPositionMax);
       peripheral.on("disconnect", () => {
         if(this.desk == null) {
-          log("desk disconnected")
+          log("desk disconnected");
+          this._createReadyPromise();
+          return;
         }
         this.log("desk disconnected, going back to scanning");
         this.desk = null;
