@@ -69,6 +69,7 @@ class DeskBridge extends EventEmitter {
 
     noble.on("scanStop", async () => {
       this.log("scanStop");
+      console.log("pid inside noble", process.pid)
 
       /*      if (!this.desk && noble.state === "poweredOn") {
         this.scan();
