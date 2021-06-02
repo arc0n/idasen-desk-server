@@ -35,6 +35,7 @@ class DeskBridge extends EventEmitter {
     this.desk = null;
     this.didUpdateDevice();
     noble.reset();
+    noble.removeAllListeners();
   }
 
   start() {
