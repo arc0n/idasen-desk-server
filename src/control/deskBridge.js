@@ -56,6 +56,7 @@ class DeskBridge extends EventEmitter {
 
   startNoble() {
     this.started = true;
+
     this.log("starting BLE");
     noble.on("discover", async (peripheral) => {
       await this.processPeripheral(peripheral);

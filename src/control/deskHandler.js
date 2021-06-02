@@ -102,30 +102,21 @@ class DeskHandler {
    * @returns {Promise<boolean>}
    */
   async startDeskServer() {
-    // const config = await getConfig(); TODO needed?
-    //if (!(await this.serverIsRunning())) {
-      /*      TODO what does this do? i think its a leftover for running a server directly
 
-       if (process.env.IDASEN_NO_DAEMON === "1") {
-
-                 runServer();
-             } else {*/
-/*    const env = { ...process.env, IDASEN_START_SERVER: "1" };
-    const [_first, ...argv] = process.argv; // TODO i think tis only sets the env
-    spawn(process.execPath, argv, {
-      env,
-      detached: true,
-      stdio: "ignore",
-    });*/
     console.log("run noble");
     const config = await getConfig();
 
-    deskBridge = new DeskBridge({
-      deskAddress: config.deskAddress,
-      deskPositionMax: config.deskPositionMax || 58,
-      verbose: true,
-    });
-    deskBridge.start();
+    if(!deskBridge) {
+      deskBridge = new DeskBridge({
+        deskAddress: config.deskAddress,
+        deskPositionMax: config.deskPositionMax || 58,
+        verbose: true,
+
+      });
+      deskBridge.start();
+
+    } else await deskBridge.scan();
+
 
     setInterval(()=>{
       deskBridge.getDesk().then((desk)=>{
@@ -134,20 +125,8 @@ class DeskHandler {
       })
     }, 3000)
 
-
-
-/*      await sleep(100);
-
-      console.log("run server");
-      await this._runServer().catch((e) => {
-        throw Error(e);
-      });*/
       return true;
-   // } else {
-   //   console.log("already running");
 
-     // return false;
-   // }
   }
 
   /**
