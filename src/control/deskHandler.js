@@ -207,6 +207,8 @@ class DeskHandler {
     try {
       const contents = await readFile(config.pidFilePath, "utf8");
       const pid = parseInt(contents.toString(), 10);
+      console.log("pid:", pid)
+
       if (Number.isNaN(pid)) {
         return null;
       }
