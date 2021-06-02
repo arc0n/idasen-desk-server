@@ -16,7 +16,7 @@ const writeFile = promisify(fs.writeFile);
 
 const { getIdleTime } = require("desktop-idle");
 const CHECK_INTERVAL = 5.0; // for start server
-let serverRef;
+let deskServer;
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
@@ -140,9 +140,10 @@ class DeskHandler {
    */
   async stopDeskServer() {
     await this.sendCommand({ op: "disconnect" }, true);
-    console.log("serv listening", serverRef.listening)
-    serverRef.unref();
-    console.log("serv listening", serverRef.listening)
+    console.log("serv listening", deskServer.listening)
+    deskServer.close();
+
+    console.log("serv listening", deskServer.listening)
 
    /* const pid = await this._readPid();
     if (pid !== null) { // TODO gets the wrong pid
@@ -280,11 +281,11 @@ class DeskHandler {
       });
     }, CHECK_INTERVAL * 1000);
 
-    serverRef = await this._ensureServer(async (message) => {
+    this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
       if (message.op === "disconnect") {
         deskBridge.disconnect();
-        (await serverRef).unref();b
+       
       }
       if (message.op === "moveTo") {
         const desk = await deskBridge.getDesk();
@@ -337,7 +338,7 @@ class DeskHandler {
       // doesn't matter
     }
 
-    const deskServer = await net
+    deskServer = await net
       .createServer((stream) => {
         let buffer = "";
         let connected = true;
@@ -369,7 +370,9 @@ class DeskHandler {
             }
           }
         });
-        stream.on("end", () => {
+stream.on("close", ()=>{stream.end()} );;;;;;;;;;;
+
+       stream.on("end", () => {
           console.log("stream on end");
           connected = false;
         });
