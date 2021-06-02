@@ -200,11 +200,11 @@ class DeskHandler {
    */
   async getStatus() {
     // TODO ensure server running
-    const status = await Promise.race([
-      this.sendCommand({ op: "getStatus" }, true),
-      sleep(100),
-    ]);
-    return status || { ready: false };
+    const desk = await Promise.race([deskBridge.getDesk(), sleep(50)]);
+    if (!desk) {
+      return { ready: false };
+    }
+    return desk;
   }
 
   /**
