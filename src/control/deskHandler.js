@@ -103,14 +103,14 @@ class DeskHandler {
    */
   async startDeskServer() {
     // const config = await getConfig(); TODO needed?
-    if (!(await this.serverIsRunning())) {
+    //if (!(await this.serverIsRunning())) {
       /*      TODO what does this do? i think its a leftover for running a server directly
 
        if (process.env.IDASEN_NO_DAEMON === "1") {
 
                  runServer();
              } else {*/
-      console.log("run process");
+  /*    console.log("run process");
       const env = { ...process.env, IDASEN_START_SERVER: "1" };
       const [_first, ...argv] = process.argv; // TODO what does this. env setten?
       spawn(process.execPath, argv, {
@@ -121,16 +121,12 @@ class DeskHandler {
 
       await sleep(100);
 
-      console.log("run server");
+      console.log("run server");*/
       await this._runServer().catch((e) => {
         throw Error(e);
       });
       return true;
-    } else {
-      console.log("already running");
 
-      return false;
-    }
   }
 
   /**
