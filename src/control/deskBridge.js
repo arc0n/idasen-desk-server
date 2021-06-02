@@ -53,12 +53,14 @@ class DeskBridge extends EventEmitter {
   startNoble() {
     this.log("starting BLE");
     if(noble.state === 'poweredOn') {
+      console.log("starting scan")
       let f =async () => {
         await this.scan();
         this.desk = null;
         this._createReadyPromise();
         this.didUpdateDevice();
       }
+      f();
 
     }
     noble.on("discover", async (peripheral) => {
