@@ -33,8 +33,8 @@ class DeskBridge extends EventEmitter {
       this.desk.disconnect();
     }
     this.desk = null;
-    this._createReadyPromise();
-    this.didUpdateDevice();
+    // this.didUpdateDevice();
+    noble.reset();
   }
 
   start() {
@@ -132,9 +132,14 @@ class DeskBridge extends EventEmitter {
       this.desk = new Desk(peripheral, this.config.deskPositionMax);
       peripheral.on("disconnect", () => {
         this.log("desk disconnected, going back to scanning");
+        if(this.desk === null) { // desk is already null, has been disconnected on purpose
+          console.log("desk was already null");
+          return
+        }
         this.desk = null;
         this._createReadyPromise();
         this.scan();
+
       });
 
       try {

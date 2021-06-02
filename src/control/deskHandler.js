@@ -342,8 +342,6 @@ class DeskHandler {
       .createServer((stream) => {
         let buffer = "";
         let connected = true;
-
-
         stream.on("data", async (data) => {
           buffer += data;
           while (true) {
