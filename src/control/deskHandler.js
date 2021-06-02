@@ -194,6 +194,8 @@ class DeskHandler {
    * @returns {Promise<boolean>}
    */
   async serverIsRunning() {
+    console.log("pid outside the serverRef", process.pid)
+
     return (await this._readPid()) !== null;
   }
 
@@ -207,7 +209,7 @@ class DeskHandler {
     try {
       const contents = await readFile(config.pidFilePath, "utf8");
       const pid = parseInt(contents.toString(), 10);
-      console.log("pid:", pid)
+      console.log("pid:", pid) // TODO will not work, as this is not oid that wee look like
 
       if (Number.isNaN(pid)) {
         return null;
@@ -277,6 +279,7 @@ class DeskHandler {
     const serverRef = this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
       if (message.op === "disconnect") {
+        console.log("pid inside the serverRef", process.pid)
         deskBridge.disconnect();
         (await serverRef).unref();
       }
