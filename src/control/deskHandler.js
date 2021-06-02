@@ -118,6 +118,8 @@ class DeskHandler {
       stdio: "ignore",
     });*/
     console.log("run noble");
+    const config = await getConfig();
+
     deskBridge = new DeskBridge({
       deskAddress: config.deskAddress,
       deskPositionMax: config.deskPositionMax || 58,
@@ -380,7 +382,6 @@ class DeskHandler {
             }
           }
         });
-stream.on("close", ()=>{stream.end()} );;;;;;;;;;;
 
        stream.on("end", () => {
           console.log("stream on end");
@@ -391,7 +392,7 @@ stream.on("close", ()=>{stream.end()} );;;;;;;;;;;
       .listen(config.socketPath);
 
     await this._writePid();
-    return deskServer;
+   // return deskServer;
   }
 
   // config must be set! only used on get status on ensureServer
