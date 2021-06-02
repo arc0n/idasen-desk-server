@@ -16,7 +16,7 @@ const writeFile = promisify(fs.writeFile);
 
 const { getIdleTime } = require("desktop-idle");
 const CHECK_INTERVAL = 5.0; // for start server
-let deskServer;
+let deskBridge;
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
@@ -110,21 +110,35 @@ class DeskHandler {
 
                  runServer();
              } else {*/
-      console.log("run process");
-      const env = { ...process.env, IDASEN_START_SERVER: "1" };
-      const [_first, ...argv] = process.argv; // TODO i think tis only sets the env
-      spawn(process.execPath, argv, {
-        env,
-        detached: true,
-        stdio: "ignore",
-      });
+/*    const env = { ...process.env, IDASEN_START_SERVER: "1" };
+    const [_first, ...argv] = process.argv; // TODO i think tis only sets the env
+    spawn(process.execPath, argv, {
+      env,
+      detached: true,
+      stdio: "ignore",
+    });*/
+    console.log("run noble");
+    deskBridge = new DeskBridge({
+      deskAddress: config.deskAddress,
+      deskPositionMax: config.deskPositionMax || 58,
+      verbose: true,
+    });
+    deskBridge.start();
 
-      await sleep(100);
+    setInterval(()=>{
+      deskBridge.getDesk().then((desk)=>{
+        console.log("desk height", desk?.height)
+      })
+    }, 3000)
+
+
+
+/*      await sleep(100);
 
       console.log("run server");
       await this._runServer().catch((e) => {
         throw Error(e);
-      });
+      });*/
       return true;
    // } else {
    //   console.log("already running");
@@ -139,11 +153,8 @@ class DeskHandler {
    * @returns {Promise<void>}
    */
   async stopDeskServer() {
-    await this.sendCommand({ op: "disconnect" }, true);
-    console.log("serv listening", deskServer.listening)
-    deskServer.close();
-
-    console.log("serv listening", deskServer.listening)
+    deskBridge.disconnect();
+   // await this.sendCommand({ op: "disconnect" }, true);
 
    /* const pid = await this._readPid();
     if (pid !== null) { // TODO gets the wrong pid
@@ -339,7 +350,7 @@ class DeskHandler {
       // doesn't matter
     }
 
-    deskServer = await net
+    await net
       .createServer((stream) => {
         let buffer = "";
         let connected = true;
