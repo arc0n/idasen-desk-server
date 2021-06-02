@@ -41,7 +41,11 @@ class DeskBridge extends EventEmitter {
 
   start() {
     console.log("started prop", this.started)
-    this.startNoble();
+    if(this.started) {
+      this.scan()
+    }  else {
+      this.startNoble();
+    }
   }
 
   log(...args) {
@@ -52,17 +56,6 @@ class DeskBridge extends EventEmitter {
 
   startNoble() {
     this.log("starting BLE");
-    if(noble.state === 'poweredOn') {
-      console.log("starting scan")
-      let f =async () => {
-        await this.scan();
-        this.desk = null;
-        this._createReadyPromise();
-        this.didUpdateDevice();
-      }
-      f();
-
-    }
     noble.on("discover", async (peripheral) => {
       await this.processPeripheral(peripheral);
     });
@@ -70,6 +63,7 @@ class DeskBridge extends EventEmitter {
     noble.on("stateChange", async (state) => {
       this.log("stateChange", state);
       if (state === "poweredOn") {
+        this.started = true;
         console.log("state is poweredOn")
         await this.scan();
       } else {
@@ -143,7 +137,7 @@ class DeskBridge extends EventEmitter {
 
       peripheral.on("disconnect", () => {
         if(this.desk === null) { // desk is already null, has been disconnected on purpose
-          this.log("desk already disconnected");
+          this.log("desk disconnected, will not continue scanning");
           return
         }
         this.log("desk disconnected, going back to scanning");
