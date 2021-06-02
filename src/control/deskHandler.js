@@ -16,7 +16,7 @@ const writeFile = promisify(fs.writeFile);
 
 const { getIdleTime } = require("desktop-idle");
 const CHECK_INTERVAL = 5.0; // for start server
-
+let deskBridge;
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
@@ -246,7 +246,12 @@ class DeskHandler {
     const config = await getConfig();
     let sittingTime = 0;
 
-    const deskBridge = new DeskBridge({
+    if(!!deskBridge) {
+      deskBridge.start();
+      return;
+    }
+
+    deskBridge = new DeskBridge({
       deskAddress: config.deskAddress,
       deskPositionMax: config.deskPositionMax || 58,
       verbose: true,
