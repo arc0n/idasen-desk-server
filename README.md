@@ -1,21 +1,23 @@
 # notizen für installation idasen backend
 port 3000 freigeben
 $ sudo apt-get install ufw
-sudo ufw allow 3000
+$ sudo ufw allow 3000
 
-# https://www.npmjs.com/package/desktop-idle
-
-apt install libxss-dev pkg-config
-
-
-
+# Folgende library braucht das package libxss-dev: https://www.npmjs.com/package/desktop-idle
+$ apt install libxss-dev pkg-config
 
 # https://wiki.ubuntuusers.de/Bluetooth/Einrichtung/
-# install packages ,see Prerequisites https://yarnpkg.com/package/@abandonware/noble#readme
+# Folgende Packages werden für die BT Connectin gebraucht https://yarnpkg.com/package/@abandonware/noble#readme
 sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
 
-npm install bcrypt ?
+/* npm install bcrypt ? */
 
+## Known Errors:
+
+# Mögliche Lösung für unten stehende Fehlermeldung:
+$ Installiere libxss-dev, siehe oben
+# $ ~/idasen-backend$ apt-get install xscrnsaver # glaube hat nicht funktioniert
+# Or upgrage your node version!
 
 ubuntu@ubuntu:~/idasen-backend$ npm i
 npm notice
@@ -87,9 +89,5 @@ npm ERR! gyp ERR! not ok
 
 npm ERR! A complete log of this run can be found in:
 npm ERR!     /home/ubuntu/.npm/_logs/2021-05-29T10_47_13_737Z-debug.log
-ubuntu@ubuntu:~/idasen-backend$ apt-get install xscrnsaver
 
-
-
-Upgrage your node version!
 
