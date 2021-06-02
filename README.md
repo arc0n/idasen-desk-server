@@ -1,7 +1,13 @@
 # notizen für installation idasen backend
-port 3000 freigeben
+#port 3000 freigeben
 $ sudo apt-get install ufw
 $ sudo ufw allow 3000
+
+# NodeJs installieren https://tutorials-raspberrypi.de/raspberry-pi-nodejs-webserver-installieren-gpios-steuern/
+$ sudo apt-get update
+$ sudo apt-get full-upgrade
+$ sudo apt-get install -y nodejs
+$ node --version
 
 # Folgende library braucht das package libxss-dev: https://www.npmjs.com/package/desktop-idle
 $ apt install libxss-dev pkg-config
@@ -11,6 +17,16 @@ $ apt install libxss-dev pkg-config
 sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
 
 /* npm install bcrypt ? */
+
+# got to the project folder
+$ cd idasen-backend
+
+# Run node installer, within the project folder (or yarn install, if u have it installed)
+$ npm i 
+
+# Run server, within the project folder
+$ sudo node src/index.js
+
 
 ## Known Errors:
 
