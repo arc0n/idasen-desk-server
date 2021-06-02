@@ -235,23 +235,26 @@ class DeskServer {
 
     setInterval(async () => {
       // TODO what does this do?? only saving the sitting and standing time right?
-     const desk =  await Promise.race([deskBridge.getDesk(), sleep(200)]);
-        if(desk) {
-          console.log("new position in interval", desk.position);
-          // someone did something
-          const idleTime = getIdleTime();
-          if (
-              idleTime < CHECK_INTERVAL &&
-              desk.position < config.standThreshold
-          ) {
-            sittingTime += CHECK_INTERVAL;
-          } else if (
-              desk.position >= config.standThreshold ||
-              idleTime >= config.sittingBreakTime
-          ) {
-            sittingTime = 0;
-          }
+ /*    const desk =  await Promise.race([deskBridge.getDesk(), sleep(200)]);
+        if(desk) {*/
+      deskBridge.getDesk().then(()=>{
+        console.log("new position in interval", desk.position);
+        // someone did something
+        const idleTime = getIdleTime();
+        if (
+            idleTime < CHECK_INTERVAL &&
+            desk.position < config.standThreshold
+        ) {
+          sittingTime += CHECK_INTERVAL;
+        } else if (
+            desk.position >= config.standThreshold ||
+            idleTime >= config.sittingBreakTime
+        ) {
+          sittingTime = 0;
         }
+      })
+
+      /*  }*/
     }, CHECK_INTERVAL * 1000);
 
     this._ensureServer(async (message) => {
