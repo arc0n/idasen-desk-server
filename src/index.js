@@ -3,7 +3,7 @@ const { getConfig } = require("./control/config");
 /*
 const { sleep } = require("./control/utils");
 */
-const { DeskHandler } = require("./control/deskHandler");
+const { DeskHandler } = require("./control/deskServer");
 
 const app = express();
 const port = 3000;

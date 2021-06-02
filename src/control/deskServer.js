@@ -20,7 +20,7 @@ let deskBridge;
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
-class DeskHandler {
+class DeskServer {
   /**
    * Scan vor desks, returns all found desks or an empty array
    * @returns {Promise<[]|*[]>}
@@ -152,7 +152,7 @@ class DeskHandler {
     wait = wait || false;
     const config = await getConfig();
     return new Promise((resolve) => {
-      console.log("create client");
+      console.log("Sending command", cmd);
       const client = net.createConnection({ path: config.socketPath }, () => {
         client.write(JSON.stringify(cmd) + "\n", () => {
           if (!wait) {
@@ -244,7 +244,7 @@ class DeskHandler {
 
     if(!!deskBridge) {
 // send command scan
-      await this.sendCommand({ op: "reconnect" }, true);
+      this.sendCommand({ op: "reconnect" }, true);
       return;
     }
 
@@ -385,4 +385,4 @@ class DeskHandler {
   }
 }
 
-module.exports.DeskHandler = DeskHandler;
+module.exports.DeskHandler = DeskServer;

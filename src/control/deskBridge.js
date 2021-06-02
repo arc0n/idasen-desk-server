@@ -12,7 +12,7 @@ class DeskBridge extends EventEmitter {
   constructor(config) {
     super();
     this.config = config;
-    this.started = false;
+    this.deskReady = false;
     this.desk = null;
     this._createReadyPromise();
   }
@@ -33,6 +33,7 @@ class DeskBridge extends EventEmitter {
       this.desk.disconnect();
     }
     this.desk = null;
+    this.deskReady = false;
     this._createReadyPromise();
     this.didUpdateDevice();
   }
@@ -59,6 +60,7 @@ class DeskBridge extends EventEmitter {
         await this.scan();
       } else {
         if (this.desk) {
+          console.log("BT state:", state)
           this.desk.disconnect();
         }
         this.desk = null;
@@ -69,13 +71,6 @@ class DeskBridge extends EventEmitter {
 
     noble.on("scanStop", async () => {
       this.log("scanStop");
-
-      /*      if (!this.desk && noble.state === "poweredOn") {
-        this.scan();
-      }*/ // TODO ASYNC? AND RETURN FALSE
-      // KILL
-
-      // TODO kill process withouth kill whole server
     });
   }
 
@@ -157,10 +152,11 @@ class DeskBridge extends EventEmitter {
   didUpdateDevice() {
     if (this.desk) {
       this.desk.on("position", async () => {
-        if (!this.started) {
-          this.started = true;
+        if (!this.deskReady) { // TODO deskReady could be replaced with the promise
+          this.deskReady = true;
           this._deskReadyPromiseResolve();
         }
+
         this.emit("position", this.desk.position);
       });
     }
