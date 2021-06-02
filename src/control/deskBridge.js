@@ -57,6 +57,7 @@ class DeskBridge extends EventEmitter {
   startNoble() {
     this.started = true;
 
+
     this.log("starting BLE");
     noble.on("discover", async (peripheral) => {
       await this.processPeripheral(peripheral);
@@ -88,6 +89,7 @@ class DeskBridge extends EventEmitter {
     if (this.desk) {
       return;
     }
+    if(noble.state !== "poweredOn") return;
 
     const scanUntil = new Promise((res, rej) => {
       setTimeout(() => res(), 10000);
