@@ -10,7 +10,7 @@ $ sudo apt-get install -y nodejs
 $ node --version
 
 # the package libxss-dev is needed for one of the dependencies: https://www.npmjs.com/package/desktop-idle
-$ apt install libxss-dev pkg-config
+$ sudo apt install libxss-dev pkg-config
 
 # https://wiki.ubuntuusers.de/Bluetooth/Einrichtung/
 # Some further packages for bluetooth connection https://yarnpkg.com/package/@abandonware/noble#readme
