@@ -41,7 +41,7 @@ class DeskBridge extends EventEmitter {
 
   start() {
     console.log("started prop", this.started)
- this.startNoble();
+    this.startNoble();
   }
 
   log(...args) {
@@ -52,6 +52,15 @@ class DeskBridge extends EventEmitter {
 
   startNoble() {
     this.log("starting BLE");
+    if(noble.state === 'poweredOn') {
+      let f =async () => {
+        await this.scan();
+        this.desk = null;
+        this._createReadyPromise();
+        this.didUpdateDevice();
+      }
+
+    }
     noble.on("discover", async (peripheral) => {
       await this.processPeripheral(peripheral);
     });
@@ -75,6 +84,7 @@ class DeskBridge extends EventEmitter {
     noble.on("scanStop", async () => {
       this.log("scanStop");
       });
+
   }
 
   async scan() {
