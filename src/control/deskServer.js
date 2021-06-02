@@ -237,7 +237,9 @@ class DeskServer {
       // TODO what does this do?? only saving the sitting and standing time right?
  /*    const desk =  await Promise.race([deskBridge.getDesk(), sleep(200)]);
         if(desk) {*/
-      deskBridge.getDesk().then((desk)=>{
+      Promise.race([ deskBridge.getDesk(), sleep(500)])
+     .then((desk)=>{
+       if(!desk) return;
         console.log("new position in interval", desk?.position);
         // someone did something
         const idleTime = getIdleTime();
