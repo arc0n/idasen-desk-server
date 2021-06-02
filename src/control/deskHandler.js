@@ -136,13 +136,13 @@ class DeskHandler {
    */
   async stopDeskServer() {
     await this.sendCommand({ op: "disconnect" }, true);
-    const pid = await this._readPid();
+   /* const pid = await this._readPid();
     if (pid !== null) {
       console.log("Stopping server");
       process.kill(pid, 0);
     } else {
       console.log("Server not running");
-    }
+    }*/
   }
 
   /**
