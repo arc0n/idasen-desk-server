@@ -1,24 +1,24 @@
-# notizen für installation idasen backend
-#port 3000 freigeben
+# Notes for running the web server
+# open port 3000
 $ sudo apt-get install ufw
 $ sudo ufw allow 3000
 
-# NodeJs installieren https://tutorials-raspberrypi.de/raspberry-pi-nodejs-webserver-installieren-gpios-steuern/
+# install nodeJs https://tutorials-raspberrypi.de/raspberry-pi-nodejs-webserver-installieren-gpios-steuern/
 $ sudo apt-get update
 $ sudo apt-get full-upgrade
 $ sudo apt-get install -y nodejs
 $ node --version
 
-# Folgende library braucht das package libxss-dev: https://www.npmjs.com/package/desktop-idle
+# the package libxss-dev is needed for one of the dependencies: https://www.npmjs.com/package/desktop-idle
 $ apt install libxss-dev pkg-config
 
 # https://wiki.ubuntuusers.de/Bluetooth/Einrichtung/
-# Folgende Packages werden für die BT Connectin gebraucht https://yarnpkg.com/package/@abandonware/noble#readme
+# Some further packages for bluetooth connection https://yarnpkg.com/package/@abandonware/noble#readme
 sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
 
 /* npm install bcrypt ? */
 
-# got to the project folder
+# Then got to the project folder
 $ cd idasen-backend
 
 # Run node installer, within the project folder (or yarn install, if u have it installed)
@@ -30,11 +30,12 @@ $ sudo node src/index.js
 
 ## Known Errors:
 
-# Mögliche Lösung für unten stehende Fehlermeldung:
-$ Installiere libxss-dev, siehe oben
-# $ ~/idasen-backend$ apt-get install xscrnsaver # glaube hat nicht funktioniert
-# Or upgrage your node version!
+# Solution for Error 1
+$ libxss-dev, siehe oben
+# $ ~/idasen-backend$ apt-get install xscrnsaver # haven't worked
+# Or upgrade your node version!
 
+#Error 1:
 ubuntu@ubuntu:~/idasen-backend$ npm i
 npm notice
 npm notice New minor version of npm available! 7.13.0 -> 7.15.0
