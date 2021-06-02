@@ -79,16 +79,8 @@ app.post("/move/:position", async (req, res) => {
 });
 
 app.get("/status", async (req, res) => {
-  try {
-    if (await deskHandler.serverIsRunning()) {
       const status = await deskHandler.getStatus();
       res.send(status);
-    } else {
-      res.send(false);
-    }
-  } catch (e) {
-    res.status(500).send("Error: Connection not possible: ", e);
-  }
 });
 
 app.listen(port, () => {
