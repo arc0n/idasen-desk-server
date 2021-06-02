@@ -55,7 +55,7 @@ app.post("/connect/:address", async (req, res) => {
   res.status(404).send("please pass a valid physical desk address");
 });
 app.post("/disconnect", async (req, res) => {
-  deskHandler.stopDeskServer().catch((err) => res.send(err));
+  deskHandler.stopDeskConnection().catch((err) => res.send(err));
   res.send(true);
 });
 

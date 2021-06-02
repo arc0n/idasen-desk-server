@@ -1,9 +1,10 @@
 const noble = require("@abandonware/noble");
 const schedule = require("node-schedule");
 const EventEmitter = require("events");
+const {sleep} = require("../utils");
 
 const { Desk } = require("./desk");
-const { log } = require("./utils");
+const { log } = require("../utils");
 
 /**
  * Source: https://github.com/mitsuhiko/idasen-control
@@ -24,7 +25,7 @@ class DeskBridge extends EventEmitter {
   }
 
   async getDesk() {
-    await this._deskReadyPromise;
+    await new Promise.race([this._deskReadyPromise, sleep(1000)]);
     return this.desk;
   }
 

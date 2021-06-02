@@ -5,7 +5,7 @@ const net = require("net");
 const process = require("process");
 const { spawn } = require("child_process");
 
-const { DeskBridge } = require("./deskBridge");
+const { DeskBridge } = require("./desk/deskBridge");
 const { promisify } = require("util");
 const fs = require("fs");
 const { saveConfig } = require("./config");
@@ -102,26 +102,7 @@ class DeskServer {
    * @returns {Promise<boolean>}
    */
   async startDeskServer() {
-    // const config = await getConfig(); TODO needed?
-    //if (!(await this.serverIsRunning())) {
-      /*      TODO what does this do? i think its a leftover for running a server directly
 
-       if (process.env.IDASEN_NO_DAEMON === "1") {
-
-                 runServer();
-             } else {*/
-  /*    console.log("run process");
-      const env = { ...process.env, IDASEN_START_SERVER: "1" };
-      const [_first, ...argv] = process.argv; // TODO what does this. env setten?
-      spawn(process.execPath, argv, {
-        env,
-        detached: true,
-        stdio: "ignore",
-      });
-
-      await sleep(100);
-
-      console.log("run server");*/
       await this._runServer().catch((e) => {
         throw Error(e);
       });
@@ -130,11 +111,10 @@ class DeskServer {
   }
 
   /**
-   * kill the connection
-   * TODO does kill the whole application
+   * kills only the connection the the deks
    * @returns {Promise<void>}
    */
-  async stopDeskServer() {
+  async stopDeskConnection() {
     await this.sendCommand({ op: "disconnect" }, true);
    /* const pid = await this._readPid();
     if (pid !== null) {
@@ -243,7 +223,6 @@ class DeskServer {
     let sittingTime = 0;
 
     if(!!deskBridge) {
-// send command scan
       this.sendCommand({ op: "reconnect" }, true);
       return;
     }
@@ -256,26 +235,27 @@ class DeskServer {
 
     setInterval(() => {
       // TODO what does this do?? only saving the sitting and standing time right?
-      deskBridge.getDesk().then((desk) => {
-        console.log("new position in interval", desk.position);
-        // someone did something
-        const idleTime = getIdleTime();
-        if (
-          idleTime < CHECK_INTERVAL &&
-          desk.position < config.standThreshold
-        ) {
-          sittingTime += CHECK_INTERVAL;
-        } else if (
-          desk.position >= config.standThreshold ||
-          idleTime >= config.sittingBreakTime
-        ) {
-          sittingTime = 0;
+      Promise.race(deskBridge.getDesk(), sleep(200)).then((desk) => {
+        if(desk) {
+          console.log("new position in interval", desk.position);
+          // someone did something
+          const idleTime = getIdleTime();
+          if (
+              idleTime < CHECK_INTERVAL &&
+              desk.position < config.standThreshold
+          ) {
+            sittingTime += CHECK_INTERVAL;
+          } else if (
+              desk.position >= config.standThreshold ||
+              idleTime >= config.sittingBreakTime
+          ) {
+            sittingTime = 0;
+          }
         }
       });
     }, CHECK_INTERVAL * 1000);
 
     this._ensureServer(async (message) => {
-      console.log("debug message deshandler line 272", message);
      if(message.op=== "reconnect") {
         deskBridge.scan();
         return true;
