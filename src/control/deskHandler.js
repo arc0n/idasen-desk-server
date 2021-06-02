@@ -16,7 +16,7 @@ const writeFile = promisify(fs.writeFile);
 
 const { getIdleTime } = require("desktop-idle");
 const CHECK_INTERVAL = 5.0; // for start server
-
+let serverRef;
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
@@ -103,7 +103,7 @@ class DeskHandler {
    */
   async startDeskServer() {
     // const config = await getConfig(); TODO needed?
-    if (!(await this.serverIsRunning())) {
+    //if (!(await this.serverIsRunning())) {
       /*      TODO what does this do? i think its a leftover for running a server directly
 
        if (process.env.IDASEN_NO_DAEMON === "1") {
@@ -126,8 +126,8 @@ class DeskHandler {
         throw Error(e);
       });
       return true;
-    } else {
-      console.log("already running");
+   // } else {
+   //   console.log("already running");
 
       return false;
     }
@@ -140,6 +140,10 @@ class DeskHandler {
    */
   async stopDeskServer() {
     await this.sendCommand({ op: "disconnect" }, true);
+    console.log("serv listening", serverRef.listening)
+    serverRef.unref();
+    console.log("serv listening", serverRef.listening)
+
    /* const pid = await this._readPid();
     if (pid !== null) { // TODO gets the wrong pid
       console.log("Stopping server");
@@ -276,7 +280,7 @@ class DeskHandler {
       });
     }, CHECK_INTERVAL * 1000);
 
-    const serverRef = await this._ensureServer(async (message) => {
+    serverRef = await this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
       if (message.op === "disconnect") {
         deskBridge.disconnect();
