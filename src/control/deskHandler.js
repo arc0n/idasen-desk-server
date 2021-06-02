@@ -112,7 +112,7 @@ class DeskHandler {
              } else {*/
       console.log("run process");
       const env = { ...process.env, IDASEN_START_SERVER: "1" };
-      const [_first, ...argv] = process.argv; // TODO what does this. env setten?
+      const [_first, ...argv] = process.argv; // TODO i think tis only sets the env
       spawn(process.execPath, argv, {
         env,
         detached: true,
@@ -143,7 +143,7 @@ class DeskHandler {
     const pid = await this._readPid();
     if (pid !== null) {
       console.log("Stopping server");
-      process.kill(pid, 0);
+      process.kill(pid, 'SIGINT');
     } else {
       console.log("Server not running");
     }
