@@ -14,9 +14,8 @@ $ apt install libxss-dev pkg-config
 
 # https://wiki.ubuntuusers.de/Bluetooth/Einrichtung/
 # Some further packages for bluetooth connection https://yarnpkg.com/package/@abandonware/noble#readme
-sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
-
-/* npm install bcrypt ? */
+$ sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
+# /* npm install bcrypt ? */
 
 # Then got to the project folder
 $ cd idasen-backend
