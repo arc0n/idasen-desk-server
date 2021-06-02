@@ -140,13 +140,13 @@ class DeskHandler {
    */
   async stopDeskServer() {
     await this.sendCommand({ op: "disconnect" }, true);
-    const pid = await this._readPid();
-    if (pid !== null) {
+   /* const pid = await this._readPid();
+    if (pid !== null) { // TODO gets the wrong pid
       console.log("Stopping server");
       process.kill(pid, 'SIGINT');
     } else {
       console.log("Server not running");
-    }
+    }*/
   }
 
   /**
@@ -214,7 +214,7 @@ class DeskHandler {
       }
       try {
         if (process.kill(pid, 0)) {
-          // TODO warum killt er hier?
+          // TODO does command 0 say stay running?
           return pid;
         }
       } catch (e) {
@@ -274,10 +274,11 @@ class DeskHandler {
       });
     }, CHECK_INTERVAL * 1000);
 
-    this._ensureServer(async (message) => {
+    const serverRef = this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
       if (message.op === "disconnect") {
         deskBridge.disconnect();
+        (await serverRef).unref();
       }
       if (message.op === "moveTo") {
         const desk = await deskBridge.getDesk();
@@ -335,6 +336,7 @@ class DeskHandler {
         let buffer = "";
         let connected = true;
 
+
         stream.on("data", async (data) => {
           buffer += data;
           while (true) {
@@ -365,8 +367,13 @@ class DeskHandler {
           console.log("stream on end");
           connected = false;
         });
+
+
+
+
       })
       .listen(config.socketPath);
+
 
     await this._writePid();
 
