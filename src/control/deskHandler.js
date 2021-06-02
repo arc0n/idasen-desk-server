@@ -276,12 +276,11 @@ class DeskHandler {
       });
     }, CHECK_INTERVAL * 1000);
 
-    const serverRef = this._ensureServer(async (message) => {
+    const serverRef = await this._ensureServer(async (message) => {
       console.log("debug message deshandler line 272", message);
       if (message.op === "disconnect") {
-        console.log("pid inside the serverRef", process.pid)
         deskBridge.disconnect();
-        (await serverRef).unref();
+        (await serverRef).unref();b
       }
       if (message.op === "moveTo") {
         const desk = await deskBridge.getDesk();
@@ -334,7 +333,7 @@ class DeskHandler {
       // doesn't matter
     }
 
-    const deskServer = net
+    const deskServer = await net
       .createServer((stream) => {
         let buffer = "";
         let connected = true;
@@ -371,15 +370,10 @@ class DeskHandler {
           connected = false;
         });
 
-
-
-
       })
       .listen(config.socketPath);
 
-
     await this._writePid();
-
     return deskServer;
   }
 
