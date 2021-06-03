@@ -21,7 +21,7 @@ export class IdasenControllerPage {
 
   /** @internal */
   getDeskStatus() {
-    const obs = this.service.connectDesk();
+    const obs = this.service.getStatus();
     obs.subscribe((val) => {
       this.status = val;
     });
