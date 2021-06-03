@@ -103,7 +103,7 @@ class DeskServer {
    */
   async startDeskServer() {
     await this._runServer().catch((e) => {
-      throw Error(e);
+      console.log("error while starting server", e);
     });
     return true;
   }
@@ -113,7 +113,8 @@ class DeskServer {
    * @returns {Promise<void>}
    */
   async stopDeskConnection() {
-    await this.sendCommand({ op: "disconnect" }, true);
+    deskBridge.disconnect();
+    //await this.sendCommand({ op: "disconnect" }, true);
     /* const pid = await this._readPid();
     if (pid !== null) {
       console.log("Stopping server");
@@ -155,15 +156,7 @@ class DeskServer {
    * @returns {Promise<any>}
    */
   async getStatus() {
-    // TODO ensure server running
-    const desk = await deskBridge.getDesk();
-    if (!desk) {
-      return { ready: false };
-    }
-    const status = await Promise.race([
-      this.sendCommand({ op: "getStatus" }, true),
-      sleep(100),
-    ]);
+    const status = await Promise.race([deskBridge.getDesk(), sleep(100)]);
     return status || { ready: false };
   }
 
@@ -224,8 +217,10 @@ class DeskServer {
     const config = await getConfig();
     let sittingTime = 0;
 
-    if (!!deskBridge) {
-      this.sendCommand({ op: "reconnect" }, true);
+    const desk = await this.getStatus();
+    if (!!desk) {
+      // this.sendCommand({ op: "reconnect" }, true);
+      deskBridge.scan();
       return;
     }
 
@@ -260,7 +255,7 @@ class DeskServer {
       /*  }*/
     }, CHECK_INTERVAL * 1000);
 
-    this._ensureServer(async (message) => {
+    /*    this._ensureServer(async (message) => {
       if (message.op === "reconnect") {
         deskBridge.scan();
         return true;
@@ -308,7 +303,7 @@ class DeskServer {
       } catch (e) {
         // ignore
       }
-    });
+    });*/
   }
 
   async _ensureServer(onMessage) {
@@ -370,4 +365,4 @@ class DeskServer {
   }
 }
 
-module.exports.DeskHandler = DeskServer;
+module.exports.DeskServer = DeskServer;

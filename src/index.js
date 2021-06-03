@@ -3,13 +3,13 @@ const { getConfig } = require("./control/config");
 /*
 const { sleep } = require("./control/utils");
 */
-const { DeskHandler } = require("./control/deskServer");
+const { DeskServer } = require("./control/deskServer");
 
 const app = express();
 const port = 3000;
-const deskHandler = new DeskHandler();
+const deskServer = new DeskServer();
 app.get("/desk/search", async (req, res) => {
-  const deskList = await deskHandler.scanForDesk().catch((err) => {
+  const deskList = await deskServer.scanForDesk().catch((err) => {
     res.status(500).send(err);
   });
   res.send(deskList);
@@ -17,7 +17,7 @@ app.get("/desk/search", async (req, res) => {
 
 app.get("/desk/config", async (req, res) => {
   // TODO catch if connected
-  if (await deskHandler.serverIsRunning()) {
+  if (await deskServer.serverIsRunning()) {
     await getConfig()
       .then(
         (config) => {
@@ -39,10 +39,10 @@ app.post("/desk/connect/:address", async (req, res) => {
   if (!!req.params.address) {
     try {
       console.log(`Attempt to connect to address  ${req.params.address}`);
-      await deskHandler
+      await deskServer
         .setDeskAddressInConfig(req.params.address + "")
         .catch((e) => console.log("err1"));
-      await deskHandler.startDeskServer().catch((e) => console.log("err2"));
+      // await deskHandler.startDeskServer().catch((e) => console.log("err2"));
       res.send(true);
       return;
     } catch (e) {
@@ -53,15 +53,15 @@ app.post("/desk/connect/:address", async (req, res) => {
   res.status(404).send("please pass a valid physical desk address");
 });
 app.post("/desk/disconnect", async (req, res) => {
-  deskHandler.stopDeskConnection().catch((err) => res.send(err));
+  deskServer.stopDeskConnection().catch((err) => res.send(err));
   res.send(true);
 });
 
 app.post("/desk/move/:position", async (req, res) => {
   // TODO validate input
   try {
-    if (await deskHandler.serverIsRunning()) {
-      const hasMoved = await deskHandler.sendCommand(
+    if (await deskServer.serverIsRunning()) {
+      const hasMoved = await deskServer.sendCommand(
         { op: "moveTo", pos: req.params.position },
         true
       );
@@ -77,7 +77,7 @@ app.post("/desk/move/:position", async (req, res) => {
 });
 
 app.get("/desk/status", async (req, res) => {
-  const status = await deskHandler.getStatus();
+  const status = await deskServer.getStatus();
   res.send(status);
 });
 
