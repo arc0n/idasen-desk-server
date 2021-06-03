@@ -8,14 +8,14 @@ const { DeskHandler } = require("./control/deskServer");
 const app = express();
 const port = 3000;
 const deskHandler = new DeskHandler();
-app.get("/search", async (req, res) => {
+app.get("desk/search", async (req, res) => {
   const deskList = await deskHandler.scanForDesk().catch((err) => {
     res.status(500).send(err);
   });
   res.send(deskList);
 });
 
-app.get("/config", async (req, res) => {
+app.get("desk/config", async (req, res) => {
   // TODO catch if connected
   if (await deskHandler.serverIsRunning()) {
     await getConfig()
@@ -35,7 +35,7 @@ app.get("/config", async (req, res) => {
   }
 });
 
-app.post("/connect/:address", async (req, res) => {
+app.post("desk/connect/:address", async (req, res) => {
   // TODO validate input
 
   if (!!req.params.address) {
@@ -54,12 +54,12 @@ app.post("/connect/:address", async (req, res) => {
   }
   res.status(404).send("please pass a valid physical desk address");
 });
-app.post("/disconnect", async (req, res) => {
+app.post("desk/disconnect", async (req, res) => {
   deskHandler.stopDeskConnection().catch((err) => res.send(err));
   res.send(true);
 });
 
-app.post("/move/:position", async (req, res) => {
+app.post("desk/move/:position", async (req, res) => {
   // TODO validate input
   try {
     if (await deskHandler.serverIsRunning()) {
@@ -78,9 +78,9 @@ app.post("/move/:position", async (req, res) => {
   }
 });
 
-app.get("/status", async (req, res) => {
-      const status = await deskHandler.getStatus();
-      res.send(status);
+app.get("desk/status", async (req, res) => {
+  const status = await deskHandler.getStatus();
+  res.send(status);
 });
 
 app.listen(port, () => {
