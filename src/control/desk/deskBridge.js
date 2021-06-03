@@ -1,10 +1,10 @@
 const noble = require("@abandonware/noble");
 const schedule = require("node-schedule");
 const EventEmitter = require("events");
-const {state} = require("@abandonware/noble");
+const {sleep} = require("../utils");
 
 const { Desk } = require("./desk");
-const { log } = require("./utils");
+const { log } = require("../utils");
 
 /**
  * Source: https://github.com/mitsuhiko/idasen-control
@@ -13,7 +13,7 @@ class DeskBridge extends EventEmitter {
   constructor(config) {
     super();
     this.config = config;
-    this.started = false;
+    this.deskReady = false;
     this.desk = null;
     this._createReadyPromise();
   }
@@ -25,7 +25,7 @@ class DeskBridge extends EventEmitter {
   }
 
   async getDesk() {
-    await this._deskReadyPromise;
+    await this._deskReadyPromise
     return this.desk;
   }
 
@@ -34,18 +34,13 @@ class DeskBridge extends EventEmitter {
       this.desk.disconnect();
     }
     this.desk = null;
+    this.deskReady = false;
+    this._createReadyPromise();
     this.didUpdateDevice();
-    //noble.reset();
-
   }
 
   start() {
-    console.log("started prop", this.started)
-    if(this.started) {
-      this.scan()
-    }  else {
-      this.startNoble();
-    }
+    this.startNoble();
   }
 
   log(...args) {
@@ -55,9 +50,6 @@ class DeskBridge extends EventEmitter {
   }
 
   startNoble() {
-    this.started = true;
-
-
     this.log("starting BLE");
     noble.on("discover", async (peripheral) => {
       await this.processPeripheral(peripheral);
@@ -66,11 +58,10 @@ class DeskBridge extends EventEmitter {
     noble.on("stateChange", async (state) => {
       this.log("stateChange", state);
       if (state === "poweredOn") {
-        console.log("state is poweredOn")
         await this.scan();
       } else {
-        console.log("new state", state)
         if (this.desk) {
+          console.log("BT state:", state)
           this.desk.disconnect();
         }
         this.desk = null;
@@ -81,15 +72,13 @@ class DeskBridge extends EventEmitter {
 
     noble.on("scanStop", async () => {
       this.log("scanStop");
-      });
-
+    });
   }
 
   async scan() {
     if (this.desk) {
       return;
     }
-    if(noble.state !== "poweredOn") return;
 
     const scanUntil = new Promise((res, rej) => {
       setTimeout(() => res(), 10000);
@@ -137,17 +126,16 @@ class DeskBridge extends EventEmitter {
     if (peripheral.address === this.config.deskAddress) {
       this.log("Found configured desk", peripheral.address);
       this.desk = new Desk(peripheral, this.config.deskPositionMax);
-
       peripheral.on("disconnect", () => {
-        if(this.desk === null) { // desk is already null, has been disconnected on purpose
-          this.log("desk disconnected, will not continue scanning");
-          return
+        if(this.desk == null) {
+          log("desk disconnected");
+          this._createReadyPromise();
+          return;
         }
         this.log("desk disconnected, going back to scanning");
         this.desk = null;
         this._createReadyPromise();
         this.scan();
-
       });
 
       try {
@@ -165,11 +153,11 @@ class DeskBridge extends EventEmitter {
   didUpdateDevice() {
     if (this.desk) {
       this.desk.on("position", async () => {
-        if (!this.started) {
-          console.log('started')
-          this.started = true;
+        if (!this.deskReady) { // TODO deskReady could be replaced with the promise
+          this.deskReady = true;
           this._deskReadyPromiseResolve();
         }
+
         this.emit("position", this.desk.position);
       });
     }

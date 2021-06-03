@@ -1,7 +1,7 @@
 const EventEmitter = require("events");
 const schedule = require("node-schedule");
 
-const { sleep } = require("./utils");
+const { sleep } = require("../utils");
 
 /**
  * Source https://github.com/mitsuhiko/idasen-control

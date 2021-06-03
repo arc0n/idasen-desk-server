@@ -5,7 +5,7 @@ const net = require("net");
 const process = require("process");
 const { spawn } = require("child_process");
 
-const { DeskBridge } = require("./deskBridge");
+const { DeskBridge } = require("./desk/deskBridge");
 const { promisify } = require("util");
 const fs = require("fs");
 const { saveConfig } = require("./config");
@@ -20,7 +20,7 @@ let deskBridge;
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
-class DeskHandler {
+class DeskServer {
   /**
    * Scan vor desks, returns all found desks or an empty array
    * @returns {Promise<[]|*[]>}
@@ -103,45 +103,23 @@ class DeskHandler {
    */
   async startDeskServer() {
 
-    console.log("run noble");
-    const config = await getConfig();
-
-    if(!deskBridge) {
-      deskBridge = new DeskBridge({
-        deskAddress: config.deskAddress,
-        deskPositionMax: config.deskPositionMax || 58,
-        verbose: true,
-
+      await this._runServer().catch((e) => {
+        throw Error(e);
       });
-      deskBridge.start();
-
-    } else await deskBridge.scan();
-
-
-    setInterval(()=>{
-      deskBridge.getDesk().then((desk)=>{
-        if(desk == null) return;
-        console.log("desk height", desk?.position)
-      })
-    }, 3000)
-
       return true;
 
   }
 
   /**
-   * kill the connection
-   * TODO does kill the whole application
+   * kills only the connection the the deks
    * @returns {Promise<void>}
    */
-  async stopDeskServer() {
-    deskBridge.disconnect();
-   // await this.sendCommand({ op: "disconnect" }, true);
-
+  async stopDeskConnection() {
+    await this.sendCommand({ op: "disconnect" }, true);
    /* const pid = await this._readPid();
-    if (pid !== null) { // TODO gets the wrong pid
+    if (pid !== null) {
       console.log("Stopping server");
-      process.kill(pid, 'SIGINT');
+      process.kill(pid, 0);
     } else {
       console.log("Server not running");
     }*/
@@ -154,7 +132,7 @@ class DeskHandler {
     wait = wait || false;
     const config = await getConfig();
     return new Promise((resolve) => {
-      console.log("create client");
+      console.log("Sending command", cmd);
       const client = net.createConnection({ path: config.socketPath }, () => {
         client.write(JSON.stringify(cmd) + "\n", () => {
           if (!wait) {
@@ -180,11 +158,11 @@ class DeskHandler {
    */
   async getStatus() {
     // TODO ensure server running
-    const desk = await Promise.race([deskBridge.getDesk(), sleep(100)]);
-    if (!desk) {
-      return null;
-    }
-    return desk;
+    const status = await Promise.race([
+      this.sendCommand({ op: "getStatus" }, true),
+      sleep(100),
+    ]);
+    return status || { ready: false };
   }
 
   /**
@@ -192,8 +170,6 @@ class DeskHandler {
    * @returns {Promise<boolean>}
    */
   async serverIsRunning() {
-    console.log("pid outside the serverRef", process.pid)
-
     return (await this._readPid()) !== null;
   }
 
@@ -207,14 +183,12 @@ class DeskHandler {
     try {
       const contents = await readFile(config.pidFilePath, "utf8");
       const pid = parseInt(contents.toString(), 10);
-      console.log("pid:", pid) // TODO will not work, as this is not oid that wee look like
-
       if (Number.isNaN(pid)) {
         return null;
       }
       try {
         if (process.kill(pid, 0)) {
-          // TODO does command 0 say stay running?
+          // TODO warum killt er hier?
           return pid;
         }
       } catch (e) {
@@ -248,38 +222,51 @@ class DeskHandler {
     const config = await getConfig();
     let sittingTime = 0;
 
-    const deskBridge = new DeskBridge({
+    if(!!deskBridge) {
+      this.sendCommand({ op: "reconnect" }, true);
+      return;
+    }
+
+    deskBridge = new DeskBridge({
       deskAddress: config.deskAddress,
       deskPositionMax: config.deskPositionMax || 58,
       verbose: true,
     });
 
-          setInterval(() => {
-          // TODO what does this do?? only saving the sitting and standing time right?
-        deskBridge.getDesk().then((desk) => {
-          if(deskBridge.started)
-            console.log("new position in interval", desk?.position);
-            // someone did something
-            const idleTime = getIdleTime();
-            if (
-              idleTime < CHECK_INTERVAL &&
-              desk.position < config.standThreshold
-            ) {
-              sittingTime += CHECK_INTERVAL;
-            } else if (
-              desk.position >= config.standThreshold ||
-              idleTime >= config.sittingBreakTime
-            ) {
-              sittingTime = 0;
-            }
-          });
-        }, CHECK_INTERVAL * 1000);
+    setInterval(() => {
+      // TODO what does this do?? only saving the sitting and standing time right?
+ /*    const desk =  await Promise.race([deskBridge.getDesk(), sleep(200)]);
+        if(desk) {*/
+      Promise.race([ deskBridge.getDesk(), sleep(500)])
+     .then((desk)=>{
+       if(!desk) return;
+        console.log("new position in interval", desk?.position);
+        // someone did something
+        const idleTime = getIdleTime();
+        if (
+            idleTime < CHECK_INTERVAL &&
+            desk.position < config.standThreshold
+        ) {
+          sittingTime += CHECK_INTERVAL;
+        } else if (
+            desk.position >= config.standThreshold ||
+            idleTime >= config.sittingBreakTime
+        ) {
+          sittingTime = 0;
+        }
+      })
+
+      /*  }*/
+    }, CHECK_INTERVAL * 1000);
 
     this._ensureServer(async (message) => {
-      console.log("debug message deshandler line 272", message);
+     if(message.op=== "reconnect") {
+        deskBridge.scan();
+        return true;
+     }
       if (message.op === "disconnect") {
         deskBridge.disconnect();
-       
+        return true;
       }
       if (message.op === "moveTo") {
         const desk = await deskBridge.getDesk();
@@ -332,10 +319,11 @@ class DeskHandler {
       // doesn't matter
     }
 
-    await net
+    const deskServer = net
       .createServer((stream) => {
         let buffer = "";
         let connected = true;
+
         stream.on("data", async (data) => {
           buffer += data;
           while (true) {
@@ -362,17 +350,16 @@ class DeskHandler {
             }
           }
         });
-
-       stream.on("end", () => {
+        stream.on("end", () => {
           console.log("stream on end");
           connected = false;
         });
-
       })
       .listen(config.socketPath);
 
     await this._writePid();
-   // return deskServer;
+
+    return deskServer;
   }
 
   // config must be set! only used on get status on ensureServer
@@ -382,4 +369,4 @@ class DeskHandler {
   }
 }
 
-module.exports.DeskHandler = DeskHandler;
+module.exports.DeskHandler = DeskServer;

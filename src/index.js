@@ -3,7 +3,7 @@ const { getConfig } = require("./control/config");
 /*
 const { sleep } = require("./control/utils");
 */
-const { DeskHandler } = require("./control/deskHandler");
+const { DeskHandler } = require("./control/deskServer");
 
 const app = express();
 const port = 3000;
@@ -55,7 +55,7 @@ app.post("/connect/:address", async (req, res) => {
   res.status(404).send("please pass a valid physical desk address");
 });
 app.post("/disconnect", async (req, res) => {
-  deskHandler.stopDeskServer().catch((err) => res.send(err));
+  deskHandler.stopDeskConnection().catch((err) => res.send(err));
   res.send(true);
 });
 
