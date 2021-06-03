@@ -48,7 +48,13 @@ class DeskServer {
     }, 1000);
 
     let seen = {}; // store for seen devices
-    const foundDesks = []; // store for found idasen desks
+    let foundDesks = []; // store for found idasen desks
+
+    bridge.on("error", () => {
+      console.log("Error, BT BLE not supported");
+      scanUntil = +new Date() + 2000;
+      throw new Error("no BLE Support");
+    });
     bridge.on("discover", (peripheral) => {
       if (
         // check if already not already soon and valid
@@ -102,9 +108,7 @@ class DeskServer {
    * @returns {Promise<boolean>}
    */
   async startDeskServer() {
-    await this._runServer().catch((e) => {
-      console.log("error while starting server", e);
-    });
+    await this._runServer();
     return true;
   }
 
@@ -149,6 +153,15 @@ class DeskServer {
         console.log("end called");
       });
     });
+  }
+
+  async moveTo(position) {
+    const desk = await deskBridge.getStatus();
+    if (!desk || desk.ready === false) {
+      await this.startDeskServer();
+    }
+    await deskBridge.moveTo(position);
+    return true;
   }
 
   /**
@@ -217,43 +230,49 @@ class DeskServer {
     const config = await getConfig();
     let sittingTime = 0;
 
-    const desk = await this.getStatus();
-    if (!!desk) {
-      // this.sendCommand({ op: "reconnect" }, true);
-      deskBridge.scan();
-      return;
-    }
-
-    deskBridge = new DeskBridge({
-      deskAddress: config.deskAddress,
-      deskPositionMax: config.deskPositionMax || 58,
-      verbose: true,
-    });
-
-    setInterval(() => {
-      // TODO what does this do?? only saving the sitting and standing time right?
-      /*    const desk =  await Promise.race([deskBridge.getDesk(), sleep(200)]);
-        if(desk) {*/
-      Promise.race([deskBridge.getDesk(), sleep(500)]).then((desk) => {
-        if (!desk) return;
-        console.log("new position in interval", desk?.position);
-        // someone did something
-        const idleTime = getIdleTime();
-        if (
-          idleTime < CHECK_INTERVAL &&
-          desk.position < config.standThreshold
-        ) {
-          sittingTime += CHECK_INTERVAL;
-        } else if (
-          desk.position >= config.standThreshold ||
-          idleTime >= config.sittingBreakTime
-        ) {
-          sittingTime = 0;
-        }
+    console.log(deskBridge);
+    if (!deskBridge) {
+      deskBridge = new DeskBridge({
+        deskAddress: config.deskAddress,
+        deskPositionMax: config.deskPositionMax || 58,
+        verbose: true,
       });
 
-      /*  }*/
-    }, CHECK_INTERVAL * 1000);
+      deskBridge.on("error", () => {
+        throw new Error("Error while starting the Bluetooth device");
+      });
+
+      setInterval(() => {
+        // TODO what does this do?? only saving the sitting and standing time right?
+        /*    const desk =  await Promise.race([deskBridge.getDesk(), sleep(200)]);
+          if(desk) {*/
+        Promise.race([deskBridge.getDesk(), sleep(500)]).then((desk) => {
+          if (!desk) return;
+          console.log("new position in interval", desk?.position);
+          // someone did something
+          const idleTime = getIdleTime();
+          if (
+            idleTime < CHECK_INTERVAL &&
+            desk.position < config.standThreshold
+          ) {
+            sittingTime += CHECK_INTERVAL;
+          } else if (
+            desk.position >= config.standThreshold ||
+            idleTime >= config.sittingBreakTime
+          ) {
+            sittingTime = 0;
+          }
+        });
+
+        /*  }*/
+      }, CHECK_INTERVAL * 1000);
+    }
+
+    const desk = await this.getStatus();
+    console.log(desk);
+    if (!desk || desk.ready === false) {
+      await deskBridge.scan();
+    }
 
     /*    this._ensureServer(async (message) => {
       if (message.op === "reconnect") {

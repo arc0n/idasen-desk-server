@@ -1,7 +1,7 @@
 const noble = require("@abandonware/noble");
 const schedule = require("node-schedule");
 const EventEmitter = require("events");
-const {sleep} = require("../utils");
+const { sleep } = require("../utils");
 
 const { Desk } = require("./desk");
 const { log } = require("../utils");
@@ -25,7 +25,7 @@ class DeskBridge extends EventEmitter {
   }
 
   async getDesk() {
-    await this._deskReadyPromise
+    await this._deskReadyPromise;
     return this.desk;
   }
 
@@ -39,8 +39,22 @@ class DeskBridge extends EventEmitter {
     this.didUpdateDevice();
   }
 
+  checkIfSupported() {
+    try {
+      //check support, the socket will be discarded afterwards
+      const BluetoothHciSocket = require("bluetooth-hci-socket");
+      const bluetoothHciSocket = new BluetoothHciSocket();
+      bluetoothHciSocket.bindUser();
+    } catch (error) {
+      console.error("No Bluetooth support Error: ", error);
+      this.emit("error");
+      return false;
+    }
+    return true;
+  }
   start() {
-    this.startNoble();
+    if (!this.checkIfSupported()) return;
+    this._startNoble();
   }
 
   log(...args) {
@@ -49,7 +63,7 @@ class DeskBridge extends EventEmitter {
     }
   }
 
-  startNoble() {
+  _startNoble() {
     this.log("starting BLE");
     noble.on("discover", async (peripheral) => {
       await this.processPeripheral(peripheral);
@@ -61,7 +75,7 @@ class DeskBridge extends EventEmitter {
         await this.scan();
       } else {
         if (this.desk) {
-          console.log("BT state:", state)
+          console.log("BT state:", state);
           this.desk.disconnect();
         }
         this.desk = null;
@@ -76,6 +90,9 @@ class DeskBridge extends EventEmitter {
   }
 
   async scan() {
+    console.log("checking if support");
+    if (!this.checkIfSupported()) return;
+
     if (this.desk) {
       return;
     }
@@ -88,7 +105,7 @@ class DeskBridge extends EventEmitter {
 
     this.log("Starting scan");
     try {
-      await noble.startScanningAsync([], true); // TODO maybe to false?
+      await noble.startScanningAsync([], true).catch((err) => console.log); // TODO maybe to false?
     } catch (err) {
       this.scheduleScan();
     }
@@ -127,7 +144,7 @@ class DeskBridge extends EventEmitter {
       this.log("Found configured desk", peripheral.address);
       this.desk = new Desk(peripheral, this.config.deskPositionMax);
       peripheral.on("disconnect", () => {
-        if(this.desk == null) {
+        if (this.desk == null) {
           log("desk disconnected");
           this._createReadyPromise();
           return;
@@ -153,7 +170,8 @@ class DeskBridge extends EventEmitter {
   didUpdateDevice() {
     if (this.desk) {
       this.desk.on("position", async () => {
-        if (!this.deskReady) { // TODO deskReady could be replaced with the promise
+        if (!this.deskReady) {
+          // TODO deskReady could be replaced with the promise
           this.deskReady = true;
           this._deskReadyPromiseResolve();
         }

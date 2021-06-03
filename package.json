@@ -13,7 +13,9 @@
     "process": "^0.11.10",
     "usb": "^1.7.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "bluetooth-hci-socket": "^0.5.1"
+  },
   "scripts": {
     "start": "sudo node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
