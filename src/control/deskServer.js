@@ -64,7 +64,7 @@ class DeskServer {
           deskAddress: peripheral.address,
           deskName: peripheral.advertisement.localName,
         });
-        //  scanUntil = +new Date() + 2000; // add more time if something has been found
+        scanUntil = +new Date() + 2000; // stop scanning
       }
     });
     bridge.start();
@@ -102,12 +102,10 @@ class DeskServer {
    * @returns {Promise<boolean>}
    */
   async startDeskServer() {
-
-      await this._runServer().catch((e) => {
-        throw Error(e);
-      });
-      return true;
-
+    await this._runServer().catch((e) => {
+      throw Error(e);
+    });
+    return true;
   }
 
   /**
@@ -116,7 +114,7 @@ class DeskServer {
    */
   async stopDeskConnection() {
     await this.sendCommand({ op: "disconnect" }, true);
-   /* const pid = await this._readPid();
+    /* const pid = await this._readPid();
     if (pid !== null) {
       console.log("Stopping server");
       process.kill(pid, 0);
@@ -222,7 +220,7 @@ class DeskServer {
     const config = await getConfig();
     let sittingTime = 0;
 
-    if(!!deskBridge) {
+    if (!!deskBridge) {
       this.sendCommand({ op: "reconnect" }, true);
       return;
     }
@@ -235,35 +233,34 @@ class DeskServer {
 
     setInterval(() => {
       // TODO what does this do?? only saving the sitting and standing time right?
- /*    const desk =  await Promise.race([deskBridge.getDesk(), sleep(200)]);
+      /*    const desk =  await Promise.race([deskBridge.getDesk(), sleep(200)]);
         if(desk) {*/
-      Promise.race([ deskBridge.getDesk(), sleep(500)])
-     .then((desk)=>{
-       if(!desk) return;
+      Promise.race([deskBridge.getDesk(), sleep(500)]).then((desk) => {
+        if (!desk) return;
         console.log("new position in interval", desk?.position);
         // someone did something
         const idleTime = getIdleTime();
         if (
-            idleTime < CHECK_INTERVAL &&
-            desk.position < config.standThreshold
+          idleTime < CHECK_INTERVAL &&
+          desk.position < config.standThreshold
         ) {
           sittingTime += CHECK_INTERVAL;
         } else if (
-            desk.position >= config.standThreshold ||
-            idleTime >= config.sittingBreakTime
+          desk.position >= config.standThreshold ||
+          idleTime >= config.sittingBreakTime
         ) {
           sittingTime = 0;
         }
-      })
+      });
 
       /*  }*/
     }, CHECK_INTERVAL * 1000);
 
     this._ensureServer(async (message) => {
-     if(message.op=== "reconnect") {
+      if (message.op === "reconnect") {
         deskBridge.scan();
         return true;
-     }
+      }
       if (message.op === "disconnect") {
         deskBridge.disconnect();
         return true;
