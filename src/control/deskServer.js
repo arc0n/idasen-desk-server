@@ -118,14 +118,6 @@ class DeskServer {
    */
   async stopDeskConnection() {
     deskBridge.disconnect();
-    //await this.sendCommand({ op: "disconnect" }, true);
-    /* const pid = await this._readPid();
-    if (pid !== null) {
-      console.log("Stopping server");
-      process.kill(pid, 0);
-    } else {
-      console.log("Server not running");
-    }*/
   }
 
   /**
@@ -168,7 +160,7 @@ class DeskServer {
   }
 
   /**
-   * geht the status of the current desk
+   * get the status of the current desk
    * @returns {Promise<any>}
    */
   async getStatus() {
@@ -177,54 +169,6 @@ class DeskServer {
     }
     const status = await Promise.race([deskBridge.getDesk(), sleep(100)]);
     return status || { ready: false };
-  }
-
-  /**
-   *
-   * @returns {Promise<boolean>}
-   */
-  async serverIsRunning() {
-    return (await this._readPid()) !== null;
-  }
-
-  /**
-   * @internal
-   * @returns {Promise<null|number>}
-   * @private
-   */
-  async _readPid() {
-    const config = await getConfig();
-    try {
-      const contents = await readFile(config.pidFilePath, "utf8");
-      const pid = parseInt(contents.toString(), 10);
-      if (Number.isNaN(pid)) {
-        return null;
-      }
-      try {
-        if (process.kill(pid, 0)) {
-          // TODO warum killt er hier?
-          return pid;
-        }
-      } catch (e) {
-        if (e.code === "EPERM") {
-          console.log("error when killing process:", e);
-          return pid;
-        }
-      }
-    } catch (e) {
-      // ignore
-    }
-    return null;
-  }
-
-  /**
-   * @internal
-   * @returns {Promise<void>}
-   * @private
-   */
-  async _writePid() {
-    const config = await getConfig();
-    await writeFile(config.pidFilePath, `${process.pid}\n`);
   }
 
   /**
@@ -279,114 +223,6 @@ class DeskServer {
     if (!desk || desk.ready === false) {
       await deskBridge.scan();
     }
-
-    /*    this._ensureServer(async (message) => {
-      if (message.op === "reconnect") {
-        deskBridge.scan();
-        return true;
-      }
-      if (message.op === "disconnect") {
-        deskBridge.disconnect();
-        return true;
-      }
-      if (message.op === "moveTo") {
-        const desk = await deskBridge.getDesk();
-        await desk.moveTo(message.pos);
-        return true;
-      } else if (message.op === "wait") {
-        await deskBridge.getDesk();
-        return true;
-      } else if (message.op === "getStatus") {
-        const desk = await Promise.race([deskBridge.getDesk(), sleep(50)]);
-        if (!desk) {
-          return { ready: false };
-        }
-        return {
-          ready: true,
-          height: desk.position,
-          pos: this._describePosition(desk), // TODO remove
-          sittingTime,
-        };
-      } else {
-        log("unknown message, ignoring");
-        return false;
-      }
-    }).then(() => {
-      console.log("#### ensureServer called ###");
-      deskBridge.start();
-    });
-
-    process.on("exit", () => {
-      console.log("process on exit called");
-      try {
-        fs.unlinkSync(config.pidFilePath);
-      } catch (e) {
-        // ignore
-      }
-      try {
-        fs.unlinkSync(config.socketPath);
-      } catch (e) {
-        // ignore
-      }
-    });*/
-  }
-
-  async _ensureServer(onMessage) {
-    const config = await getConfig();
-
-    try {
-      await unlink(config.socketPath);
-    } catch (e) {
-      // doesn't matter
-    }
-
-    const deskServer = net
-      .createServer((stream) => {
-        let buffer = "";
-        let connected = true;
-
-        stream.on("data", async (data) => {
-          buffer += data;
-          while (true) {
-            const newline = buffer.indexOf("\n");
-            if (newline < 0) {
-              break;
-            }
-            let parsedMsg;
-            try {
-              let msg = buffer.substr(0, newline);
-              buffer = buffer.substr(newline + 1);
-              parsedMsg = JSON.parse(msg);
-            } catch (e) {
-              continue;
-            }
-
-            log("received request", parsedMsg);
-            let rv = await onMessage(parsedMsg);
-            if (connected) {
-              log("sending response", rv);
-              stream.write(JSON.stringify(rv) + "\n");
-            } else {
-              log("dropping response because client disconnected");
-            }
-          }
-        });
-        stream.on("end", () => {
-          console.log("stream on end");
-          connected = false;
-        });
-      })
-      .listen(config.socketPath);
-
-    await this._writePid();
-
-    return deskServer;
-  }
-
-  // config must be set! only used on get status on ensureServer
-  _describePosition(desk) {
-    // TODO remove
-    return desk.position >= getConfig().standThreshold ? "standing" : "sitting";
   }
 }
 

@@ -17,22 +17,18 @@ app.get("/desk/search", async (req, res) => {
 
 app.get("/desk/config", async (req, res) => {
   // TODO catch if connected
-  if (await deskServer.serverIsRunning()) {
-    await getConfig()
-      .then(
-        (config) => {
-          res.send(config);
-        },
-        (e) => {
-          res.status(500).send(`Error occurred when getting config: ${e}`);
-        }
-      )
-      .catch(() =>
-        res.status(500).send(`Error occurred when getting config: ${e}`)
-      );
-  } else {
-    res.send(false);
-  }
+  await getConfig()
+    .then(
+      (config) => {
+        res.send(config);
+      },
+      (e) => {
+        res.status(500).send(`Error occurred when getting config: ${e}`);
+      }
+    )
+    .catch(() =>
+      res.status(500).send(`Error occurred when getting config: ${e}`)
+    );
 });
 
 app.post("/desk/connect/:address", async (req, res) => {
