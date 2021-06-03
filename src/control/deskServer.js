@@ -152,10 +152,14 @@ class DeskServer {
 
   /**
    * geht the status of the current desk
-   * @returns {Promise<unknown>}
+   * @returns {Promise<any>}
    */
   async getStatus() {
     // TODO ensure server running
+    const desk = await deskBridge.getDesk();
+    if (!desk) {
+      return { ready: false };
+    }
     const status = await Promise.race([
       this.sendCommand({ op: "getStatus" }, true),
       sleep(100),
