@@ -156,6 +156,9 @@ class DeskServer {
   }
 
   async moveTo(position) {
+    if (!deskBridge) {
+      await this.startDeskServer();
+    }
     const desk = await deskBridge.getStatus();
     if (!desk || desk.ready === false) {
       await this.startDeskServer();
@@ -169,6 +172,9 @@ class DeskServer {
    * @returns {Promise<any>}
    */
   async getStatus() {
+    if (!deskBridge) {
+      await this.startDeskServer();
+    }
     const status = await Promise.race([deskBridge.getDesk(), sleep(100)]);
     return status || { ready: false };
   }
