@@ -210,6 +210,7 @@ class DeskServer {
     if (!desk || desk.ready === false) {
       console.log("Debug Message SCAN", desk);
       desk = await deskBridge.scan();
+      console.log("Debug Message desk result", desk)
     }
 
     return await desk;
