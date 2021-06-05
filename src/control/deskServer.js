@@ -213,7 +213,7 @@ class DeskServer {
       console.log("Debug Message desk result", desk)
     }
 
-    return await desk;
+    return desk;
   }
 }
 

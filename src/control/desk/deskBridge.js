@@ -89,8 +89,9 @@ class DeskBridge extends EventEmitter {
     });
 
     this.log("Starting scan");
+    let result;
     try {
-      const result = await noble.startScanningAsync([], true, (err) =>
+      result = await noble.startScanningAsync([], true, (err) =>
       {
     this.handleError(err)
       }).catch(
@@ -99,7 +100,7 @@ class DeskBridge extends EventEmitter {
       console.log("Catched BT error: scheduling scan")
       this.scheduleScan();
     }
-
+    await result;
     return this.desk;
   }
 
