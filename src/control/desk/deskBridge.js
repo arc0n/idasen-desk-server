@@ -78,7 +78,8 @@ class DeskBridge extends EventEmitter {
   async scan() {
 
     if (this.desk) {
-      return;
+      console.log("DEBUG MESSAGE desk", this.desk)
+      return; // TODO is here the problem of not waiting?
     }
 
     const scanUntil = new Promise((res, rej) => {
@@ -89,7 +90,7 @@ class DeskBridge extends EventEmitter {
 
     this.log("Starting scan");
     try {
-      await noble.startScanningAsync([], true, (err)=>
+      await noble.startScanningAsync([], true, (err) =>
       {
     this.handleError(err)
       }).catch(
