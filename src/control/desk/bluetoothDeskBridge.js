@@ -1,7 +1,6 @@
 const noble = require("@abandonware/noble");
 const schedule = require("node-schedule");
 const EventEmitter = require("events");
-const {sleep} = require("../utils");
 
 const {Desk} = require("./desk");
 const {log} = require("../utils");
@@ -9,7 +8,7 @@ const {log} = require("../utils");
 /**
  * Source: https://github.com/mitsuhiko/idasen-control
  */
-class DeskBridge extends EventEmitter {
+class BluetoothDeskBridge extends EventEmitter {
     constructor(config) {
         super();
         this.config = config;
@@ -197,4 +196,4 @@ class DeskBridge extends EventEmitter {
     }
 }
 
-module.exports.DeskBridge = DeskBridge;
+module.exports.DeskBridge = BluetoothDeskBridge;

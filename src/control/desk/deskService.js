@@ -1,10 +1,10 @@
-const {  sleep } = require("./utils");
-const { getConfig } = require("./config");
+const {  sleep } = require("../utils");
+const { getConfig } = require("../config");
 
 
 
-const { DeskBridge } = require("./desk/deskBridge");
-const { saveConfig } = require("./config");
+const { DeskBridge } = require("./bluetoothDeskBridge");
+const { saveConfig } = require("../config");
 
 
 const { getIdleTime } = require("desktop-idle");
@@ -13,7 +13,7 @@ let deskBridge;
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
-class DeskServer {
+class DeskService {
   /**
    * Scan vor desks, returns all found desks or an empty array
    * @returns {Promise<[]|*[]>}
@@ -181,4 +181,4 @@ class DeskServer {
   }
 }
 
-module.exports.DeskServer = DeskServer;
+module.exports.DeskService = DeskService;

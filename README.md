@@ -154,7 +154,7 @@ Error: ENODEV, No such device
 at Hci.init (/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/hci-socket/hci.js:120:18)
 at NobleBindings.init (/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/hci-socket/bindings.js:93:13)
 at Noble.get (/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/noble.js:73:26)
-at Object.<anonymous> (/home/pi/idasen-backend/src/control/deskBridge.js:4:8)
+at Object.<anonymous> (/home/pi/idasen-backend/src/control/bluetoothDeskBridge.js:4:8)
 at Module._compile (internal/modules/cjs/loader.js:1200:30)
 at Object.Module._extensions..js (internal/modules/cjs/loader.js:1220:10)
 at Module.load (internal/modules/cjs/loader.js:1049:32)
