@@ -39,21 +39,7 @@ class DeskBridge extends EventEmitter {
     this.didUpdateDevice();
   }
 
-  checkIfSupported() {
-    try {
-      //check support, the socket will be discarded afterwards
-      const BluetoothHciSocket = require("bluetooth-hci-socket");
-      const bluetoothHciSocket = new BluetoothHciSocket();
-      bluetoothHciSocket.bindUser();
-    } catch (error) {
-      console.error("No Bluetooth support Error: ", error);
-      this.emit("error");
-      return false;
-    }
-    return true;
-  }
   start() {
-    if (!this.checkIfSupported()) return;
     this._startNoble();
   }
 
@@ -90,8 +76,6 @@ class DeskBridge extends EventEmitter {
   }
 
   async scan() {
-    console.log("checking if support");
-    if (!this.checkIfSupported()) return;
 
     if (this.desk) {
       return;
@@ -105,7 +89,11 @@ class DeskBridge extends EventEmitter {
 
     this.log("Starting scan");
     try {
-      await noble.startScanningAsync([], true).catch((err) => console.log); // TODO maybe to false?
+      await noble.startScanningAsync([], true, (err)=>
+      {
+    this.handleError(err)
+      }).catch(
+          (err) => this.handleError(err));
     } catch (err) {
       this.scheduleScan();
     }
@@ -179,6 +167,11 @@ class DeskBridge extends EventEmitter {
         this.emit("position", this.desk.position);
       });
     }
+  }
+
+  handleError(err) {
+    console.error("No Bluetooth support: ", err);
+    this.emit("error")
   }
 }
 
