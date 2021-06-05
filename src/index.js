@@ -61,21 +61,6 @@ app.post("/desk/move/:position", async (req, res) => {
         .then((hasMoved) => res.send(hasMoved))
         .catch((e) => res.status(500).send("Error while setting config: " + e));
 
-    /*try {
-      if (await deskServer.serverIsRunning()) {
-        const hasMoved = await deskServer.sendCommand(
-          { op: "moveTo", pos: req.params.position },
-          true
-        );
-        // wait is a bool, must be set to true in this api
-        res.send(hasMoved);
-        // TODO try if wait false works
-      } else {
-        res.send(false);
-      }
-    } catch (e) {
-      res.status(500).send("Error: Connection not possible: ", e);
-    }*/
 });
 
 app.get("/desk/status", async (req, res) => {
