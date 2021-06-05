@@ -206,7 +206,9 @@ class DeskServer {
 
     let desk = await this.getStatus();
     if (!desk || desk.ready === false) {
-      desk = await deskBridge.scan();
+     await deskBridge.scan();
+     let desk = await this.getStatus();
+     console.log("desk result: ", desk)
     }
 
     return desk;

@@ -86,7 +86,7 @@ class DeskBridge extends EventEmitter {
       setTimeout(() => res(), 10000);
     }).then(() => {
       noble.stopScanning();
-      this.log("Stopping scan");
+      this.log("Stopping scan, nothing found");
 
     });
 
