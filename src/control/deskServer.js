@@ -102,15 +102,7 @@ class DeskServer {
     await saveConfig();
   }
 
-  /**
-   * spawn a child process to connect and hold a connection the the desk, first use
-   * @see this.setDeskAddressInConfig
-   * @returns {Promise<boolean>}
-   */
-  async startDeskServer() {
-    await this._runServer();
-    return true;
-  }
+
 
   /**
    * kills only the connection the the deks
@@ -120,9 +112,9 @@ class DeskServer {
     deskBridge.disconnect();
   }
 
-  /**
+  /*/!**
    *   send commands to the child process where desk socket runs
-   */
+   *!/
   async sendCommand(cmd, wait) {
     wait = wait || false;
     const config = await getConfig();
@@ -145,7 +137,7 @@ class DeskServer {
         console.log("end called");
       });
     });
-  }
+  }*/
 
   async moveTo(position) {
     if (!deskBridge) {
@@ -172,15 +164,13 @@ class DeskServer {
   }
 
   /**
-   * @internal
    * @returns {Promise<void>}
-   * @private
    */
-  async _runServer() {
+  async runServer() {
     const config = await getConfig();
     let sittingTime = 0;
 
-    console.log(deskBridge);
+    console.log("Deskbridge Debug:", deskBridge);
     if (!deskBridge) {
       deskBridge = new DeskBridge({
         deskAddress: config.deskAddress,
@@ -218,11 +208,15 @@ class DeskServer {
       }, CHECK_INTERVAL * 1000);
     }
 
-    const desk = await this.getStatus();
-    console.log(desk);
+    let desk = await this.getStatus();
+    console.log("Debug Message Desk", desk);
     if (!desk || desk.ready === false) {
-      await deskBridge.scan();
+      console.log("Debug Message SCAN", desk);
+
+      desk = await deskBridge.scan();
     }
+
+    return desk;
   }
 }
 

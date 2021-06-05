@@ -40,7 +40,7 @@ app.post("/desk/connect/:address", async (req, res) => {
       .setDeskAddressInConfig(req.params.address + "")
       .catch((e) => res.status(500).send("Error while setting config: " + e));
     await deskServer
-      .startDeskServer()
+      .runServer()
       .then(() => res.send(true))
       .catch((e) => res.status(500).send("Error while connecting: " + e));
   }

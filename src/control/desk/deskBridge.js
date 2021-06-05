@@ -95,6 +95,7 @@ class DeskBridge extends EventEmitter {
       }).catch(
           (err) => this.handleError(err));
     } catch (err) {
+      console.log("Catched BT error: scheduling scan")
       this.scheduleScan();
     }
   }
