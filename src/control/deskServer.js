@@ -143,9 +143,10 @@ class DeskServer {
     if (!deskBridge) {
       await this.createDeskBridge();
     }
-    const desk = await deskBridge.getStatus();
+    let desk = await this.getStatus();
     if (!desk) {
-      await this.createDeskBridge();
+      desk = await this.createDeskBridge();
+      if(!desk) return false;
     }
     await deskBridge.moveTo(position);
     return true;
@@ -185,7 +186,7 @@ class DeskServer {
       setInterval(() => {
         Promise.race([deskBridge.getDesk(), sleep(500)]).then((desk) => {
           if (!!desk) {
-            console.log("new position in interval", desk?.position);
+            console.log("Desk Position: ", desk?.position);
             // someone did something
             const idleTime = getIdleTime();
             if ( // TODO refactor this logic
@@ -206,11 +207,10 @@ class DeskServer {
 
     let desk = await this.getStatus();
     if (!desk) {
-     await deskBridge.scan();
+     await deskBridge.scan().catch(()=>{});
      let desk = await this.getStatus();
-     console.log("desk result: ", desk)
+     console.log("DEBUG deskServer desk result: ", desk)
     }
-
     return desk;
   }
 }

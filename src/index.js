@@ -55,7 +55,7 @@ app.post("/desk/move/:position", async (req, res) => {
 
   await deskServer
     .moveTo(req.params.position)
-    .then(() => res.send(true))
+    .then((hasMoved) => res.send(hasMoved))
     .catch((e) => res.status(500).send("Error while setting config: " + e));
 
   /*try {
