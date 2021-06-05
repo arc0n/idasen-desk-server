@@ -102,8 +102,6 @@ class DeskBridge extends EventEmitter {
       this.scheduleScan();
     }
     await scanUntil;
-    console.log("desk in bridge", this.desk)
-    return this.desk;
   }
 
   scheduleScan() {

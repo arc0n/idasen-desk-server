@@ -141,11 +141,11 @@ class DeskServer {
 
   async moveTo(position) {
     if (!deskBridge) {
-      await this.startDeskServer();
+      await this.createDeskBridge();
     }
     const desk = await deskBridge.getStatus();
-    if (!desk || desk.ready === false) {
-      await this.startDeskServer();
+    if (!desk) {
+      await this.createDeskBridge();
     }
     await deskBridge.moveTo(position);
     return true;
@@ -157,16 +157,16 @@ class DeskServer {
    */
   async getStatus() {
     if (!deskBridge) {
-      await this.startDeskServer();
+      await this.createDeskBridge();
     }
     const status = await Promise.race([deskBridge.getDesk(), sleep(100)]);
-    return status || { ready: false };
+    return status || false;
   }
 
   /**
    * @returns {Promise<void>}
    */
-  async runServer() {
+  async createDeskBridge() {
     const config = await getConfig();
     let sittingTime = 0;
 
@@ -205,7 +205,7 @@ class DeskServer {
     }
 
     let desk = await this.getStatus();
-    if (!desk || desk.ready === false) {
+    if (!desk) {
      await deskBridge.scan();
      let desk = await this.getStatus();
      console.log("desk result: ", desk)
