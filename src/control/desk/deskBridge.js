@@ -79,7 +79,7 @@ class DeskBridge extends EventEmitter {
 
     if (this.desk) {
       console.log("DEBUG MESSAGE desk is already there: ", this.desk)
-      return; // TODO is here the problem of not waiting?
+      return;
     }
 
     const scanUntil = new Promise((res, rej) => {
@@ -96,7 +96,7 @@ class DeskBridge extends EventEmitter {
       }).catch(
           (err) => this.handleError(err));
     } catch (err) {
-      console.log("Catched BT error: scheduling scan")
+      console.log("Caught BT error: scheduling scan")
       this.scheduleScan();
     }
     await scanUntil;

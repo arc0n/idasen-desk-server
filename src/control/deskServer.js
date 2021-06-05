@@ -170,7 +170,6 @@ class DeskServer {
     const config = await getConfig();
     let sittingTime = 0;
 
-    console.log("Deskbridge Debug:", deskBridge);
     if (!deskBridge) {
       deskBridge = new DeskBridge({
         deskAddress: config.deskAddress,
@@ -206,11 +205,8 @@ class DeskServer {
     }
 
     let desk = await this.getStatus();
-    console.log("Debug Message Desk", desk);
     if (!desk || desk.ready === false) {
-      console.log("Debug Message SCAN", desk);
       desk = await deskBridge.scan();
-      console.log("Debug Message desk result", desk)
     }
 
     return desk;

@@ -41,7 +41,7 @@ app.post("/desk/connect/:address", async (req, res) => {
       .catch((e) => res.status(500).send("Error while setting config: " + e));
     await deskServer
       .runServer()
-      .then(() => res.send(true))
+      .then((desk) => res.send(!!desk))
       .catch((e) => res.status(500).send("Error while connecting: " + e));
   }
 });
