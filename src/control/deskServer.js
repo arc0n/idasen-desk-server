@@ -1,18 +1,11 @@
-const { log, sleep } = require("./utils");
+const {  sleep } = require("./utils");
 const { getConfig } = require("./config");
-const net = require("net");
 
-const process = require("process");
-const { spawn } = require("child_process");
+
 
 const { DeskBridge } = require("./desk/deskBridge");
-const { promisify } = require("util");
-const fs = require("fs");
 const { saveConfig } = require("./config");
 
-const unlink = promisify(fs.unlink);
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
 
 const { getIdleTime } = require("desktop-idle");
 const CHECK_INTERVAL = 5.0; // for start server
@@ -112,33 +105,6 @@ class DeskServer {
     deskBridge.disconnect();
   }
 
-  /*/!**
-   *   send commands to the child process where desk socket runs
-   *!/
-  async sendCommand(cmd, wait) {
-    wait = wait || false;
-    const config = await getConfig();
-    return new Promise((resolve) => {
-      console.log("Sending command", cmd);
-      const client = net.createConnection({ path: config.socketPath }, () => {
-        client.write(JSON.stringify(cmd) + "\n", () => {
-          if (!wait) {
-            resolve(undefined);
-          }
-        });
-      });
-      if (wait) {
-        client.on("data", (data) => {
-          resolve(JSON.parse(data));
-        });
-      }
-      client.on("end", () => {
-        // nothing
-        console.log("end called");
-      });
-    });
-  }*/
-
   async moveTo(position) {
     if (!deskBridge) {
       await this.createDeskBridge();
@@ -188,7 +154,7 @@ class DeskServer {
           if (!!desk) {
             console.log("Desk Position: ", desk?.position);
             // someone did something
-            const idleTime = getIdleTime();
+            const idleTime = getIdleTime(); // TODO if removed, update the package.json
             if ( // TODO refactor this logic
                 idleTime < CHECK_INTERVAL &&
                 desk.position < config.standThreshold
