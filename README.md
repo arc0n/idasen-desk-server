@@ -46,6 +46,10 @@ $ npm i -g yarn
 $ yarn install
 
 
+#Solution Error 3
+# there is no compatible bluetooth device, if you use Raspberry Pi2 or older, 
+# get yourself a nice big USB BT dongle with BLE support
+
 
 #Error 1:
 ubuntu@ubuntu:~/idasen-backend$ npm i
@@ -121,7 +125,6 @@ npm ERR!     /home/ubuntu/.npm/_logs/2021-05-29T10_47_13_737Z-debug.log
 
 
 # Error 2
-# Attempt: use yarn: $ npm i -g yarn
 /usr/bin/env: ‘node’: Permission denied
 sh: 1: node-gyp: Permission denied
 npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@~2.3.1 (node_modules/chokidar/node_modules/fsevents):
@@ -141,6 +144,26 @@ npm ERR! A complete log of this run can be found in:
 npm ERR!     /root/.npm/_logs/2021-06-02T18_42_08_098Z-debug.log
 
 
+#Error 3 No Bluetooth available
+root@raspberrypi:/home/pi/idasen-backend# node src/index.js
+/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/hci-socket/hci.js:120
+this._socket.bindRaw(this._deviceId);
+^
 
+Error: ENODEV, No such device
+at Hci.init (/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/hci-socket/hci.js:120:18)
+at NobleBindings.init (/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/hci-socket/bindings.js:93:13)
+at Noble.get (/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/noble.js:73:26)
+at Object.<anonymous> (/home/pi/idasen-backend/src/control/bluetoothDeskBridge.js:4:8)
+at Module._compile (internal/modules/cjs/loader.js:1200:30)
+at Object.Module._extensions..js (internal/modules/cjs/loader.js:1220:10)
+at Module.load (internal/modules/cjs/loader.js:1049:32)
+at Function.Module._load (internal/modules/cjs/loader.js:937:14)
+at Module.require (internal/modules/cjs/loader.js:1089:19)
+at require (internal/modules/cjs/helpers.js:73:18) {
+errno: 19,
+code: 'ENODEV',
+syscall: 'bind'
+}
 
 

@@ -1,0 +1,7 @@
+{
+  "name": "smartDesk",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
