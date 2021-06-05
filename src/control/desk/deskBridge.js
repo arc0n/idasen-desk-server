@@ -60,8 +60,9 @@ class DeskBridge extends EventEmitter {
             if (state === "poweredOn") {
                 await this.scan();
             } else {
+                log("BT device state:", state);
+
                 if (this.desk) {
-                    console.log("BT state:", state);
                     this.desk.disconnect();
                 }
                 this.desk = null;
