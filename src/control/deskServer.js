@@ -212,7 +212,7 @@ class DeskServer {
       desk = await deskBridge.scan();
     }
 
-    return desk;
+    return await desk;
   }
 }
 
