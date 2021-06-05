@@ -178,33 +178,30 @@ class DeskServer {
         verbose: true,
       });
 
+
       deskBridge.on("error", () => {
         throw new Error("Error while starting the Bluetooth device");
       });
 
       setInterval(() => {
-        // TODO what does this do?? only saving the sitting and standing time right?
-        /*    const desk =  await Promise.race([deskBridge.getDesk(), sleep(200)]);
-          if(desk) {*/
         Promise.race([deskBridge.getDesk(), sleep(500)]).then((desk) => {
-          if (!desk) return;
-          console.log("new position in interval", desk?.position);
-          // someone did something
-          const idleTime = getIdleTime();
-          if (
-            idleTime < CHECK_INTERVAL &&
-            desk.position < config.standThreshold
-          ) {
-            sittingTime += CHECK_INTERVAL;
-          } else if (
-            desk.position >= config.standThreshold ||
-            idleTime >= config.sittingBreakTime
-          ) {
-            sittingTime = 0;
+          if (!!desk) {
+            console.log("new position in interval", desk?.position);
+            // someone did something
+            const idleTime = getIdleTime();
+            if ( // TODO refactor this logic
+                idleTime < CHECK_INTERVAL &&
+                desk.position < config.standThreshold
+            ) {
+              sittingTime += CHECK_INTERVAL;
+            } else if (
+                desk.position >= config.standThreshold ||
+                idleTime >= config.sittingBreakTime
+            ) {
+              sittingTime = 0;
+            }
           }
         });
-
-        /*  }*/
       }, CHECK_INTERVAL * 1000);
     }
 
@@ -212,7 +209,6 @@ class DeskServer {
     console.log("Debug Message Desk", desk);
     if (!desk || desk.ready === false) {
       console.log("Debug Message SCAN", desk);
-
       desk = await deskBridge.scan();
     }
 
