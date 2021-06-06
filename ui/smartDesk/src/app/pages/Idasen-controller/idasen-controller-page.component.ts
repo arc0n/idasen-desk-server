@@ -10,7 +10,7 @@ import { AnimationController} from '@ionic/angular';
   templateUrl: 'idasen-controller-page.component.html',
   styleUrls: ['idasen-controller-page.component.scss']
 })
-export class IdasenControllerPage implements OnInit, OnDestroy, AfterViewInit {
+export class IdasenControllerPage implements OnInit, OnDestroy {
   @ViewChild('deskPicture', {static: false}) deskPicture: any
   triggerApiCall$ = new Subject<number>()
   interval: any;
@@ -74,10 +74,6 @@ export class IdasenControllerPage implements OnInit, OnDestroy, AfterViewInit {
         ).play();
     }, 10)
 
-  }
-
-  ngAfterViewInit(): void {
-    console.log(this.deskPicture?.nativeElement)
   }
 
 }
