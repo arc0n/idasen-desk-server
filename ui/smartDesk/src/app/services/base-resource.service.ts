@@ -11,10 +11,8 @@ export class BaseResourceService {
   constructor(private http: HttpClient) {}
 
   public connectDesk(): Observable<string> {
-    console.log('service called');
-
     return this.http
-      .post<string>(this.baseUrl + '/connect/e6:d1:b5:45:f6:dd', {})
+      .post<any>(this.baseUrl + '/connect/e6:d1:b5:45:f6:dd', {})
       .pipe(
         catchError((e) => {
           console.log(e);
@@ -24,9 +22,19 @@ export class BaseResourceService {
   }
 
   public getStatus(): Observable<string> {
-    console.log('service called');
+    return this.http.get<any>(this.baseUrl + '/status', {}).pipe(
+      map(result => JSON.stringify(result)),
+      catchError((e) => {
+        console.log(e);
+        return of('error');
+      })
+    );
+  }
 
-    return this.http.get<string>(this.baseUrl + '/status', {}).pipe(
+  moveDesk(targetPosition: number): Observable<any> {
+  return  this.http
+    .post<any>(`${this.baseUrl}/move/${targetPosition}`, {})
+    .pipe(
       catchError((e) => {
         console.log(e);
         return of('error');

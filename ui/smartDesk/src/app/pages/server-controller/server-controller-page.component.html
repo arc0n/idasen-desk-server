@@ -13,5 +13,15 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="server-controller screen"></app-explore-container>
+  <div class="content-wrapper">
+
+  <div class="button-group-wrapper">
+    <ion-button color="primary" (click)="connectToDesk()">connect</ion-button>
+    <ion-button color="primary" (click)="getDeskStatus()">status</ion-button>
+  </div>
+
+
+  <div>{{this.status}}</div>
+  </div>
+
 </ion-content>

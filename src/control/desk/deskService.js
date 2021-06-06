@@ -8,12 +8,15 @@ const { saveConfig } = require("../config");
 
 
 const { getIdleTime } = require("desktop-idle");
-const CHECK_INTERVAL = 5.0; // for start server
-let deskBridge;
+const CHECK_INTERVAL = 5.0; // for updating position
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
 class DeskService {
+
+  constructor() {
+    this.deskBridge = null;
+  }
   /**
    * Scan vor desks, returns all found desks or an empty array
    * @returns {Promise<[]|*[]>}
@@ -26,9 +29,9 @@ class DeskService {
     });
 
     // open promise
-    let promiseResovleFn;
+    let promiseResoleFn;
     const donePromise = new Promise((resolve) => {
-      promiseResovleFn = resolve;
+      promiseResoleFn = resolve;
     });
 
     // start scan
@@ -36,7 +39,7 @@ class DeskService {
     // check every second if time wait is already done,
     setInterval(() => {
       if (scanUntil < +new Date()) {
-        promiseResovleFn();
+        promiseResoleFn();
       }
     }, 1000);
 
@@ -102,11 +105,11 @@ class DeskService {
    * @returns {Promise<void>}
    */
   async stopDeskConnection() {
-    deskBridge.disconnect();
+    this.deskBridge.disconnect();
   }
 
   async moveTo(position) {
-    if (!deskBridge) {
+    if (!this.deskBridge) {
       await this.createDeskBridge();
     }
     let desk = await this.getStatus();
@@ -114,7 +117,7 @@ class DeskService {
       desk = await this.createDeskBridge();
       if(!desk) return false;
     }
-    await deskBridge.moveTo(position);
+    await this.deskBridge.moveTo(position);
     return true;
   }
 
@@ -123,10 +126,10 @@ class DeskService {
    * @returns {Promise<any>}
    */
   async getStatus() {
-    if (!deskBridge) {
+    if (!this.deskBridge) {
       await this.createDeskBridge();
     }
-    const status = await Promise.race([deskBridge.getDesk(), sleep(100)]);
+    const status = await Promise.race([this.deskBridge.getDesk(), sleep(100)]);
     return status || false;
   }
 
@@ -137,20 +140,20 @@ class DeskService {
     const config = await getConfig();
     let sittingTime = 0;
 
-    if (!deskBridge) {
-      deskBridge = new DeskBridge({
+    if (!this.deskBridge) {
+      this.deskBridge = new DeskBridge({
         deskAddress: config.deskAddress,
         deskPositionMax: config.deskPositionMax || 58,
         verbose: true,
       });
 
 
-      deskBridge.on("error", () => {
+      this.deskBridge.on("error", () => {
         throw new Error("Error while starting the Bluetooth device");
       });
 
       setInterval(() => {
-        Promise.race([deskBridge.getDesk(), sleep(500)]).then((desk) => {
+        Promise.race([this.deskBridge.getDesk(), sleep(500)]).then((desk) => {
           if (!!desk) {
             console.log("Desk Position: ", desk?.position);
             // someone did something
@@ -173,7 +176,7 @@ class DeskService {
 
     let desk = await this.getStatus();
     if (!desk) {
-     await deskBridge.scan().catch(()=>{});
+     await this.deskBridge.scan().catch(()=>{});
      let desk = await this.getStatus();
      console.log("DEBUG deskServer desk result: ", desk)
     }

@@ -1,0 +1,12 @@
+.content-wrapper{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.button-group-wrapper{
+  margin-top: 2rem;
+  display: flex;
+  align-content: center;
+  flex-direction: row;
+  justify-content: center;
+}
