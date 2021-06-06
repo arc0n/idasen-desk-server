@@ -22,9 +22,8 @@
   </div>
 
 
-  <div class="desk-image-wrapper">
+  <div class="desk-image-wrapper" #deskPicture>
     <img src="../../../assets/desk_dark_mode.png" alt="idasen desk">
-
   </div>
 
   <div class="height-slider-wrapper">
@@ -36,7 +35,7 @@
 
 
     <ion-item lines="none">
-      <ion-range min="7" max="58" color="secondary" debounce="10"
+      <ion-range min="7" max="58" color="secondary" debounce="20"
                  (ionChange)="heightSliderChange($event)"
       >
         <ion-label slot="start">7</ion-label>
