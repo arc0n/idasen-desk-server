@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BaseResourceService} from '../../services/base-resource.service';
-import {debounce, debounceTime, filter, map, retry, switchMap, takeUntil, takeWhile, tap} from 'rxjs/operators';
-import {interval, of, Subject, Subscription} from "rxjs";
-import {Animation, AnimationController} from '@ionic/angular';
+import { debounceTime,   switchMap} from 'rxjs/operators';
+import { Subject, Subscription} from "rxjs";
+import { AnimationController} from '@ionic/angular';
 
 
 @Component({
