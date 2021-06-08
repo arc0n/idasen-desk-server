@@ -41,7 +41,7 @@ app.post("/desk/connect/:address", async (req, res) => {
       .catch((e) => res.status(500).send("Error while setting config: " + e));
     await deskService
       .createDeskBridge()
-      .then((desk) => res.send({ position: desk.position }))
+      .then((desk) => res.send(JSON.safeStringify(desk)))
       .catch((e) => res.status(500).send("Error while connecting: " + e));
   }
 });
@@ -63,9 +63,26 @@ app.post("/desk/move/:position", async (req, res) => {
 
 app.get("/desk/status", async (req, res) => {
   const status = await deskService.getStatus();
-  res.send(status);
+  res.send(JSON.safeStringify(status));
 });
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+// safely handles circular references
+JSON.safeStringify = (obj, indent = 2) => {
+  let cache = [];
+  const retVal = JSON.stringify(
+    obj,
+    (key, value) =>
+      typeof value === "object" && value !== null
+        ? cache.includes(value)
+          ? undefined // Duplicate reference found, discard key
+          : cache.push(value) && value // Store value in our collection
+        : value,
+    indent
+  );
+  cache = null;
+  return retVal;
+};
