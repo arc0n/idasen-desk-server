@@ -11,6 +11,8 @@ $ sudo su
 # https://www.freecodecamp.org/news/how-to-install-node-js-on-ubuntu-and-update-npm-to-the-latest-version/
 
 
+# for HCI socket we need some package https://github.com/noble/node-bluetooth-hci-socket
+$ sudo apt-get install libudev-dev #did not solve the problem
 
 # the package libxss-dev is needed for one of the dependencies: https://www.npmjs.com/package/desktop-idle
 $ sudo apt install libxss-dev pkg-config
