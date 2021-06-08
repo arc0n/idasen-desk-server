@@ -7,7 +7,7 @@ import { catchError, finalize, map, tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class BaseResourceService {
-  private baseUrl = 'http://localhost:8100/desk';
+  private baseUrl = 'http://192.168.0.80:3000/desk';
   constructor(private http: HttpClient) {}
 
   public connectDesk(): Observable<string> {
@@ -23,7 +23,7 @@ export class BaseResourceService {
 
   public getStatus(): Observable<string> {
     return this.http.get<any>(this.baseUrl + '/status', {}).pipe(
-      map(result => JSON.stringify(result)),
+      map((result) => JSON.stringify(result)),
       catchError((e) => {
         console.log(e);
         return of('error');
@@ -32,13 +32,13 @@ export class BaseResourceService {
   }
 
   moveDesk(targetPosition: number): Observable<any> {
-  return  this.http
-    .post<any>(`${this.baseUrl}/move/${targetPosition}`, {})
-    .pipe(
-      catchError((e) => {
-        console.log(e);
-        return of('error');
-      })
-    );
+    return this.http
+      .post<any>(`${this.baseUrl}/move/${targetPosition}`, {})
+      .pipe(
+        catchError((e) => {
+          console.log(e);
+          return of('error');
+        })
+      );
   }
 }

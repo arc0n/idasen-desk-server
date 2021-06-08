@@ -8,11 +8,22 @@ const { DeskService } = require("./control/desk/deskService");
 const app = express();
 const port = 3000;
 const deskService = new DeskService();
+
+const headers = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,POST,PATCH,DELETE,PUT,OPTIONS",
+  "Access-Control-Allow-Headers":
+    "Origin, Content-Type, X-Auth-Token, content-type",
+};
+
 app.get("/desk/search", async (req, res) => {
   const deskList = await deskService.scanForDesk().catch((err) => {
-    res.status(500).send("A problem occurred while scanning: " + err);
+    res
+      .header(headers)
+      .status(500)
+      .send("A problem occurred while scanning: " + err);
   });
-  res.send(deskList);
+  res.header(headers).send(deskList);
 });
 
 app.get("/desk/config", async (req, res) => {
@@ -20,14 +31,20 @@ app.get("/desk/config", async (req, res) => {
   await getConfig()
     .then(
       (config) => {
-        res.send(config);
+        res.header(headers).send(config);
       },
       (e) => {
-        res.status(500).send(`Error occurred when getting config: ${e}`);
+        res
+          .header(headers)
+          .status(500)
+          .send(`Error occurred when getting config: ${e}`);
       }
     )
     .catch(() =>
-      res.status(500).send(`Error occurred when getting config: ${e}`)
+      res
+        .header(headers)
+        .status(500)
+        .send(`Error occurred when getting config: ${e}`)
     );
 });
 
@@ -38,18 +55,28 @@ app.post("/desk/connect/:address", async (req, res) => {
     console.log(`Attempt to connect to address  ${req.params.address}`);
     await deskService
       .setDeskAddressInConfig(req.params.address + "")
-      .catch((e) => res.status(500).send("Error while setting config: " + e));
+      .catch((e) =>
+        res
+          .header(headers)
+          .status(500)
+          .send("Error while setting config: " + e)
+      );
     await deskService
       .createDeskBridge()
-      .then((desk) => res.send(JSON.safeStringify(desk)))
-      .catch((e) => res.status(500).send("Error while connecting: " + e));
+      .then((desk) => res.header(headers).send(JSON.safeStringify(desk)))
+      .catch((e) =>
+        res
+          .header(headers)
+          .status(500)
+          .send("Error while connecting: " + e)
+      );
   }
 });
 app.post("/desk/disconnect", async (req, res) => {
   deskService.stopDeskConnection().catch((err) => {
     // nothing
   });
-  res.send(true);
+  res.header(headers).send(true);
 });
 
 app.post("/desk/move/:position", async (req, res) => {
@@ -63,7 +90,7 @@ app.post("/desk/move/:position", async (req, res) => {
 
 app.get("/desk/status", async (req, res) => {
   const status = await deskService.getStatus();
-  res.send(JSON.safeStringify(status));
+  res.header(headers).send(JSON.safeStringify(status));
 });
 
 app.listen(port, () => {
