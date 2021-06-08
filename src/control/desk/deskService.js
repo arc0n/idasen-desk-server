@@ -89,6 +89,7 @@ class DeskService {
    * @returns {Promise<void>}
    */
   async setDeskAddressInConfig(address) {
+    console.log("DEBUG setting address to", address);
     const config = await getConfig();
     config.deskAddress = address;
     await saveConfig();

@@ -116,6 +116,7 @@ class BluetoothDeskBridge extends EventEmitter {
   }
 
   isDeskPeripheral(peripheral) {
+    console.log("DEBUG config in deskPeripheral", this.config);
     if (peripheral.address === this.config.deskAddress) {
       return true;
     }
