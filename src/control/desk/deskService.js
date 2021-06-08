@@ -177,8 +177,7 @@ class DeskService {
       };
       await this.deskBridge.scan().catch(() => {});
     }
-    const desk = await this.deskBridge.getDesk();
-    return desk;
+    return await this.deskBridge.getDesk();
   }
 }
 
