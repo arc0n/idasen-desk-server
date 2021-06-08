@@ -1,3 +1,4 @@
+const { log } = require("../utils");
 const { sleep } = require("../utils");
 const { getConfig } = require("../config");
 
@@ -18,6 +19,7 @@ class DeskService {
    * @returns {Promise<[]|*[]>}
    */
   async scanForDesk() {
+    log("Scanning for Desks....");
     // const config = await getConfig(); // TODO is config needed there?
     const bridge = new DeskBridge({
       verbose: false,
