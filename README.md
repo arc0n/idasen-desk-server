@@ -1,55 +1,59 @@
 # Notes for running the web server
-# open port 3000
+## open port 3000
 $ sudo apt-get install ufw
 $ sudo ufw allow 3000
 
-# install nodeJs https://tutorials-raspberrypi.de/raspberry-pi-nodejs-webserver-installieren-gpios-steuern/
+## install nodeJs https://tutorials-raspberrypi.de/raspberry-pi-nodejs-webserver-installieren-gpios-steuern/
 $ sudo apt-get update
 $ sudo apt-get full-upgrade
 $ sudo su
-# Do not use node from the ubuntu appstore, use nvm to install correct version, install everything for root and standard user
-# https://www.freecodecamp.org/news/how-to-install-node-js-on-ubuntu-and-update-npm-to-the-latest-version/
+## Do not use node from the ubuntu appstore, use nvm to install correct version, install everything for root and standard user
+### https://www.freecodecamp.org/news/how-to-install-node-js-on-ubuntu-and-update-npm-to-the-latest-version/
 
 
 # for HCI socket we need some package https://github.com/noble/node-bluetooth-hci-socket
 $ sudo apt-get install libudev-dev #did not solve the problem
 
-# the package libxss-dev is needed for one of the dependencies: https://www.npmjs.com/package/desktop-idle
+## the package libxss-dev is needed for one of the dependencies: https://www.npmjs.com/package/desktop-idle
 $ sudo apt install libxss-dev pkg-config
 
-# https://wiki.ubuntuusers.de/Bluetooth/Einrichtung/
-# Some further packages for bluetooth connection https://yarnpkg.com/package/@abandonware/noble#readme
+## https://wiki.ubuntuusers.de/Bluetooth/Einrichtung/
+## Some further packages for bluetooth connection https://yarnpkg.com/package/@abandonware/noble#readme
 $ sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
-# /* npm install bcrypt ? */
+ /* npm install bcrypt ? */
 
-# Then got to the project folder
+## Then got to the project folder
 $ cd idasen-backend
 
-# Run node installer, within the project folder (or yarn install, if u have it installed)
+## Run node installer, within the project folder (or yarn install, if u have it installed)
 $ sudo npm i 
 
-# Run server, within the project folder
+## Run server, within the project folder
 $ sudo node src/index.js
 
 
-## Known Errors:
+# Known Errors:
 
-# Solution for Error 1
-# npm ERR! code 1
-# npm ERR! path /home/ubuntu/idasen-backend/node_modules/desktop-idle
+## Solution for Error 1
+### npm ERR! code 1
+### npm ERR! path /home/ubuntu/idasen-backend/node_modules/desktop-idle
 $ libxss-dev, see above for package libxss-dev
-# $ ~/idasen-backend$ apt-get install xscrnsaver # haven't worked
-# Or upgrade your node version!
+### $ ~/idasen-backend$ apt-get install xscrnsaver # haven't worked
+### Or upgrade your node version!
 
-# Solution for Error 2 "/usr/bin/env: ‘node’: Permission denied"
-# in sudo su
+## Solution for Error 2 "/usr/bin/env: ‘node’: Permission denied"
+### in sudo su
 $ rm package-lock.json
 $ npm i -g yarn
 $ yarn install
 
 
+## Solution Error 3
+### there is no compatible bluetooth device, if you use Raspberry Pi2 or older, 
+### get yourself a nice big USB BT dongle with BLE support
 
-#Error 1:
+
+## Error 1:
 ubuntu@ubuntu:~/idasen-backend$ npm i
 npm notice
 npm notice New minor version of npm available! 7.13.0 -> 7.15.0
@@ -122,8 +126,7 @@ npm ERR! A complete log of this run can be found in:
 npm ERR!     /home/ubuntu/.npm/_logs/2021-05-29T10_47_13_737Z-debug.log
 
 
-# Error 2
-# Attempt: use yarn: $ npm i -g yarn
+## Error 2
 /usr/bin/env: ‘node’: Permission denied
 sh: 1: node-gyp: Permission denied
 npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@~2.3.1 (node_modules/chokidar/node_modules/fsevents):
@@ -143,6 +146,26 @@ npm ERR! A complete log of this run can be found in:
 npm ERR!     /root/.npm/_logs/2021-06-02T18_42_08_098Z-debug.log
 
 
+## Error 3 No Bluetooth available
+root@raspberrypi:/home/pi/idasen-backend# node src/index.js
+/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/hci-socket/hci.js:120
+this._socket.bindRaw(this._deviceId);
+^
 
+Error: ENODEV, No such device
+at Hci.init (/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/hci-socket/hci.js:120:18)
+at NobleBindings.init (/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/hci-socket/bindings.js:93:13)
+at Noble.get (/home/pi/idasen-backend/node_modules/@abandonware/noble/lib/noble.js:73:26)
+at Object.<anonymous> (/home/pi/idasen-backend/src/control/bluetoothDeskBridge.js:4:8)
+at Module._compile (internal/modules/cjs/loader.js:1200:30)
+at Object.Module._extensions..js (internal/modules/cjs/loader.js:1220:10)
+at Module.load (internal/modules/cjs/loader.js:1049:32)
+at Function.Module._load (internal/modules/cjs/loader.js:937:14)
+at Module.require (internal/modules/cjs/loader.js:1089:19)
+at require (internal/modules/cjs/helpers.js:73:18) {
+errno: 19,
+code: 'ENODEV',
+syscall: 'bind'
+}
 
 

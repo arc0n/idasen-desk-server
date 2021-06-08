@@ -91,7 +91,7 @@ class Desk extends EventEmitter {
       );
 
     const positionChar = characteristics.find(
-      (char) => char.uuid == Desk.services().position.characteristicId
+      (char) => char.uuid === Desk.services().position.characteristicId
     );
     if (!positionChar) {
       throw new Error("Missing position service");
@@ -106,7 +106,7 @@ class Desk extends EventEmitter {
     await positionChar.notifyAsync(true);
 
     const controlChar = characteristics.find(
-      (char) => char.uuid == Desk.services().control.characteristicId
+      (char) => char.uuid === Desk.services().control.characteristicId
     );
     if (!controlChar) {
       throw new Error("Missing control service");
@@ -124,7 +124,7 @@ class Desk extends EventEmitter {
 
   updatePosition(data) {
     const position = data.readInt16LE() / 100;
-    if (this.position == position) {
+    if (this.position === position) {
       return;
     }
 
@@ -166,7 +166,7 @@ class Desk extends EventEmitter {
         ((isMovingUp && this.position + stopThreshold < targetPosition) ||
           (!isMovingUp && this.position - stopThreshold > targetPosition))
       ) {
-        if (lastCommand == 0 || lastCommand < +new Date() - 300) {
+        if (lastCommand === 0 || lastCommand < +new Date() - 300) {
           await this.ensureConnection();
           await this.controlChar.writeAsync(
             isMovingUp ? Desk.control().up : Desk.control().down,
@@ -180,8 +180,8 @@ class Desk extends EventEmitter {
         await this.readPosition();
 
         if (
-          lastPosition == this.position ||
-          (lastSpeed != 0 && this.speed == 0)
+          lastPosition === this.position ||
+          (lastSpeed !== 0 && this.speed === 0)
         ) {
           shouldStopCounter += 1;
         } else {

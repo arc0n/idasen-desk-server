@@ -1,0 +1,50 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Idasen-Controller Page
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" [scrollX]="false">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Idasen-Controller Page</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+<div class="content-wrapper">
+
+  <div class="memory-button-wrapper">
+    <ion-fab-button color="secondary">50</ion-fab-button>
+    <ion-fab-button color="secondary">100</ion-fab-button>
+    <ion-fab-button color="secondary">110</ion-fab-button>
+  </div>
+
+
+  <div class="desk-image-wrapper" #deskPicture>
+    <img src="../../../assets/desk_dark_mode.png" alt="idasen desk">
+  </div>
+
+  <div class="height-slider-wrapper">
+    <div class="height-slider-value">
+      <ion-chip outline="true" [color]="'secondary'">
+        <ion-label>{{this.sliderValue}}</ion-label>
+      </ion-chip>
+    </div>
+
+
+    <ion-item lines="none">
+      <ion-range min="7" max="58" color="secondary" debounce="20"
+                 (ionChange)="heightSliderChange($event)"
+      >
+        <ion-label slot="start">7</ion-label>
+        <ion-label slot="end">58</ion-label>
+      </ion-range>
+    </ion-item>
+  </div>
+</div>
+
+
+
+</ion-content>

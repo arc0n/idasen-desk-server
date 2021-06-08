@@ -1,7 +1,7 @@
 const noble = require("@abandonware/noble");
 const schedule = require("node-schedule");
 const EventEmitter = require("events");
-const { sleep } = require("../utils");
+const {sleep} = require("../utils");
 
 const { Desk } = require("./desk");
 const { log } = require("../utils");
@@ -25,7 +25,7 @@ class DeskBridge extends EventEmitter {
   }
 
   async getDesk() {
-    await this._deskReadyPromise;
+    await this._deskReadyPromise
     return this.desk;
   }
 
@@ -50,7 +50,6 @@ class DeskBridge extends EventEmitter {
   }
 
   startNoble() {
-    console.log("DEBUG event listeners set");
     this.log("starting BLE");
     noble.on("discover", async (peripheral) => {
       await this.processPeripheral(peripheral);
@@ -62,7 +61,7 @@ class DeskBridge extends EventEmitter {
         await this.scan();
       } else {
         if (this.desk) {
-          console.log("BT state:", state);
+          console.log("BT state:", state)
           this.desk.disconnect();
         }
         this.desk = null;
@@ -118,7 +117,6 @@ class DeskBridge extends EventEmitter {
   }
 
   async processPeripheral(peripheral) {
-    console.log("debug msg deks in deskbridge", this.desk);
     if (this.desk || !this.isDeskPeripheral(peripheral)) {
       return;
     }
@@ -129,7 +127,7 @@ class DeskBridge extends EventEmitter {
       this.log("Found configured desk", peripheral.address);
       this.desk = new Desk(peripheral, this.config.deskPositionMax);
       peripheral.on("disconnect", () => {
-        if (this.desk == null) {
+        if(this.desk == null) {
           log("desk disconnected");
           this._createReadyPromise();
           return;
@@ -155,8 +153,7 @@ class DeskBridge extends EventEmitter {
   didUpdateDevice() {
     if (this.desk) {
       this.desk.on("position", async () => {
-        if (!this.deskReady) {
-          // TODO deskReady could be replaced with the promise
+        if (!this.deskReady) { // TODO deskReady could be replaced with the promise
           this.deskReady = true;
           this._deskReadyPromiseResolve();
         }

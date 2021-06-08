@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+    Server Controller Page
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Server Controller Page</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="content-wrapper">
+
+  <div class="button-group-wrapper">
+    <ion-button color="primary" (click)="connectToDesk()">connect</ion-button>
+    <ion-button color="primary" (click)="getDeskStatus()">status</ion-button>
+  </div>
+
+
+  <div>{{this.status}}</div>
+  </div>
+
+</ion-content>

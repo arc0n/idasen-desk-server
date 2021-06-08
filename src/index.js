@@ -1,88 +1,73 @@
 const express = require("express");
-const { getConfig } = require("./control/config");
+const {getConfig} = require("./control/config");
 /*
 const { sleep } = require("./control/utils");
 */
-const { DeskHandler } = require("./control/deskServer");
+const {DeskService} = require("./control/desk/deskService");
 
 const app = express();
 const port = 3000;
-const deskHandler = new DeskHandler();
-app.get("/search", async (req, res) => {
-  const deskList = await deskHandler.scanForDesk().catch((err) => {
-    res.status(500).send(err);
-  });
-  res.send(deskList);
+const deskService = new DeskService();
+app.get("/desk/search", async (req, res) => {
+    const deskList = await deskService.scanForDesk().catch((err) => {
+        res.status(500).send("A problem occurred while scanning: " + err);
+    });
+    res.send(deskList);
 });
 
-app.get("/config", async (req, res) => {
-  // TODO catch if connected
-  if (await deskHandler.serverIsRunning()) {
+app.get("/desk/config", async (req, res) => {
+    // TODO catch if connected
     await getConfig()
-      .then(
-        (config) => {
-          res.send(config);
-        },
-        (e) => {
-          res.status(500).send(`Error occurred when getting config: ${e}`);
-          return;
-        }
-      )
-      .catch(res.status(500).send(`Error occurred when getting config: ${e}`));
-    return;
-  } else {
-    res.send(false);
-  }
+        .then(
+            (config) => {
+                res.send(config);
+            },
+            (e) => {
+                res.status(500).send(`Error occurred when getting config: ${e}`);
+            }
+        )
+        .catch(() =>
+            res.status(500).send(`Error occurred when getting config: ${e}`)
+        );
 });
 
-app.post("/connect/:address", async (req, res) => {
-  // TODO validate input
+app.post("/desk/connect/:address", async (req, res) => {
+    // TODO validate input
 
-  if (!!req.params.address) {
-    try {
-      console.log(`Attempt to connect to address  ${req.params.address}`);
-      await deskHandler
-        .setDeskAddressInConfig(req.params.address + "")
-        .catch((e) => console.log("err1"));
-      await deskHandler.startDeskServer().catch((e) => console.log("err2"));
-      res.send(true);
-      return;
-    } catch (e) {
-      res.status(500).send("Error: Connection not possible: ", e);
-      return;
+    if (!!req.params.address) {
+        console.log(`Attempt to connect to address  ${req.params.address}`);
+        await deskService
+            .setDeskAddressInConfig(req.params.address + "")
+            .catch((e) => res.status(500).send("Error while setting config: " + e));
+        await deskService
+            .createDeskBridge()
+            .then((desk) => res.send(!!desk))
+            .catch((e) => res.status(500).send("Error while connecting: " + e));
     }
-  }
-  res.status(404).send("please pass a valid physical desk address");
 });
-app.post("/disconnect", async (req, res) => {
-  deskHandler.stopDeskConnection().catch((err) => res.send(err));
-  res.send(true);
-});
-
-app.post("/move/:position", async (req, res) => {
-  // TODO validate input
-  try {
-    if (await deskHandler.serverIsRunning()) {
-      const hasMoved = await deskHandler.sendCommand(
-        { op: "moveTo", pos: req.params.position },
-        true
-      );
-      // wait is a bool, must be set to true in this api
-      res.send(hasMoved);
-      // TODO try if wait false works
-    } else {
-      res.send(false);
-    }
-  } catch (e) {
-    res.status(500).send("Error: Connection not possible: ", e);
-  }
+app.post("/desk/disconnect", async (req, res) => {
+    deskService.stopDeskConnection(
+    ).catch((err) => {
+        // nothing
+    });
+    res.send(true);
 });
 
-app.get("/status", async (req, res) => {
-      const status = await deskHandler.getStatus();
-      res.send(status);
+app.post("/desk/move/:position", async (req, res) => {
+    // TODO validate input
+
+    await deskService
+        .moveTo(req.params.position)
+        .then((hasMoved) => res.send(hasMoved))
+        .catch((e) => res.status(500).send("Error while setting config: " + e));
+
+});
+
+app.get("/desk/status", async (req, res) => {
+    const status = await deskService.getStatus();
+    res.send(status);
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`Example app listening at http://localhost:${port}`);
 });
