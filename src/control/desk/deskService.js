@@ -107,12 +107,12 @@ class DeskService {
     if (!this.deskBridge) {
       await this.createDeskBridge();
     }
-    let desk = await this.getStatus();
+    let desk = await this.deskBridge.getDesk();
     if (!desk) {
       desk = await this.createDeskBridge();
       if (!desk) return false;
     }
-    await this.deskBridge.moveTo(position);
+    await desk.moveTo(position);
     return true;
   }
 
@@ -122,7 +122,7 @@ class DeskService {
    */
   async getStatus() {
     if (!this.deskBridge) {
-      await this.createDeskBridge();
+      await this.createDeskBridge(); // todo return false
     }
     const status = await Promise.race([this.deskBridge.getDesk(), sleep(100)]);
     return status || false;
