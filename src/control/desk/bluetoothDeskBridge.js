@@ -78,7 +78,7 @@ class BluetoothDeskBridge extends EventEmitter {
     }
 
     const scanUntil = new Promise((res, rej) => {
-      this.stopScanningPromiseFn = rej;
+      this.stopScanningPromiseFn = res;
       setTimeout(() => res(), 10000);
     }).then(() => {
       try {
