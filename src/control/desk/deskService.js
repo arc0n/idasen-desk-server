@@ -1,11 +1,8 @@
-const {  sleep } = require("../utils");
+const { sleep } = require("../utils");
 const { getConfig } = require("../config");
-
-
 
 const { DeskBridge } = require("./bluetoothDeskBridge");
 const { saveConfig } = require("../config");
-
 
 const { getIdleTime } = require("desktop-idle");
 const CHECK_INTERVAL = 5.0; // for updating position
@@ -13,7 +10,6 @@ const CHECK_INTERVAL = 5.0; // for updating position
  * Handler to spawn a child server control the desk via DeskBridge
  */
 class DeskService {
-
   constructor() {
     this.deskBridge = null;
   }
@@ -98,8 +94,6 @@ class DeskService {
     await saveConfig();
   }
 
-
-
   /**
    * kills only the connection the the deks
    * @returns {Promise<void>}
@@ -115,7 +109,7 @@ class DeskService {
     let desk = await this.getStatus();
     if (!desk) {
       desk = await this.createDeskBridge();
-      if(!desk) return false;
+      if (!desk) return false;
     }
     await this.deskBridge.moveTo(position);
     return true;
@@ -147,6 +141,7 @@ class DeskService {
         verbose: true,
       });
 
+      this.deskBridge.start();
 
       this.deskBridge.on("error", () => {
         throw new Error("Error while starting the Bluetooth device");
@@ -158,14 +153,15 @@ class DeskService {
             console.log("Desk Position: ", desk?.position);
             // someone did something
             const idleTime = getIdleTime(); // TODO if removed, update the package.json
-            if ( // TODO refactor this logic
-                idleTime < CHECK_INTERVAL &&
-                desk.position < config.standThreshold
+            if (
+              // TODO refactor this logic
+              idleTime < CHECK_INTERVAL &&
+              desk.position < config.standThreshold
             ) {
               sittingTime += CHECK_INTERVAL;
             } else if (
-                desk.position >= config.standThreshold ||
-                idleTime >= config.sittingBreakTime
+              desk.position >= config.standThreshold ||
+              idleTime >= config.sittingBreakTime
             ) {
               sittingTime = 0;
             }
@@ -176,9 +172,9 @@ class DeskService {
 
     let desk = await this.getStatus();
     if (!desk) {
-     await this.deskBridge.scan().catch(()=>{});
-     let desk = await this.getStatus();
-     console.log("DEBUG deskServer desk result: ", desk)
+      await this.deskBridge.scan().catch(() => {});
+      let desk = await this.getStatus();
+      console.log("DEBUG deskServer desk result: ", desk);
     }
     return desk;
   }
