@@ -132,6 +132,7 @@ class DeskService {
    * @returns {Promise<void>}
    */
   async createDeskBridge() {
+    let desk;
     const config = await getConfig();
     let sittingTime = 0;
 
@@ -175,14 +176,13 @@ class DeskService {
         deskPositionMax: config.deskPositionMax || 58,
         verbose: true,
       };
+      desk = await this.getStatus();
+      if (!desk) {
+        await this.deskBridge.scan().catch(() => {});
+      }
     }
 
-    let desk = await this.getStatus();
-    if (!desk) {
-      await this.deskBridge.scan().catch(() => {});
-      desk = await this.getStatus();
-    }
-    return desk;
+    return await this.getStatus();
   }
 }
 
