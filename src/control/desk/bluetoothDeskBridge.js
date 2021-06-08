@@ -15,6 +15,7 @@ class BluetoothDeskBridge extends EventEmitter {
     this.desk = null;
     this._createReadyPromise();
     this.config = config;
+    this.stopScanningPromiseFn = null;
   }
 
   _createReadyPromise() {
@@ -77,6 +78,7 @@ class BluetoothDeskBridge extends EventEmitter {
     }
 
     const scanUntil = new Promise((res, rej) => {
+      this.stopScanningPromiseFn = rej;
       setTimeout(() => res(), 10000);
     }).then(() => {
       try {
@@ -151,7 +153,8 @@ class BluetoothDeskBridge extends EventEmitter {
       });
 
       try {
-        await noble.stopScanningAsync();
+        //await noble.stopScanningAsync();
+        if (this.stopScanningPromiseFn) this.stopScanningPromiseFn();
       } catch (err) {
         // We don't really care
       }
