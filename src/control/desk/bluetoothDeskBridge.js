@@ -1,7 +1,6 @@
 const noble = require("@abandonware/noble");
 const schedule = require("node-schedule");
 const EventEmitter = require("events");
-const { getConfig } = require("../config");
 
 const { Desk } = require("./desk");
 const { log } = require("../utils");
@@ -10,11 +9,12 @@ const { log } = require("../utils");
  * Source: https://github.com/mitsuhiko/idasen-control
  */
 class BluetoothDeskBridge extends EventEmitter {
-  constructor() {
+  constructor(config) {
     super();
     this.deskReady = false;
     this.desk = null;
     this._createReadyPromise();
+    this.config = config;
   }
 
   _createReadyPromise() {
@@ -69,11 +69,9 @@ class BluetoothDeskBridge extends EventEmitter {
     noble.on("scanStop", async () => {
       this.log("scanStop");
     });
-    this.config = getConfig();
   }
 
   async scan() {
-    this.config = await getConfig();
     if (this.desk) {
       return;
     }

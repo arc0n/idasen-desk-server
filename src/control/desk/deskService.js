@@ -167,12 +167,18 @@ class DeskService {
           }
         });
       }, CHECK_INTERVAL * 1000);
+    } else {
+      this.deskBridge.config = {
+        deskAddress: config.deskAddress,
+        deskPositionMax: config.deskPositionMax || 58,
+        verbose: true,
+      };
     }
 
     let desk = await this.getStatus();
     if (!desk) {
       await this.deskBridge.scan().catch(() => {});
-      let desk = await this.getStatus();
+      desk = await this.getStatus();
     }
     return desk;
   }
