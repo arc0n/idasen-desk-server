@@ -19,7 +19,6 @@ class DeskService {
    */
   async scanForDesk() {
     // const config = await getConfig(); // TODO is config needed there?
-    console.log("Scanning for desks");
     const bridge = new DeskBridge({
       verbose: false,
     });
@@ -89,7 +88,6 @@ class DeskService {
    * @returns {Promise<void>}
    */
   async setDeskAddressInConfig(address) {
-    console.log("DEBUG setting address to", address);
     const config = await getConfig();
     config.deskAddress = address;
     await saveConfig();
@@ -175,7 +173,6 @@ class DeskService {
     if (!desk) {
       await this.deskBridge.scan().catch(() => {});
       let desk = await this.getStatus();
-      console.log("DEBUG deskServer desk result: ", desk);
     }
     return desk;
   }
