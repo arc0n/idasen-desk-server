@@ -18,7 +18,7 @@ const deskService = new DeskService();
 var originsWhitelist = [
   "http://localhost:8100", //this is my front-end url for development
   "http://192.168.0.1:3000",
-  "http://localhost", //this is my front-end url for development
+  "http://localhost",
 ];
 var corsOptions = {
   origin: function (origin, callback) {
