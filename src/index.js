@@ -101,6 +101,7 @@ app.listen(port, () => {
 
 // safely handles circular references
 JSON.safeStringify = (obj, indent = 2) => {
+  return obj;
   let cache = [];
   const retVal = JSON.stringify(
     obj,
