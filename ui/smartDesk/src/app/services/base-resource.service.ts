@@ -11,7 +11,7 @@ export class BaseResourceService {
   constructor(private http: HttpClient) {}
 
   public setServerIp(value: string, port: number) {
-    this.baseUrl = `http://${value}:${port}`;
+    this.baseUrl = `http://${value}:${port}/desk`;
   }
   public connectDesk(): Observable<string> {
     return this.http
@@ -19,19 +19,17 @@ export class BaseResourceService {
       .pipe(
         catchError((e) => {
           console.log(e);
-          return of('error');
+          return of(e.message);
         })
       );
   }
   public disconnectDesk(): Observable<string> {
-    return this.http
-      .post<any>(this.baseUrl + '/disconnect', {})
-      .pipe(
-        catchError((e) => {
-          console.log(e);
-          return of(e);
-        })
-      );
+    return this.http.post<any>(this.baseUrl + '/disconnect', {}).pipe(
+      catchError((e) => {
+        console.log(e);
+        return of(e);
+      })
+    );
   }
 
   public getStatus(): Observable<string> {
