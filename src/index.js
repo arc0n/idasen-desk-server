@@ -30,7 +30,7 @@ var corsOptions = {
   credentials: true,
 };
 
-app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.get("/desk/search", async (req, res) => {
   const deskList = await deskService.scanForDesk().catch((err) => {
