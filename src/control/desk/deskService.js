@@ -178,6 +178,7 @@ class DeskService {
       await this.deskBridge.scan().catch(() => {});
     }
     await sleep(100);
+    await this.deskBridge.getDesk(); // to wait until desk is ready
     return await this.getStatus();
   }
 }
