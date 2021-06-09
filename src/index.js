@@ -30,16 +30,14 @@ var corsOptions = {
   credentials: true,
 };
 
-app.use(cors(corsOptions));
-
-app.get("/desk/search", async (req, res) => {
+app.get("/desk/search", cors(corsOptions), async (req, res) => {
   const deskList = await deskService.scanForDesk().catch((err) => {
     res.status(500).send("A problem occurred while scanning: " + err);
   });
   res.send(deskList);
 });
 
-app.get("/desk/config", async (req, res) => {
+app.get("/desk/config", cors(corsOptions), async (req, res) => {
   // TODO catch if connected
   await getConfig()
     .then(
@@ -55,7 +53,7 @@ app.get("/desk/config", async (req, res) => {
     );
 });
 
-app.post("/desk/connect/:address", async (req, res) => {
+app.post("/desk/connect/:address", cors(corsOptions), async (req, res) => {
   // TODO validate input
 
   if (!!req.params.address) {
@@ -69,14 +67,14 @@ app.post("/desk/connect/:address", async (req, res) => {
       .catch((e) => res.status(500).send("Error while connecting: " + e));
   }
 });
-app.post("/desk/disconnect", async (req, res) => {
+app.post("/desk/disconnect", cors(corsOptions), async (req, res) => {
   deskService.stopDeskConnection().catch((err) => {
     // nothing
   });
   res.send(true);
 });
 
-app.post("/desk/move/:position", async (req, res) => {
+app.post("/desk/move/:position", cors(corsOptions), async (req, res) => {
   // TODO validate input
 
   await deskService
@@ -85,7 +83,7 @@ app.post("/desk/move/:position", async (req, res) => {
     .catch((e) => res.status(500).send("Error while setting config: " + e));
 });
 
-app.get("/desk/status", async (req, res) => {
+app.get("/desk/status", cors(corsOptions), async (req, res) => {
   const status = await deskService.getStatus();
   res.send(JSON.safeStringify(status));
 });
