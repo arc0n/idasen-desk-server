@@ -70,7 +70,7 @@ app.post("/desk/connect/:address", async (req, res) => {
       .catch((e) => res.status(500).send("Error while setting config: " + e));
     await deskService
       .createDeskBridge()
-      .then((desk) => res.send(JSON.safeStringify(desk)))
+      .then((desk) => res.send(desk))
       .catch((e) => res.status(500).send("Error while connecting: " + e));
   }
 });
@@ -92,14 +92,14 @@ app.post("/desk/move/:position", async (req, res) => {
 
 app.get("/desk/status", async (req, res) => {
   const status = await deskService.getStatus();
-  res.send(JSON.safeStringify(status));
+  res.send(status);
 });
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
-// safely handles circular references
+/*// safely handles circular references
 JSON.safeStringify = (obj, indent = 2) => {
   return obj;
   let cache = [];
@@ -115,4 +115,4 @@ JSON.safeStringify = (obj, indent = 2) => {
   );
   cache = null;
   return retVal;
-};
+};*/

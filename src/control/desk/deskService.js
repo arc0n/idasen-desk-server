@@ -1,3 +1,4 @@
+const { Desk } = require("./desk");
 const { log } = require("../utils");
 const { sleep } = require("../utils");
 const { getConfig } = require("../config");
@@ -124,7 +125,7 @@ class DeskService {
       return false;
     }
     const status = await Promise.race([this.deskBridge.getDesk(), sleep(100)]);
-    return status || false;
+    return Desk.getReducedObject(status) || false;
   }
 
   /**

@@ -28,6 +28,17 @@ class Desk extends EventEmitter {
     };
   }
 
+  static getReducedObject(deskObj) {
+    return {
+      peripheral: deskObj.peripheral,
+      position: deskObj.position,
+      speed: deskObj.speed,
+      positionMa: deskObj.positionMax,
+      isMoving: deskObj.isMoving,
+      isConnected: deskObj.isConnected,
+    };
+  }
+
   constructor(peripheral, positionMax) {
     super();
 
