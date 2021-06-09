@@ -26,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/21IsOnlyTheHalfTruth/idasen-backend/issues"
   },
-  "homepage": "https://github.com/21IsOnlyTheHalfTruth/idasen-backend#readme"
+  "homepage": "https://github.com/21IsOnlyTheHalfTruth/idasen-backend#readme",
+  "devDependencies": {
+    "cors": "^2.8.5"
+  }
 }
