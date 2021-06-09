@@ -178,7 +178,7 @@ class DeskService {
       await this.deskBridge.scan().catch(() => {});
     }
     await sleep(100);
-    return await this.deskBridge.getDesk();
+    return await this.getStatus();
   }
 }
 
