@@ -22,6 +22,22 @@
 
 
   <div>{{this.status}}</div>
+
+    <form class="server-controller-form" [formGroup]="serverForm">
+      <ion-item >
+        <ion-label>Server IP:</ion-label>
+        <ion-input formControlName="serverIpControl" placeholder="Enter Server IP"></ion-input>
+      </ion-item>
+
+      <ion-item type="number">
+        <ion-label>Server Port:</ion-label>
+        <ion-input formControlName="serverPortControl" placeholder="Enter Server Port"></ion-input>
+      </ion-item>
+
+
+
+    </form>
+
   </div>
 
 </ion-content>

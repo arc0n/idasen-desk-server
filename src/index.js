@@ -9,12 +9,12 @@ const app = express();
 const port = 3000;
 const deskService = new DeskService();
 
-const headers = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET,POST,PATCH,DELETE,PUT,OPTIONS",
-  "Access-Control-Allow-Headers":
-    "Origin, Content-Type, X-Auth-Token, content-type",
-};
+// TODO only allow CORS for the own server
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 app.get("/desk/search", async (req, res) => {
   const deskList = await deskService.scanForDesk().catch((err) => {
@@ -23,7 +23,7 @@ app.get("/desk/search", async (req, res) => {
       .status(500)
       .send("A problem occurred while scanning: " + err);
   });
-  res.header(headers).send(deskList);
+  res.send(deskList);
 });
 
 app.get("/desk/config", async (req, res) => {
@@ -42,7 +42,6 @@ app.get("/desk/config", async (req, res) => {
     )
     .catch(() =>
       res
-        .header(headers)
         .status(500)
         .send(`Error occurred when getting config: ${e}`)
     );
@@ -57,16 +56,14 @@ app.post("/desk/connect/:address", async (req, res) => {
       .setDeskAddressInConfig(req.params.address + "")
       .catch((e) =>
         res
-          .header(headers)
           .status(500)
           .send("Error while setting config: " + e)
       );
     await deskService
       .createDeskBridge()
-      .then((desk) => res.header(headers).send(JSON.safeStringify(desk)))
+      .then((desk) => res.send(JSON.safeStringify(desk)))
       .catch((e) =>
         res
-          .header(headers)
           .status(500)
           .send("Error while connecting: " + e)
       );
@@ -76,7 +73,7 @@ app.post("/desk/disconnect", async (req, res) => {
   deskService.stopDeskConnection().catch((err) => {
     // nothing
   });
-  res.header(headers).send(true);
+  res.send(true);
 });
 
 app.post("/desk/move/:position", async (req, res) => {
@@ -90,7 +87,7 @@ app.post("/desk/move/:position", async (req, res) => {
 
 app.get("/desk/status", async (req, res) => {
   const status = await deskService.getStatus();
-  res.header(headers).send(JSON.safeStringify(status));
+  res.send(JSON.safeStringify(status));
 });
 
 app.listen(port, () => {

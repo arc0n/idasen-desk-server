@@ -47,7 +47,7 @@ class BluetoothDeskBridge extends EventEmitter {
 
   start() {
     this.log("starting BLE");
-    noble.on("discover", async (peripheral) => {
+    b.on("discover", async (peripheral) => {
       await this.processPeripheral(peripheral);
     });
 
