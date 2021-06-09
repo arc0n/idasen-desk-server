@@ -90,7 +90,7 @@ app.post("/desk/move/:position", async (req, res) => {
     .catch((e) => res.status(500).send("Error while setting config: " + e));
 });
 
-app.get("/desk/status", cors(corsOptions), async (req, res) => {
+app.get("/desk/status", async (req, res) => {
   const status = await deskService.getStatus();
   res.send(JSON.safeStringify(status));
 });
