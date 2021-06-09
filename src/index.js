@@ -14,7 +14,7 @@ const deskService = new DeskService();
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });*/
-/*
+
 var originsWhitelist = [
   "http://localhost:8100", //this is my front-end url for development
   "http://192.168.0.1:3000",
@@ -27,9 +27,9 @@ var corsOptions = {
     callback(null, isWhitelisted);
   },
   credentials: true,
-};*/
+};
 
-app.options("*", cors());
+app.options("*", cors(corsOptions));
 
 app.get("/desk/search", async (req, res) => {
   const deskList = await deskService.scanForDesk().catch((err) => {
