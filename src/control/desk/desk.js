@@ -30,7 +30,7 @@ class Desk extends EventEmitter {
 
   static getReducedObject(deskObj) {
     return {
-      peripheral: deskObj.peripheral,
+      // peripheral: deskObj.peripheral,
       position: deskObj.position,
       speed: deskObj.speed,
       positionMa: deskObj.positionMax,
