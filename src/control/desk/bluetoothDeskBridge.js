@@ -26,7 +26,7 @@ class BluetoothDeskBridge extends EventEmitter {
 
   async getDesk() {
     await this._deskReadyPromise;
-    return !!this.desk ? new Desk({ ...this.desk }) : false;
+    return this.desk;
   }
 
   disconnect() {
