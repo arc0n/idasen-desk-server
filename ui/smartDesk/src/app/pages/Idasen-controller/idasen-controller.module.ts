@@ -7,6 +7,8 @@ import { IdasenControllerPage } from './idasen-controller-page.component';
 import { ExploreContainerComponentModule } from '../../common/explore-container/explore-container.module';
 
 import { IdasenControllerPageRoutingModule } from './idasen-controller-routing.module';
+import {SharedModule} from "../../services/shared.module";
+import {IonicStorageModule} from "@ionic/storage-angular";
 
 @NgModule({
   imports: [
@@ -15,6 +17,7 @@ import { IdasenControllerPageRoutingModule } from './idasen-controller-routing.m
     FormsModule,
     ExploreContainerComponentModule,
     IdasenControllerPageRoutingModule,
+
   ],
   declarations: [IdasenControllerPage],
 })

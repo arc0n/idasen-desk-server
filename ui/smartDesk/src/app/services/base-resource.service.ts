@@ -1,55 +1,45 @@
-import { Injectable } from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, finalize, map, tap } from 'rxjs/operators';
+import {combineLatest, from, Observable, of} from 'rxjs';
+import {catchError, combineAll, concatAll, finalize, map, mergeAll, tap} from 'rxjs/operators';
+import {StorageService} from "./storage.service";
 
-@Injectable({
-  providedIn: 'root',
-})
-export class BaseResourceService {
+const IP_KEY = 'server-ip'
+const PORT_KEY = 'server-port'
+@Injectable()
+export class BaseResourceService  {
   private baseUrl = 'http://localhost:3000/desk';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private storageSrv: StorageService) {
+  }
 
-  public setServerIp(value: string, port: number) {
-    this.baseUrl = `http://${value}:${port}/desk`;
+  public setServerIp(ip: string, port: number) {
+    this.baseUrl = `http://${ip}:${port}/desk`;
+    this.storageSrv.set(IP_KEY, ip);
+    this.storageSrv.set(PORT_KEY, port);
   }
-  public connectDesk(): Observable<string> {
+
+  public getStoredData(): Observable<{ip: string, port: number}> {
+    return from(Promise.all([this.storageSrv.get(IP_KEY), this.storageSrv.get(PORT_KEY)])).pipe(
+      map(([ip, port]) => ({ip, port}))
+    )
+  }
+
+
+  public connectDesk(): Observable<boolean> {
     return this.http
-      .post<any>(this.baseUrl + '/connect/e6:d1:b5:45:f6:dd', {})
-      .pipe(
-        catchError((e) => {
-          console.log(e);
-          return of(e.message);
-        })
-      );
+      .post<any>(this.baseUrl + '/connect/e6:d1:b5:45:f6:dd', {});
   }
-  public disconnectDesk(): Observable<string> {
-    return this.http.post<any>(this.baseUrl + '/disconnect', {}).pipe(
-      catchError((e) => {
-        console.log(e);
-        return of(e);
-      })
-    );
+  public disconnectDesk(): Observable<boolean> {
+    return this.http.post<any>(this.baseUrl + '/disconnect', {});
   }
 
   public getStatus(): Observable<string> {
-    return this.http.get<any>(this.baseUrl + '/status', {}).pipe(
-      map((result) => JSON.stringify(result)),
-      catchError((e) => {
-        console.log(e);
-        return of(e);
-      })
-    );
+    return this.http.get<any>(this.baseUrl + '/status', {});
   }
 
   moveDesk(targetPosition: number): Observable<any> {
     return this.http
-      .post<any>(`${this.baseUrl}/move/${targetPosition}`, {})
-      .pipe(
-        catchError((e) => {
-          console.log(e);
-          return of(e);
-        })
-      );
+      .post<any>(`${this.baseUrl}/move/${targetPosition}`, {});
   }
+
 }

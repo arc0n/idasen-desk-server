@@ -7,6 +7,8 @@ import { ServerControllerPage } from './server-controller-page.component';
 import { ExploreContainerComponentModule } from '../../common/explore-container/explore-container.module';
 
 import { Tab3PageRoutingModule } from './server-controller-routing.module';
+import {IonicStorageModule} from "@ionic/storage-angular";
+import {SharedModule} from "../../services/shared.module";
 
 @NgModule({
     imports: [

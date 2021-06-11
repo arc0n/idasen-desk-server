@@ -6,6 +6,8 @@ import { InfoScreenPage } from './info-screen-page.component';
 import { ExploreContainerComponentModule } from '../../common/explore-container/explore-container.module';
 
 import { InfoScreenPageRoutingModule } from './info-screen-routing.module';
+import {IonicStorageModule} from "@ionic/storage-angular";
+import {SharedModule} from "../../services/shared.module";
 
 @NgModule({
   imports: [
@@ -14,6 +16,7 @@ import { InfoScreenPageRoutingModule } from './info-screen-routing.module';
     FormsModule,
     ExploreContainerComponentModule,
     InfoScreenPageRoutingModule,
+
   ],
   declarations: [InfoScreenPage],
 })
