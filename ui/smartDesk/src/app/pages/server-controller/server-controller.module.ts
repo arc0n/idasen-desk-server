@@ -19,8 +19,7 @@ import {DeskListComponent} from "./desk-list/desk-list.component";
         ExploreContainerComponentModule,
         RouterModule.forChild([{path: '', component: ServerControllerPage}]),
         Tab3PageRoutingModule,
-        ReactiveFormsModule,
-      CommonModule
+        ReactiveFormsModule
     ],
   declarations: [ServerControllerPage, DeskListComponent],
 })
