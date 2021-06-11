@@ -9,6 +9,7 @@ import { ExploreContainerComponentModule } from '../../common/explore-container/
 import { Tab3PageRoutingModule } from './server-controller-routing.module';
 import {IonicStorageModule} from "@ionic/storage-angular";
 import {SharedModule} from "../../services/shared.module";
+import {DeskListComponent} from "./desk-list/desk-list.component";
 
 @NgModule({
     imports: [
@@ -19,7 +20,8 @@ import {SharedModule} from "../../services/shared.module";
         RouterModule.forChild([{path: '', component: ServerControllerPage}]),
         Tab3PageRoutingModule,
         ReactiveFormsModule,
+      CommonModule
     ],
-  declarations: [ServerControllerPage],
+  declarations: [ServerControllerPage, DeskListComponent],
 })
 export class ServerControllerPageModule {}

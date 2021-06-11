@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ModalController} from "@ionic/angular";
+import {Desk} from "../../../models/desk";
 
 
 
@@ -10,11 +11,15 @@ import {ModalController} from "@ionic/angular";
 })
 export class DeskListComponent implements OnInit {
 
-  //deskList: Desk[] = [];
+  deskList: Desk[] = [
+    {name: "desk 123", address: "0"},
+    {name: "desk 653", address: "0"},
+  ];
 
   constructor(private modalController: ModalController) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
 
   dismissModal() {
