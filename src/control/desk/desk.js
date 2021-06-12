@@ -62,10 +62,10 @@ class Desk extends EventEmitter {
     this.peripheral
       .disconnectAsync()
       .catch((e) => {
-        console.log("could not diconnect", e);
+        console.log("could not disconnect", e);
       })
       .then(() => {
-        console.log("desk disconnected");
+        this.peripheral = null;
       });
   }
 
