@@ -1,10 +1,17 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {BaseResourceService} from "../../services/base-resource.service";
-import {FormControl, FormGroup} from "@angular/forms";
-import {of, Subscription} from "rxjs";
-import {catchError, debounce, debounceTime, distinctUntilChanged, retry, tap} from "rxjs/operators";
-import {ModalController, ToastController} from "@ionic/angular";
-import {DeskListComponent} from "./desk-list/desk-list.component";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BaseResourceService } from '../../services/base-resource.service';
+import { FormControl, FormGroup } from '@angular/forms';
+import { of, Subscription } from 'rxjs';
+import {
+  catchError,
+  debounce,
+  debounceTime,
+  distinctUntilChanged,
+  retry,
+  tap,
+} from 'rxjs/operators';
+import { ModalController, ToastController } from '@ionic/angular';
+import { DeskListComponent } from './desk-list/desk-list.component';
 
 @Component({
   selector: 'app-server-controller',
@@ -12,12 +19,17 @@ import {DeskListComponent} from "./desk-list/desk-list.component";
   styleUrls: ['server-controller-page.component.scss'],
 })
 export class ServerControllerPage implements OnInit, OnDestroy {
-  constructor(private baseResourceService: BaseResourceService,
-              private toastController: ToastController,
-              private modalController: ModalController) {}
+  constructor(
+    private baseResourceService: BaseResourceService,
+    private toastController: ToastController,
+    private modalController: ModalController
+  ) {}
 
   /** @internal */
-  public disableButtons = false;
+  testSuccessful = null;
+
+  /** @internal */
+  disableButtons = false;
 
   /*** @internal */
   isConnected = false;
@@ -28,88 +40,100 @@ export class ServerControllerPage implements OnInit, OnDestroy {
 
   subscription: Subscription[] = [];
 
-
   /**
    * @internal
    */
   serverForm = new FormGroup({
     serverIpControl: new FormControl(''),
-    serverPortControl: new FormControl(null)
-  })
+    serverPortControl: new FormControl(null),
+  });
 
   ngOnInit(): void {
-    this.subscription.push(this.serverForm.valueChanges.pipe(debounceTime(100)).subscribe((rawVal) => {
-      this.baseResourceService.setServerIp(rawVal.serverIpControl, rawVal.serverPortControl)
-    }));
+    this.testConnection();
+    this.subscription.push(
+      this.serverForm.valueChanges
+        .pipe(debounceTime(100))
+        .subscribe((rawVal) => {
+          this.baseResourceService.setServerIp(
+            rawVal.serverIpControl,
+            rawVal.serverPortControl
+          );
+        })
+    );
 
-    this.baseResourceService.getStoredData().pipe(
-      tap(() => this.isLoading = true
-      )).subscribe((values) => {
-      this.isLoading = false;
-      this.serverForm.patchValue({
-        serverIpControl: values.ip || null,
-        serverPortControl: values.port || 3000
-      })
-    })
-
+    this.baseResourceService
+      .getStoredData()
+      .pipe(tap(() => (this.isLoading = true)))
+      .subscribe((values) => {
+        this.isLoading = false;
+        this.serverForm.patchValue({
+          serverIpControl: values.ip || null,
+          serverPortControl: values.port || 3000,
+        });
+      });
   }
 
   /** @internal */
   async presentModal() {
     const modal = await this.modalController.create({
       component: DeskListComponent,
-      cssClass: 'modal-search-desk'
+      cssClass: 'modal-search-desk',
     });
     return await modal.present();
   }
 
-
   ngOnDestroy(): void {
-    this.subscription.forEach(s => s.unsubscribe());
+    this.subscription.forEach((s) => s.unsubscribe());
   }
 
   /** @internal */
   connectToDesk() {
     this.disableButtons = true;
-    const obs = this.isConnected ?
-      this.baseResourceService.disconnectDesk() : this.baseResourceService.connectDesk();
-    obs.pipe(
-      catchError(() => {
-        return of({error: "No connection to server"});
-      })
-    ).subscribe((result) => {
-      this.disableButtons = false;
-      if (!('boolean' === typeof result) && result.error) {
-        this.presentToast(result.error, "danger")
-        return;
-      }
-      if (!result) {
-        this.presentToast("No connection to Desk", "danger")
-        return;
-      }
-      this.isConnected = !this.isConnected;
-      if (this.isConnected) this.presentToast("Desk connected", "primary")
-    })
-
+    const obs = this.isConnected
+      ? this.baseResourceService.disconnectDesk()
+      : this.baseResourceService.connectDesk();
+    obs
+      .pipe(
+        catchError(() => {
+          return of({ error: 'No connection to server' });
+        })
+      )
+      .subscribe((result) => {
+        this.disableButtons = false;
+        if (!('boolean' === typeof result) && result.error) {
+          this.presentToast(result.error, 'danger');
+          return;
+        }
+        if (!result) {
+          this.presentToast('No connection to Desk', 'danger');
+          return;
+        }
+        this.isConnected = !this.isConnected;
+        if (this.isConnected) this.presentToast('Desk connected', 'primary');
+      });
   }
 
   /** @internal */
   getDeskStatus() {
     const obs = this.baseResourceService.getStatus();
     obs.subscribe((val) => {
-      this.status = val
+      this.status = val;
     });
   }
 
+  testConnection() {
+    this.baseResourceService
+      .checkConnection()
+      .pipe(tap((this.testSuccessful = null)))
+      .subscribe((val) => (this.testSuccessful = val));
+  }
   private async presentToast(msg: string, level: 'primary' | 'danger') {
     const toast = await this.toastController.create({
-      position: 'top',
+      position: 'bottom',
       message: msg,
       color: level,
-      duration: 2000
+      duration: 2000,
     });
     toast.present();
   }
-
-
 }

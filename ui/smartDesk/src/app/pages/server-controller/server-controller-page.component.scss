@@ -12,8 +12,14 @@
   justify-content: center;
 }
 */
-.button-wrapper{
+
+.bluetooth-icon{
+  font-size: var(--detail-icon-font-size)!important;
+}
+.connect-wrapper{
   margin: .5rem;
+  display: flex;
+  flex-direction: column;
 }
 .server-controller-form{
   margin-top: 1rem;

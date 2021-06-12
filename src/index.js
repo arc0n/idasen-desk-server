@@ -37,6 +37,10 @@ var corsOptions = {
   credentials: true,
 };*/
 
+app.get("/ping", async (req, res) => {
+  res.send(true);
+});
+
 app.get("/desk/search", async (req, res) => {
   const deskList = await deskService.scanForDesk().catch((err) => {
     res.status(500).send("A problem occurred while scanning: " + err);
