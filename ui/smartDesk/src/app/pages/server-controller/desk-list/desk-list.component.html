@@ -1,5 +1,5 @@
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" [scrollX]="false">
 
   <ion-toolbar color="light">
 
@@ -8,14 +8,24 @@
         <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Search Desks</ion-title>
 
+
+    <ion-title>Search Desks</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="searchForDesks()"  [disabled]="isLoading">
+        <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
-  <ion-progress-bar type="indeterminate"></ion-progress-bar>
-  <ion-list>
-    <ion-item  class="Desk-item" *ngFor="let desk of deskList">
-      <ion-label>{{desk.name}}</ion-label>
-    </ion-item>
-  </ion-list>
+  <div #contentPage>
+    <ion-progress-bar [hidden]="!isLoading" type="indeterminate"></ion-progress-bar>
+    <ion-list>
+      <ion-item  class="Desk-item" *ngFor="let desk of deskList">
+        <ion-label>{{desk.deskName}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+
 
 </ion-content>

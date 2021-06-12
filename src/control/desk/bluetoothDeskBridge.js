@@ -29,9 +29,12 @@ class BluetoothDeskBridge extends EventEmitter {
     return this.desk;
   }
 
-  disconnect() {
+  async disconnect() {
     if (this.desk) {
-      this.desk.disconnect();
+      this.desk.disconnect(); /*      await noble.stopScanningAsync();*/
+      /*      await noble.stopScanningAsync();*/
+      /*      noble.removeAllListeners();
+      noble.reset();*/
     }
     this.desk = null;
     this.deskReady = false;
@@ -142,15 +145,15 @@ class BluetoothDeskBridge extends EventEmitter {
       this.log("Found configured desk", peripheral.address);
       this.desk = new Desk(peripheral, this.config.deskPositionMax);
       peripheral.on("disconnect", () => {
-        if (this.desk == null) {
-          log("desk disconnected");
-          this._createReadyPromise();
-          return;
-        }
+        /* if (this.desk == null || this.desk.peripheral == null) {*/
+        log("desk disconnected");
+        /*          this._createReadyPromise();
+          return;*/
+        /*        }
         this.log("desk disconnected, going back to scanning");
         this.desk = null;
         this._createReadyPromise();
-        this.scan();
+        this.scan();*/
       });
 
       try {

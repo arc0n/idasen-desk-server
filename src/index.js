@@ -1,6 +1,7 @@
 const express = require("express");
 const { getConfig } = require("./control/config");
 const cors = require("cors");
+const { log } = require("./control/utils");
 const {InfoworkerService} = require("./control/pcinfos/infoworkerService");
 
 const { DeskService } = require("./control/desk/deskService");
@@ -40,6 +41,11 @@ var corsOptions = {
   },
   credentials: true,
 };*/
+
+app.get("/ping", async (req, res) => {
+  log("Received ping");
+  res.send(true);
+});
 
 app.get("/desk/search", async (req, res) => {
   const deskList = await deskService.scanForDesk().catch((err) => {

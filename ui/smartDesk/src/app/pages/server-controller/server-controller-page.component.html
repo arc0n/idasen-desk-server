@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-    Server Controller Page
+      Server Controller Page
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -16,9 +16,13 @@
   <div class="content-wrapper">
 
 
-
     <form class="server-controller-form" [formGroup]="serverForm">
-      <ion-item >
+      <ion-item-divider>
+        <ion-label>
+          Connection Settings
+        </ion-label>
+      </ion-item-divider>
+      <ion-item>
         <ion-label>Server IP:</ion-label>
         <ion-input formControlName="serverIpControl" placeholder="Enter Server IP"></ion-input>
       </ion-item>
@@ -27,13 +31,38 @@
         <ion-label>Server Port:</ion-label>
         <ion-input formControlName="serverPortControl" placeholder="Enter Server Port"></ion-input>
       </ion-item>
+      <ion-item-divider>
+        <ion-label>
+          Connections
+        </ion-label>
+      </ion-item-divider>
 
-      <div class="button-wrapper">
-        <ion-button [disabled]="disableButtons" [color]="isConnected? 'primary': 'warning'" (click)="connectToDesk()">{{ this.isConnected ? "disconnect Desk":  "connect Desk"}}</ion-button>
-        <ion-button [disabled]="true">Connect Server</ion-button>
-        <ion-button (click)="presentModal()">Search For Desks</ion-button>
+
+      <div class="connect-wrapper">
+        <ion-item button [disabled]="disableButtons || this.testSuccessful == null" (click)="this.triggerConnectionTest$.next()">
+          <ion-label>
+            {{ this.testSuccessful == null ? 'testing connection...' : this.testSuccessful ? 'server connected': 'no connection to server'}}
+          </ion-label>
+          <ion-icon [color]="this.testSuccessful ===null ? 'medium': this.testSuccessful ? 'primary': 'danger'" slot="end"
+                    [name]="this.testSuccessful === null ? 'wifi-outline' : this.testSuccessful ? 'checkmark-outline': 'refresh-outline'"></ion-icon>
+        </ion-item>
+
+
+        <ion-item button [disabled]="disableButtons" (click)="connectToDesk()">
+          <ion-label>
+            {{ this.isConnected ? "disconnect desk" : "connect desk"}}
+          </ion-label>
+          <ion-buttons slot="end">
+            <ion-icon class="bluetooth-icon" [color]="isConnected ? 'primary':'danger'" slot="icon-only"
+                      name="bluetooth-outline"></ion-icon>
+          </ion-buttons>
+        </ion-item>
+
+        <ion-item button [disabled]="disableButtons || isConnected" (click)="presentModal()" detail>
+          <ion-label>search for desks</ion-label>
+        </ion-item>
+
       </div>
-
     </form>
 
   </div>

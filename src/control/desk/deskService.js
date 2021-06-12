@@ -46,12 +46,12 @@ class DeskService {
 
     bridge.on("error", () => {
       console.log("Error, BT BLE not supported");
-      scanUntil = +new Date() + 2000;
+      scanUntil = +new Date() + 500;
       throw new Error("no BLE Support");
     });
     bridge.on("discover", (peripheral) => {
       if (
-        // check if already not already soon and valid
+        // check if already not already seen and valid
         peripheral.address &&
         peripheral.advertisement.localName &&
         !seen[peripheral.id]
@@ -64,7 +64,7 @@ class DeskService {
           deskAddress: peripheral.address,
           deskName: peripheral.advertisement.localName,
         });
-        scanUntil = +new Date() + 2000; // stop scanning
+        scanUntil = +new Date() + 500; // stop scanning
       }
     });
     bridge.start();
@@ -148,8 +148,8 @@ class DeskService {
         throw new Error("Error while starting the Bluetooth device");
       });
 
-      setInterval(() => {
-        Promise.race([this.deskBridge.getDesk(), sleep(500)]).then((desk) => {
+      const interval = setInterval(() => {
+        Promise.race([this.deskBridge?.getDesk(), sleep(500)]).then((desk) => {
           if (!!desk) {
             console.log("Desk Position: ", desk?.position);
             // someone did something
@@ -166,6 +166,8 @@ class DeskService {
             ) {
               sittingTime = 0;
             }
+          } else {
+            clearInterval(interval);
           }
         });
       }, CHECK_INTERVAL * 1000);
