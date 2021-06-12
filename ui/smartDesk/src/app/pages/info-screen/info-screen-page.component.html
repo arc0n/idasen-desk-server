@@ -5,13 +5,85 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
+<ion-content [fullscreen]="true" [scrollX]="false">
+<div class="content-wrapper">
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="12" size-sm>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>CPU: (name?)</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-list>
+          <ion-item>
+            <ion-label><ion-icon name="speedometer-outline"></ion-icon> Clock Speed: </ion-label>
+            <ion-label>(3775) Mhz</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label><ion-icon name="stats-chart-outline"></ion-icon> Total Load: </ion-label>
+            <ion-label>(6,5) %</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label><ion-icon name="thermometer-outline"></ion-icon> Core-Temp: </ion-label>
+            <ion-label>(45,8)°C</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col size="12" size-sm>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Mainboard: (name?)</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-list>
+          <ion-item>
+            <ion-label><ion-icon name="thermometer-outline"></ion-icon> Temp: </ion-label>
+            <ion-label>(52,2)°C</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label><ion-icon name="aperture-outline"></ion-icon> Fan #1: </ion-label>
+            <ion-label>(724) RPM</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label><ion-icon name="aperture-outline"></ion-icon> Fan #2: </ion-label>
+            <ion-label>(948) RPM</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label><ion-icon name="aperture-outline"></ion-icon> Fan #3: </ion-label>
+            <ion-label>(576) RPM</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col size="12" size-sm>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>GPU: (name?)</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-list>
+          <ion-item>
+            <ion-label><ion-icon name="speedometer-outline"></ion-icon> Clock Speed: </ion-label>
+            <ion-label>(1515) Mhz</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label><ion-icon name="stats-chart-outline"></ion-icon> Total Load: </ion-label>
+            <ion-label>(11) %</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label><ion-icon name="thermometer-outline"></ion-icon> GPU-Temp: </ion-label>
+            <ion-label>(48,0)°C</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label><ion-icon name="aperture-outline"></ion-icon> Fan #1: </ion-label>
+            <ion-label>(1502) RPM</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Info Screen Page</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <app-explore-container [name]="'info-screen page'"></app-explore-container>
+<!--  <app-explore-container [name]="'info-screen page'"></app-explore-container>-->
 </ion-content>
