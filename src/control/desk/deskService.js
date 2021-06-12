@@ -103,6 +103,7 @@ class DeskService {
    */
   async stopDeskConnection() {
     this.deskBridge.disconnect();
+    this.deskBridge = null;
   }
 
   async moveTo(position) {
