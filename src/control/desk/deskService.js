@@ -150,8 +150,8 @@ class DeskService {
         throw new Error("Error while starting the Bluetooth device");
       });
 
-      setInterval(() => {
-        Promise.race([this.deskBridge.getDesk(), sleep(500)]).then((desk) => {
+      const interval = setInterval(() => {
+        Promise.race([this.deskBridge?.getDesk(), sleep(500)]).then((desk) => {
           if (!!desk) {
             console.log("Desk Position: ", desk?.position);
             // someone did something
@@ -168,6 +168,8 @@ class DeskService {
             ) {
               sittingTime = 0;
             }
+          } else {
+            clearInterval(interval);
           }
         });
       }, CHECK_INTERVAL * 1000);
