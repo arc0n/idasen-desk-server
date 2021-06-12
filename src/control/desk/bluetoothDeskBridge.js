@@ -32,6 +32,9 @@ class BluetoothDeskBridge extends EventEmitter {
   disconnect() {
     if (this.desk) {
       this.desk.disconnect();
+      noble.cancelConnect();
+      noble.startScanningAsync();
+      noble.reset();
     }
     this.desk = null;
     this.deskReady = false;
