@@ -1,18 +1,9 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { combineLatest, from, Observable, of } from 'rxjs';
-import {
-  catchError,
-  combineAll,
-  concatAll,
-  finalize,
-  map,
-  mergeAll,
-  tap,
-} from 'rxjs/operators';
+import { catchError, map, timeout } from 'rxjs/operators';
 import { StorageService } from './storage.service';
 import { Desk } from '../models/desk';
-import { ModalController, ToastController } from '@ionic/angular';
 
 const IP_KEY = 'server-ip';
 const PORT_KEY = 'server-port';
@@ -21,16 +12,26 @@ export class BaseResourceService {
   private baseUrl = 'http://localhost:3000/desk';
   constructor(private http: HttpClient, private storageSrv: StorageService) {}
 
-  public setServerIp(ip: string, port: number) {
+  public async setServerIp(ip: string, port: number) {
+    const tmp = this.baseUrl;
     this.baseUrl = `http://${ip}:${port}/`;
-    this.storageSrv.set(IP_KEY, ip);
-    this.storageSrv.set(PORT_KEY, port);
+    if (this.baseUrl !== tmp) {
+      await Promise.all([
+        this.storageSrv.set(IP_KEY, ip),
+        this.storageSrv.set(PORT_KEY, port),
+      ]);
+    }
   }
 
   public getStoredData(): Observable<{ ip: string; port: number }> {
     return from(
       Promise.all([this.storageSrv.get(IP_KEY), this.storageSrv.get(PORT_KEY)])
-    ).pipe(map(([ip, port]) => ({ ip, port })));
+    ).pipe(
+      map(([ip, port]) => {
+        this.baseUrl = `http://${ip}:${port}/`;
+        return { ip, port };
+      })
+    );
   }
 
   public searchForDesk() {
@@ -59,7 +60,8 @@ export class BaseResourceService {
   }
 
   checkConnection(): Observable<boolean> {
-    return this.http.get<any>(this.baseUrl + '/ping', {}).pipe(
+    return this.http.get<any>(this.baseUrl + 'ping', {}).pipe(
+      timeout(1000),
       catchError(() => of(false)),
       map((value) => value)
     );

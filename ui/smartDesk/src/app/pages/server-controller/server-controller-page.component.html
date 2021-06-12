@@ -39,12 +39,12 @@
 
 
       <div class="connect-wrapper">
-        <ion-item button [disabled]="disableButtons || this.testSuccessful == null" (click)="testConnection()">
+        <ion-item button [disabled]="disableButtons || this.testSuccessful == null" (click)="this.triggerConnectionTest$.next()">
           <ion-label>
-            {{ this.testSuccessful == null ? 'testing connection' : this.testSuccessful ? 'server connected': 'no connection to server'}}
+            {{ this.testSuccessful == null ? 'testing connection...' : this.testSuccessful ? 'server connected': 'no connection to server'}}
           </ion-label>
-          <ion-icon [color]="this.testSuccessful ? 'primary': 'danger'" slot="end"
-                    [name]="this.testSuccessful == null ? '' : this.testSuccessful ? 'checkmark-outline': 'refresh-outline'"></ion-icon>
+          <ion-icon [color]="this.testSuccessful ===null ? 'medium': this.testSuccessful ? 'primary': 'danger'" slot="end"
+                    [name]="this.testSuccessful === null ? 'wifi-outline' : this.testSuccessful ? 'checkmark-outline': 'refresh-outline'"></ion-icon>
         </ion-item>
 
 
@@ -58,13 +58,10 @@
           </ion-buttons>
         </ion-item>
 
-        <ion-item button (click)="presentModal()" detail>
+        <ion-item button [disabled]="disableButtons || isConnected" (click)="presentModal()" detail>
           <ion-label>search for desks</ion-label>
         </ion-item>
-        <!--
-                <ion-button [disabled]="disableButtons" [color]="isConnected? 'primary': 'warning'" (click)="connectToDesk()">{{ this.isConnected ? "disconnect Desk":  "connect Desk"}}</ion-button>
-                <ion-button [disabled]="true">Connect Server</ion-button>
-                <ion-button (click)="presentModal()">Search For Desks</ion-button>-->
+
       </div>
     </form>
 

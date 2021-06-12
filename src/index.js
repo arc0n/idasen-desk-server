@@ -1,6 +1,7 @@
 const express = require("express");
 const { getConfig } = require("./control/config");
 const cors = require("cors");
+const { log } = require("./control/utils");
 
 const { DeskService } = require("./control/desk/deskService");
 
@@ -38,6 +39,7 @@ var corsOptions = {
 };*/
 
 app.get("/ping", async (req, res) => {
+  log("Received ping");
   res.send(true);
 });
 

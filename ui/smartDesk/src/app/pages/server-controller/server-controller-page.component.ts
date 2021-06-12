@@ -1,15 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseResourceService } from '../../services/base-resource.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { of, Subscription } from 'rxjs';
-import {
-  catchError,
-  debounce,
-  debounceTime,
-  distinctUntilChanged,
-  retry,
-  tap,
-} from 'rxjs/operators';
+import { of, Subject, Subscription } from 'rxjs';
+import { catchError, debounceTime, switchMap, tap } from 'rxjs/operators';
 import { ModalController, ToastController } from '@ionic/angular';
 import { DeskListComponent } from './desk-list/desk-list.component';
 
@@ -24,6 +17,9 @@ export class ServerControllerPage implements OnInit, OnDestroy {
     private toastController: ToastController,
     private modalController: ModalController
   ) {}
+
+  /** @internal */
+  triggerConnectionTest$ = new Subject<void>();
 
   /** @internal */
   testSuccessful = null;
@@ -49,15 +45,24 @@ export class ServerControllerPage implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    this.testConnection();
+    this.subscription.push(
+      this.triggerConnectionTest$
+        .pipe(
+          switchMap(() => {
+            this.testSuccessful = null;
+            return this.baseResourceService.checkConnection();
+          })
+        )
+        .subscribe((val) => (this.testSuccessful = val))
+    );
+
     this.subscription.push(
       this.serverForm.valueChanges
-        .pipe(debounceTime(100))
+        .pipe(debounceTime(500))
         .subscribe((rawVal) => {
-          this.baseResourceService.setServerIp(
-            rawVal.serverIpControl,
-            rawVal.serverPortControl
-          );
+          this.baseResourceService
+            .setServerIp(rawVal.serverIpControl, rawVal.serverPortControl)
+            .then(() => this.triggerConnectionTest$.next());
         })
     );
 
@@ -65,6 +70,7 @@ export class ServerControllerPage implements OnInit, OnDestroy {
       .getStoredData()
       .pipe(tap(() => (this.isLoading = true)))
       .subscribe((values) => {
+        this.triggerConnectionTest$.next();
         this.isLoading = false;
         this.serverForm.patchValue({
           serverIpControl: values.ip || null,
@@ -121,12 +127,6 @@ export class ServerControllerPage implements OnInit, OnDestroy {
     });
   }
 
-  testConnection() {
-    this.baseResourceService
-      .checkConnection()
-      .pipe(tap((this.testSuccessful = null)))
-      .subscribe((val) => (this.testSuccessful = val));
-  }
   private async presentToast(msg: string, level: 'primary' | 'danger') {
     const toast = await this.toastController.create({
       position: 'bottom',
