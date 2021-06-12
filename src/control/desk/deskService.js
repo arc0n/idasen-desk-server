@@ -20,7 +20,6 @@ class DeskService {
    * @returns {Promise<[]|*[]>}
    */
   async scanForDesk() {
-    this.deskBridge = null;
     log("Scanning for Desks....");
     // const config = await getConfig(); // TODO is config needed there?
     const bridge = new DeskBridge({
