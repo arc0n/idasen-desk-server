@@ -1,3 +1,61 @@
-ion-col{
-  text-align: center;
+@media (orientation: portrait){
+  .content-wrapper {
+    display: grid;
+    height: 100%;
+    grid-template-columns: auto;
+    grid-template-rows: repeat(3, auto);
+    margin: 5px;
+  }
+  .pcInfos {
+    margin-left: 25px;
+    margin-right: 25px;
+  }
+
+}
+
+@media (orientation: landscape){
+  .content-wrapper {
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(3, auto);
+    grid-template-rows: auto;
+    margin: 5px;
+  }
+  .pcInfos {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .toolbar-container {
+    display: none;
+  }
+}
+
+.grid-element {
+  display: grid;
+  grid-template-rows: 25px auto;
+}
+
+.pcHeader{
+  font-size: larger;
+  font-weight: bold;
+  align-content: center;
+}
+
+.pcInfos {
+  display: inline-grid;
+  grid-template-columns: [icon] 25px [description] 1fr [value] 1fr;
+  grid-template-rows: auto;
+}
+
+.item-icon {
+  align-self: center;
+}
+
+.item-text {
+  align-self: center;
+}
+
+.item-variable {
+  align-self: center;
 }
