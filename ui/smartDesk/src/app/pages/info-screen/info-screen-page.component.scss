@@ -1,61 +1,82 @@
-@media (orientation: portrait){
-  .content-wrapper {
-    display: grid;
-    height: 100%;
-    grid-template-columns: auto;
-    grid-template-rows: repeat(3, auto);
-    margin: 5px;
-  }
-  .pcInfos {
-    margin-left: 25px;
-    margin-right: 25px;
-  }
-
-}
-
-@media (orientation: landscape){
-  .content-wrapper {
-    display: grid;
-    height: 100%;
-    grid-template-columns: repeat(3, auto);
-    grid-template-rows: auto;
-    margin: 5px;
-  }
-  .pcInfos {
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-
-  .toolbar-container {
-    display: none;
-  }
-}
-
 .grid-element {
-  display: grid;
-  grid-template-rows: 25px auto;
+  display: block;
+  margin: 1rem;
 }
 
-.pcHeader{
+.pcHeader {
   font-size: larger;
   font-weight: bold;
-  align-content: center;
+  align-content: stretch;
+  display: block;
+  margin: 0 0 1rem 0;
 }
 
-.pcInfos {
-  display: inline-grid;
-  grid-template-columns: [icon] 25px [description] 1fr [value] 1fr;
-  grid-template-rows: auto;
+.pcInfoWithBar, .pcInfo {
+  display: flex;
+  margin: 0.5rem 0 0.5rem 0;
+
+  ion-icon {
+    margin: 0 1rem 0 0.5rem;
+  }
 }
 
-.item-icon {
-  align-self: center;
-}
-
-.item-text {
-  align-self: center;
+.pcInfoWithBar {
+  flex-direction: column;
+  //margin: 0.25rem 0 0.25rem 0;
+  .item-bar {
+    margin: -0.25rem 1rem 0 0.35rem
+  }
 }
 
 .item-variable {
-  align-self: center;
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+
+@media (orientation: portrait) {
+  .content-wrapper {
+    display: grid;
+    height: 100%;
+  }
+}
+
+@media (orientation: landscape) {
+  .content-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+  }
+
+  .pcHeader{
+    //margin: 2rem 0rem;
+  }
+
+  .grid-element {
+    margin: 3rem 0.5rem;
+  }
+
+
+
+  .pcInfoWithBar, .pcInfo {
+    margin: 1rem 0 1rem 0;
+
+    .item-bar {
+      margin: -0.25rem 0.75rem 0 0.35rem
+    }
+
+    ion-icon {
+      margin: 0 0.25rem 0 0.25rem
+    }
+  }
+
+  ion-header {
+    display: none;
+
+  }
+
+  ion-tab-bar {
+    display: none;
+  }
 }

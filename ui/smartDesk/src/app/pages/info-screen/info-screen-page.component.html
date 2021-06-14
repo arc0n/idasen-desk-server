@@ -10,7 +10,7 @@
     <div class="grid-element">
       <div class="pcHeader">CPU: (AMD Ryzen7?)</div>
       <!-- region CPUInfos -->
-      <div class="pcInfos">
+      <div class="pcInfo">
         <!-- region Clockspeed -->
         <ion-icon class="item-icon" name="speedometer"></ion-icon>
         <div class="item-text">
@@ -19,117 +19,140 @@
         <div class="item-variable">
           (3775) Mhz
         </div>
-
-        <!-- region Load -->
+      </div>
+      <!-- region Load -->
+      <div class="pcInfo">
         <ion-icon class="item-icon" name="stats-chart"></ion-icon>
         <div class="item-text">
           Total Load:
         </div>
         <div class="item-variable">
-          6,5%
+          (6,5)%
         </div>
-
-        <!-- region CoreTemp -->
+      </div>
+      <!-- region CoreTemp -->
+      <div class="pcInfo">
         <ion-icon class="item-icon" name="thermometer"></ion-icon>
         <div class="item-text">
           Core-Temp:
         </div>
         <div class="item-variable">
-          62°C
+          (62)°C
         </div>
       </div>
     </div>
 
+
     <div class="grid-element">
       <div class="pcHeader">Mainboard: (ASUS B-550..?)</div>
       <!-- region Mainboard -->
-      <div class="pcInfos">
+      <div class="pcInfo">
         <!-- region Temperature -->
         <ion-icon class="item-icon" name="thermometer"></ion-icon>
         <div class="item-text">
           Temperature:
         </div>
         <div class="item-variable">
-          72,2°
+          (72,2)°
         </div>
-
-        <!-- region Fan#1 -->
-        <ion-icon class="item-icon" name="aperture"></ion-icon>
-        <div class="item-text">
-          Fan#1 Speed:
-        </div>
-        <div class="item-variable">
-          723 RPM
-        </div>
-
-
-        <!-- region Fan#2 -->
-        <ion-icon class="item-icon" name="aperture"></ion-icon>
-        <div class="item-text">
-          Fan#2 Speed:
-        </div>
-        <div class="item-variable">
-          984 RPM
-        </div>
-
-
-        <!-- region Fan#3 -->
-        <ion-icon class="item-icon" name="aperture"></ion-icon>
-        <div class="item-text">
-          Fan#3 Speed:
-        </div>
-        <div class="item-variable">
-          556 RPM
-        </div>
-
       </div>
-      <ion-progress-bar color="danger" value="0.2"></ion-progress-bar>
+      <!-- region Fan#1 -->
+      <div class="pcInfoWithBar">
+        <div class="pcInfo">
+          <ion-icon class="item-icon" name="aperture"></ion-icon>
+          <div class="item-text">
+            Fan#1 Speed:
+          </div>
+          <div class="item-variable">
+            (723) RPM
+          </div>
+        </div>
+        <div class="item-bar">
+          <ion-progress-bar [color]="'warning'" value="0.5"></ion-progress-bar>
+        </div>
+      </div>
+      <!-- region Fan#2 -->
+      <div class="pcInfoWithBar">
+        <div class="pcInfo">
+          <ion-icon class="item-icon" name="aperture"></ion-icon>
+          <div class="item-text">
+            Fan#2 Speed:
+          </div>
+          <div class="item-variable">
+            (984) RPM
+          </div>
+        </div>
+        <div class="item-bar">
+          <ion-progress-bar color="danger" value="0.8"></ion-progress-bar>
+        </div>
+      </div>
+      <!-- region Fan#3 -->
+      <div class="pcInfoWithBar">
+        <div class="pcInfo">
+          <ion-icon class="item-icon" name="aperture"></ion-icon>
+          <div class="item-text">
+            Fan#3 Speed:
+          </div>
+          <div class="item-variable">
+            (556) RPM
+          </div>
+        </div>
+        <div class="item-bar">
+          <ion-progress-bar color="success" value="0.4"></ion-progress-bar>
+        </div>
+      </div>
     </div>
 
 
     <div class="grid-element">
       <div class="pcHeader">GPU: (Geforce RTX2080?)</div>
       <!-- region GPU -->
-      <div class="pcInfos">
+      <div class="pcInfo">
         <!-- region GPU clock Speed -->
         <ion-icon class="item-icon" name="speedometer"></ion-icon>
         <div class="item-text">
           Clock Speed:
         </div>
         <div class="item-variable">
-          1515 Mhz°
+          (1515) Mhz
         </div>
-
-        <!-- region GPU Load -->
+      </div>
+      <!-- region GPU Load -->
+      <div class="pcInfo">
         <ion-icon class="item-icon" name="stats-chart"></ion-icon>
         <div class="item-text">
           Total Load:
         </div>
         <div class="item-variable">
-          11%
+          (11)%
         </div>
-
-        <!-- region GPU Temp -->
+      </div>
+      <!-- region GPU Temp -->
+      <div class="pcInfo">
         <ion-icon class="item-icon" name="thermometer"></ion-icon>
         <div class="item-text">
           GPU Temp.:
         </div>
         <div class="item-variable">
-          48°C
+          (48)°C
         </div>
-
-        <!-- region GPU Fan -->
-        <ion-icon class="item-icon" name="aperture"></ion-icon>
-        <div class="item-text">
-          Fan Speed:
+      </div>
+      <!-- region GPU Fan -->
+      <div class="pcInfoWithBar">
+        <div class="pcInfo">
+          <ion-icon class="item-icon" name="aperture"></ion-icon>
+          <div class="item-text">
+            Fan Speed:
+          </div>
+          <div class="item-variable">
+            (1556) RPM
+          </div>
         </div>
-        <div class="item-variable">
-          1556 RPM
+        <div class="item-bar">
+          <ion-progress-bar color="success" value="0.33"></ion-progress-bar>
         </div>
-
       </div>
     </div>
-
   </div>
 
 
