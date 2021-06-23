@@ -45,7 +45,6 @@ class InfoworkerService {
                 const parsed = JSON.parse(data);
                 if (!!parsed.Children && !!parsed.Children[0] && !!parsed.Children[0].Children) {
                     resolverFn(parsed.Children[0].Children)
-
                 }
                 //MB
                 this.pcInfos.mbName = parsed.Children[0].Children[0].Text;
@@ -73,40 +72,6 @@ class InfoworkerService {
                 this.pcInfos.gpuRamFree = parsed.Children[0].Children[3].Children[6].Children[0];
                 this.pcInfos.gpuRamUsed = parsed.Children[0].Children[3].Children[6].Children[1];
                 this.pcInfos.gpuRamTotal = parsed.Children[0].Children[3].Children[6].Children[2];
-
-
-
-                //TESTING PURPOSES
-                //MB
-                console.log("- "+this.pcInfos.mbName);
-                this.pcInfos.mbTemps.forEach(value => console.log("-- "+value.Text+" "+value.Value))
-                this.pcInfos.mbFans.forEach(value => console.log("--- "+value.Text+" "+value.Value))
-
-                //CPU
-                console.log("- "+this.pcInfos.cpuName);
-                this.pcInfos.cpuClocks.forEach(value => console.log("-- "+value.Text+": "+value.Value))
-                this.pcInfos.cpuTemps.forEach(value => console.log("--- "+value.Text+": "+value.Value))
-                this.pcInfos.cpuLoads.forEach(value => console.log("---- "+value.Text+": "+value.Value))
-                this.pcInfos.cpuPowers.forEach(value => console.log("----- "+value.Text+": "+value.Value))
-
-
-                //RAM
-                console.log("-- Ram in Use: "+this.pcInfos.ramUsed);
-                let usedRam = parseFloat(this.pcInfos.ramUsed.replace(",","."));
-                let availableRam = parseFloat(this.pcInfos.ramTotal.replace(",","."));
-                let totalRam = usedRam+availableRam;
-                console.log(("-- Total Ram: "+totalRam+" GB").replace(".",","));
-
-                //GPU
-                console.log("- "+this.pcInfos.gpuName);
-                console.log("-- "+this.pcInfos.gpuClocks.Text+": "+this.pcInfos.gpuClocks.Value);
-                console.log("--- Temperature: "+this.pcInfos.gpuTemps.Value);
-                this.pcInfos.gpuLoads.forEach(value => console.log("---- "+value.Text+": "+value.Value));
-                console.log("----- Fan: "+this.pcInfos.gpuFan.Value);
-                console.log("-- "+this.pcInfos.gpuPower.Text+": "+this.pcInfos.gpuPower.Value);
-                console.log("--- "+this.pcInfos.gpuRamFree.Text+": "+this.pcInfos.gpuRamFree.Value);
-                console.log("--- "+this.pcInfos.gpuRamUsed.Text+": "+this.pcInfos.gpuRamUsed.Value);
-                console.log("--- "+this.pcInfos.gpuRamTotal.Text+": "+this.pcInfos.gpuRamTotal.Value);
 
                 //Todo Errorhandling
             })

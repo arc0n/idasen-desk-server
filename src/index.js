@@ -11,7 +11,7 @@ const port = 3000;
 const deskService = new DeskService();
 
 const pcService = new InfoworkerService();
-pcService.checkConnection().then(r => r ? pcService.startInfoLoop() : console.log("No Connection."));
+
 
 // TODO only allow CORS for the own server*
 app.use(function (req, res, next) {
@@ -41,6 +41,13 @@ var corsOptions = {
   },
   credentials: true,
 };*/
+
+app.get("/pcinfos", async (req, res) => {
+  await pcService.checkConnection().then(r => r ? pcService.startInfoLoop() : console.log("No Connection."));
+  const pcInfos = pcService.pcInfos;
+
+  res.send(pcInfos);
+})
 
 app.get("/ping", async (req, res) => {
   log("Received ping");

@@ -8,7 +8,7 @@
 <ion-content [fullscreen]="true" [scrollX]="false">
   <div class="content-wrapper">
     <div class="grid-element">
-      <div class="pcHeader">CPU: (AMD Ryzen7?)</div>
+      <div class="pcHeader">CPU: <br> {{this.info?.cpuName}}</div>
       <!-- region CPUInfos -->
       <div class="pcInfo">
         <!-- region Clockspeed -->
@@ -17,7 +17,7 @@
           Clock Speed:
         </div>
         <div class="item-variable">
-          (3775) Mhz
+          {{cpuClocksAvg|number: '1.2-2'}} Mhz
         </div>
       </div>
       <!-- region Load -->
@@ -27,7 +27,7 @@
           Total Load:
         </div>
         <div class="item-variable">
-          (6,5)%
+          {{this.info?.cpuLoads.length > 0 ? this.info.cpuLoads[0].Value : "-"}}
         </div>
       </div>
       <!-- region CoreTemp -->
@@ -37,14 +37,14 @@
           Core-Temp:
         </div>
         <div class="item-variable">
-          (62)°C
+          {{this.info?.cpuTemps.length > 0 ? this.info.cpuTemps[0].Value : "-"}}
         </div>
       </div>
     </div>
 
 
     <div class="grid-element">
-      <div class="pcHeader">Mainboard: (ASUS B-550..?)</div>
+      <div class="pcHeader">Mainboard: <br> {{this.info?.mbName}}</div>
       <!-- region Mainboard -->
       <div class="pcInfo">
         <!-- region Temperature -->
@@ -53,7 +53,7 @@
           Temperature:
         </div>
         <div class="item-variable">
-          (72,2)°
+          {{mbTempsAvg|number: '1.1-1'}} °C
         </div>
       </div>
       <!-- region Fan#1 -->
@@ -64,11 +64,11 @@
             Fan#1 Speed:
           </div>
           <div class="item-variable">
-            (723) RPM
+            {{this.info?.mbFans[0].Value}}
           </div>
         </div>
         <div class="item-bar">
-          <ion-progress-bar [color]="'warning'" value="0.5"></ion-progress-bar>
+          <ion-progress-bar [color]="setProgressColor(this.mbFanPercent[0])" [value]="this.mbFanPercent[0]"></ion-progress-bar>
         </div>
       </div>
       <!-- region Fan#2 -->
@@ -79,11 +79,11 @@
             Fan#2 Speed:
           </div>
           <div class="item-variable">
-            (984) RPM
+            {{this.info?.mbFans[1].Value}}
           </div>
         </div>
         <div class="item-bar">
-          <ion-progress-bar color="danger" value="0.8"></ion-progress-bar>
+          <ion-progress-bar [color]="setProgressColor(this.mbFanPercent[1])" [value]="this.mbFanPercent[1]"></ion-progress-bar>
         </div>
       </div>
       <!-- region Fan#3 -->
@@ -94,18 +94,18 @@
             Fan#3 Speed:
           </div>
           <div class="item-variable">
-            (556) RPM
+            {{this.info?.mbFans[2].Value}}
           </div>
         </div>
         <div class="item-bar">
-          <ion-progress-bar color="success" value="0.4"></ion-progress-bar>
+          <ion-progress-bar [color]="setProgressColor(this.mbFanPercent[2])" [value]="this.mbFanPercent[2]"></ion-progress-bar>
         </div>
       </div>
     </div>
 
 
     <div class="grid-element">
-      <div class="pcHeader">GPU: (Geforce RTX2080?)</div>
+      <div class="pcHeader">GPU: <br> {{this.info?.gpuName}} </div>
       <!-- region GPU -->
       <div class="pcInfo">
         <!-- region GPU clock Speed -->
@@ -114,7 +114,7 @@
           Clock Speed:
         </div>
         <div class="item-variable">
-          (1515) Mhz
+          {{this.info?.gpuClocks.Value}}
         </div>
       </div>
       <!-- region GPU Load -->
@@ -124,7 +124,7 @@
           Total Load:
         </div>
         <div class="item-variable">
-          (11)%
+          {{gpuLoadsAvg|number: '1.1-1'}} %
         </div>
       </div>
       <!-- region GPU Temp -->
@@ -134,7 +134,7 @@
           GPU Temp.:
         </div>
         <div class="item-variable">
-          (48)°C
+          {{this.info?.gpuTemps.Value}}
         </div>
       </div>
       <!-- region GPU Fan -->
@@ -145,11 +145,11 @@
             Fan Speed:
           </div>
           <div class="item-variable">
-            (1556) RPM
+            {{this.info?.gpuFan.Value}}
           </div>
         </div>
         <div class="item-bar">
-          <ion-progress-bar color="success" value="0.33"></ion-progress-bar>
+          <ion-progress-bar [color]="setProgressColor(this.gpuFanPercent)" [value]="this.gpuFanPercent"></ion-progress-bar>
         </div>
       </div>
     </div>
