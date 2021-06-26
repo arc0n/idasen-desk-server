@@ -17,17 +17,17 @@ class DeskService extends EventEmitter {
     super();
     this.deskBridge = null;
 
-    /* TEST LOOPER; REMOVE FOR PRODUCTION*/
+    /*    /!* TEST LOOPER; REMOVE FOR PRODUCTION*!/
     let i = 0;
     let direction = 1;
     const positions = [8, 9, 11, 15, 22, 25, 28, 30, 35, 40, 50];
     setInterval(() => {
       if (i === 0) direction = 1;
-      if (i >= positions.length) direction = -1;
+      if (i >= positions.length - 1) direction = -1;
 
       i = i + direction;
       this.emit("position", positions[i]);
-    }, 2000);
+    }, 2000);*/
   }
   /**
    * Scan vor desks, returns all found desks or an empty array

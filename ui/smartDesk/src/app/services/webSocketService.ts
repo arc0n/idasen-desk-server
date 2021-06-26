@@ -6,19 +6,12 @@ export const WS_ENDPOINT = 'ws://localhost:8080'; // todo make dynamic
 @Injectable()
 export class WebSocketService {
   private socket$: WebSocketSubject<any>;
-  private messagesSubject$ = new Subject();
-  public messages$ = this.messagesSubject$.pipe(switchAll(), catchError(e => { throw e }));
+  public messages$: Subject<number> = new Subject();
 
   public connect(): void {
-
     if (!this.socket$ || this.socket$.closed) {
       this.socket$ = this.getNewWebSocket();
-      this.socket$.subscribe(el => console.log(el))
-      const messages = this.socket$.pipe(
-        tap({
-          error: error => console.log(error),
-        }), catchError(_ => EMPTY));
-      this.messagesSubject$.next(messages);
+      this.socket$.subscribe((el) => this.messages$.next(el));
     }
   }
 
@@ -29,4 +22,6 @@ export class WebSocketService {
     this.socket$.next(msg);
   }
   close() {
-    this.socket$.complete(); }}
+    this.socket$.complete();
+  }
+}

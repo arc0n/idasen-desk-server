@@ -10,8 +10,10 @@ const IP_KEY = 'server-ip';
 const PORT_KEY = 'server-port';
 @Injectable()
 export class BaseResourceService {
-  private baseUrl = 'http://localhost:3000/';
-  constructor(private http: HttpClient, private storageSrv: StorageService) {}
+  private baseUrl;
+  constructor(private http: HttpClient, private storageSrv: StorageService) {
+    this.getStoredData();
+  }
 
   public async setServerIp(ip: string, port: number) {
     const tmp = this.baseUrl;

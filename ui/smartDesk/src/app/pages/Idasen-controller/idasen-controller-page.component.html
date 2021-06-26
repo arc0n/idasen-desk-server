@@ -30,7 +30,8 @@
 
     <ion-item lines="none">
       <ion-range min="7" max="58" color="secondary" debounce="20"
-                 (ionChange)="heightSliderChange($event)"
+                 (click)="heightSliderClicked($event)"
+                 [(ngModel)]="sliderValue"
       >
         <ion-label slot="start">7</ion-label>
         <ion-label slot="end">58</ion-label>
