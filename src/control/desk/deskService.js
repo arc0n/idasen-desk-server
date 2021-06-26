@@ -4,7 +4,6 @@ const { sleep } = require("../utils");
 const { getConfig } = require("../config");
 const EventEmitter = require("events");
 
-
 const { DeskBridge } = require("./bluetoothDeskBridge");
 const { saveConfig } = require("../config");
 
@@ -21,15 +20,14 @@ class DeskService extends EventEmitter {
     /* TEST LOOPER; REMOVE FOR PRODUCTION*/
     let i = 0;
     let direction = 1;
-    const positions  = [8,9,11,15,22,25,28,30,35,40,50]
-    setInterval(()=>{
+    const positions = [8, 9, 11, 15, 22, 25, 28, 30, 35, 40, 50];
+    setInterval(() => {
+      if (i === 0) direction = 1;
+      if (i >= positions.length) direction = -1;
 
-      if(i === 0) direction = 1;
-      if(i >= positions.length) direction = -1
-
-      i = i+direction;
-      this.emit('position', positions[i] )
-    },1000)
+      i = i + direction;
+      this.emit("position", positions[i]);
+    }, 2000);
   }
   /**
    * Scan vor desks, returns all found desks or an empty array
@@ -167,7 +165,7 @@ class DeskService extends EventEmitter {
       const interval = setInterval(() => {
         Promise.race([this.deskBridge?.getDesk(), sleep(500)]).then((desk) => {
           if (!!desk) {
-            this.emit('position', desk.position)
+            this.emit("position", desk.position);
             console.log("Desk Position: ", desk.position);
             // someone did something
             const idleTime = getIdleTime(); // TODO if removed, update the package.json
