@@ -10,7 +10,7 @@ const IP_KEY = 'server-ip';
 const PORT_KEY = 'server-port';
 @Injectable()
 export class BaseResourceService {
-  private baseUrl = 'http://localhost:3000/desk';
+  private baseUrl = 'http://localhost:3000/';
   constructor(private http: HttpClient, private storageSrv: StorageService) {}
 
   public async setServerIp(ip: string, port: number) {
@@ -58,7 +58,7 @@ export class BaseResourceService {
   }
 
   public moveDesk(targetPosition: number): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/move/${targetPosition}`, {});
+    return this.http.post<any>(`${this.baseUrl}move/${targetPosition}`, {});
   }
 
   checkConnection(): Observable<boolean> {
