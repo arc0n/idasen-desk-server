@@ -163,13 +163,14 @@ class DeskService extends EventEmitter {
       });
 
       const interval2 = setInterval(() => {
-        Promise.race([this.deskBridge?.getDesk(), sleep(150)]).then((desk) => {
+        Promise.race([this.deskBridge?.getDesk(), sleep(200)]).then((desk) => {
+          console.log(desk, desk?.isMoving);
           if (!!desk && desk.isMoving) {
             this.emit("position", parseInt(desk.position));
           }
           if (!desk) clearInterval(interval2);
         });
-      }, 200);
+      }, 300);
 
       const interval = setInterval(() => {
         Promise.race([this.deskBridge?.getDesk(), sleep(200)]).then((desk) => {
