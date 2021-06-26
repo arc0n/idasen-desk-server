@@ -1,8 +1,10 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {combineLatest, from, Observable, of} from 'rxjs';
-import {catchError, combineAll, concatAll, finalize, map, mergeAll, tap} from 'rxjs/operators';
-import {StorageService} from "./storage.service";
+import { from, Observable, of } from 'rxjs';
+import { catchError, map, timeout } from 'rxjs/operators';
+import { StorageService } from './storage.service';
+import { Desk } from '../models/desk';
+import { Pcinfos } from '../models/pcinfos';
 
 const IP_KEY = 'server-ip';
 const PORT_KEY = 'server-port';
@@ -56,15 +58,14 @@ export class BaseResourceService {
   }
 
   public moveDesk(targetPosition: number): Observable<any> {
-    return this.http
-      .post<any>(`${this.baseUrl}/move/${targetPosition}`, {});
+    return this.http.post<any>(`${this.baseUrl}/move/${targetPosition}`, {});
   }
 
   checkConnection(): Observable<boolean> {
     return this.http.get<any>(this.baseUrl + 'ping', {}).pipe(
       timeout(1000),
       catchError(() => of(false)),
-      map((value) => value)
+      map((value) => !!value)
     );
   }
 }
