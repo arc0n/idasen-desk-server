@@ -166,6 +166,13 @@ class DeskService extends EventEmitter {
         Promise.race([this.deskBridge?.getDesk(), sleep(500)]).then((desk) => {
           if (!!desk) {
             this.emit("position", parseInt(desk.position));
+            if (desk.isMoving) {
+              setTimeout(() => {
+                this.deskBridge.getDesk().then((desk2) => {
+                  if (!!desk) this.emit("position", parseInt(desk2.position));
+                });
+              }, 400);
+            }
             console.log("Desk Position: ", desk.position);
             // someone did something
             const idleTime = getIdleTime(); // TODO if removed, update the package.json

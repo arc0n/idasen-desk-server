@@ -60,7 +60,10 @@ export class BaseResourceService {
   }
 
   public moveDesk(targetPosition: number): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}move/${targetPosition}`, {});
+    return this.http.post<any>(
+      `${this.baseUrl}desk/move/${targetPosition}`,
+      {}
+    );
   }
 
   checkConnection(): Observable<boolean> {

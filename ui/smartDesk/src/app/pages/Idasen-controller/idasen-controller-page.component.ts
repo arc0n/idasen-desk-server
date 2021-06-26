@@ -31,7 +31,21 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   ngOnInit() {
-    this.webSocket.connect();
+    this.resourcesService
+      .getStoredData()
+      .subscribe((data: { ip: string; port: number }) => {
+        this.webSocket.connect(`ws://${data?.ip}:${8080}`);
+        // TODO what when error?
+      });
+    this.subscriptions.push(
+      this.webSocket.messages$.subscribe((height: number) => {
+        if (height !== this.sliderValue) {
+          this.performAnimation(height, this.sliderValue);
+          this.sliderValue = height;
+        }
+      })
+    );
+
     this.subscriptions.push(
       this.triggerApiCall$
         .pipe(
@@ -43,15 +57,6 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
         .subscribe((val) => {
           // TODO return some value to see if it has moved
         })
-    );
-
-    this.subscriptions.push(
-      this.webSocket.messages$.subscribe((height: number) => {
-        if (height !== this.sliderValue) {
-          this.performAnimation(height, this.sliderValue);
-          this.sliderValue = height;
-        }
-      })
     );
   }
 

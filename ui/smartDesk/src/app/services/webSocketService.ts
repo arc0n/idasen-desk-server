@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { catchError, tap, switchAll } from 'rxjs/operators';
 import { EMPTY, Subject } from 'rxjs';
-export const WS_ENDPOINT = 'ws://localhost:8080'; // todo make dynamic
 @Injectable()
 export class WebSocketService {
   private socket$: WebSocketSubject<any>;
   public messages$: Subject<number> = new Subject();
+  private wsEndpoint: string;
 
-  public connect(): void {
+  public connect(endPoint: string): void {
+    this.wsEndpoint = endPoint;
     if (!this.socket$ || this.socket$.closed) {
       this.socket$ = this.getNewWebSocket();
       this.socket$.subscribe((el) => this.messages$.next(el));
@@ -16,7 +17,11 @@ export class WebSocketService {
   }
 
   private getNewWebSocket() {
-    return webSocket(WS_ENDPOINT);
+    if (!this.wsEndpoint) {
+      console.log('NO ENDPOINT SELECTED');
+      return;
+    }
+    return webSocket(this.wsEndpoint);
   }
   sendMessage(msg: any) {
     this.socket$.next(msg);
