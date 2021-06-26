@@ -163,7 +163,7 @@ class DeskService extends EventEmitter {
       });
 
       const interval = setInterval(() => {
-        Promise.race([this.deskBridge?.getDesk(), sleep(500)]).then((desk) => {
+        Promise.race([this.deskBridge?.getDesk(), sleep(200)]).then((desk) => {
           if (!!desk) {
             this.emit("position", parseInt(desk.position));
             if (desk.isMoving) {
@@ -171,7 +171,7 @@ class DeskService extends EventEmitter {
                 this.deskBridge.getDesk().then((desk2) => {
                   if (!!desk) this.emit("position", parseInt(desk2.position));
                 });
-              }, 400);
+              }, 200);
             }
             console.log("Desk Position: ", desk.position);
             // someone did something
@@ -192,7 +192,7 @@ class DeskService extends EventEmitter {
             clearInterval(interval);
           }
         });
-      }, CHECK_INTERVAL * 1000);
+      }, CHECK_INTERVAL * 400);
     } else {
       this.deskBridge.config = {
         deskAddress: config.deskAddress,
