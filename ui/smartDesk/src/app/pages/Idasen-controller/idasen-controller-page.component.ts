@@ -93,7 +93,7 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
     }, 20);
   }
 
-  heightSliderClicked($event: MouseEvent) {
-    this.triggerApiCall$.next(this.sliderValue);
+  heightSliderClicked(event) {
+    this.triggerApiCall$.next(event.target.value);
   }
 }
