@@ -162,17 +162,19 @@ class DeskService extends EventEmitter {
         throw new Error("Error while starting the Bluetooth device");
       });
 
+      const interval2 = setInterval(() => {
+        Promise.race([this.deskBridge?.getDesk(), sleep(150)]).then((desk) => {
+          if (!!desk && desk.isMoving) {
+            this.emit("position", parseInt(desk.position));
+          }
+          if (!desk) clearInterval(interval2);
+        });
+      }, 200);
+
       const interval = setInterval(() => {
         Promise.race([this.deskBridge?.getDesk(), sleep(200)]).then((desk) => {
           if (!!desk) {
             this.emit("position", parseInt(desk.position));
-            if (desk.isMoving) {
-              setTimeout(() => {
-                this.deskBridge.getDesk().then((desk2) => {
-                  if (!!desk) this.emit("position", parseInt(desk2.position));
-                });
-              }, 200);
-            }
             console.log("Desk Position: ", desk.position);
             // someone did something
             const idleTime = getIdleTime(); // TODO if removed, update the package.json
