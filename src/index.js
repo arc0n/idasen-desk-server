@@ -2,12 +2,16 @@ const express = require("express");
 const { getConfig } = require("./control/config");
 const cors = require("cors");
 const { log } = require("./control/utils");
+const {InfoworkerService} = require("./control/pcinfos/infoworkerService");
 
 const { DeskService } = require("./control/desk/deskService");
 
 const app = express();
 const port = 3000;
 const deskService = new DeskService();
+
+const pcService = new InfoworkerService();
+
 
 // TODO only allow CORS for the own server*
 app.use(function (req, res, next) {
@@ -37,6 +41,13 @@ var corsOptions = {
   },
   credentials: true,
 };*/
+
+app.get("/pcinfos", async (req, res) => {
+  await pcService.checkConnection().then(r => r ? pcService.startInfoLoop() : console.log("No Connection."));
+  const pcInfos = pcService.pcInfos;
+
+  res.send(pcInfos);
+})
 
 app.get("/ping", async (req, res) => {
   log("Received ping");

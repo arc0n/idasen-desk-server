@@ -5,13 +5,156 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
+<ion-content [fullscreen]="true" [scrollX]="false">
+  <div class="content-wrapper">
+    <div class="grid-element">
+      <div class="pcHeader">CPU: <br> {{this.info?.cpuName}}</div>
+      <!-- region CPUInfos -->
+      <div class="pcInfo">
+        <!-- region Clockspeed -->
+        <ion-icon class="item-icon" name="speedometer"></ion-icon>
+        <div class="item-text">
+          Clock Speed:
+        </div>
+        <div class="item-variable">
+          {{cpuClocksAvg|number: '1.2-2'}} Mhz
+        </div>
+      </div>
+      <!-- region Load -->
+      <div class="pcInfo">
+        <ion-icon class="item-icon" name="stats-chart"></ion-icon>
+        <div class="item-text">
+          Total Load:
+        </div>
+        <div class="item-variable">
+          {{this.info?.cpuLoads.length > 0 ? this.info.cpuLoads[0].Value : "-"}}
+        </div>
+      </div>
+      <!-- region CoreTemp -->
+      <div class="pcInfo">
+        <ion-icon class="item-icon" name="thermometer"></ion-icon>
+        <div class="item-text">
+          Core-Temp:
+        </div>
+        <div class="item-variable">
+          {{this.info?.cpuTemps.length > 0 ? this.info.cpuTemps[0].Value : "-"}}
+        </div>
+      </div>
+    </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Info Screen Page</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <app-explore-container [name]="'info-screen page'"></app-explore-container>
+    <div class="grid-element">
+      <div class="pcHeader">Mainboard: <br> {{this.info?.mbName}}</div>
+      <!-- region Mainboard -->
+      <div class="pcInfo">
+        <!-- region Temperature -->
+        <ion-icon class="item-icon" name="thermometer"></ion-icon>
+        <div class="item-text">
+          Temperature:
+        </div>
+        <div class="item-variable">
+          {{mbTempsAvg|number: '1.1-1'}} °C
+        </div>
+      </div>
+      <!-- region Fan#1 -->
+      <div class="pcInfoWithBar">
+        <div class="pcInfo">
+          <ion-icon class="item-icon" name="aperture"></ion-icon>
+          <div class="item-text">
+            Fan#1 Speed:
+          </div>
+          <div class="item-variable">
+            {{this.info?.mbFans[0].Value}}
+          </div>
+        </div>
+        <div class="item-bar">
+          <ion-progress-bar [color]="setProgressColor(this.mbFanPercent[0])" [value]="this.mbFanPercent[0]"></ion-progress-bar>
+        </div>
+      </div>
+      <!-- region Fan#2 -->
+      <div class="pcInfoWithBar">
+        <div class="pcInfo">
+          <ion-icon class="item-icon" name="aperture"></ion-icon>
+          <div class="item-text">
+            Fan#2 Speed:
+          </div>
+          <div class="item-variable">
+            {{this.info?.mbFans[1].Value}}
+          </div>
+        </div>
+        <div class="item-bar">
+          <ion-progress-bar [color]="setProgressColor(this.mbFanPercent[1])" [value]="this.mbFanPercent[1]"></ion-progress-bar>
+        </div>
+      </div>
+      <!-- region Fan#3 -->
+      <div class="pcInfoWithBar">
+        <div class="pcInfo">
+          <ion-icon class="item-icon" name="aperture"></ion-icon>
+          <div class="item-text">
+            Fan#3 Speed:
+          </div>
+          <div class="item-variable">
+            {{this.info?.mbFans[2].Value}}
+          </div>
+        </div>
+        <div class="item-bar">
+          <ion-progress-bar [color]="setProgressColor(this.mbFanPercent[2])" [value]="this.mbFanPercent[2]"></ion-progress-bar>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="grid-element">
+      <div class="pcHeader">GPU: <br> {{this.info?.gpuName}} </div>
+      <!-- region GPU -->
+      <div class="pcInfo">
+        <!-- region GPU clock Speed -->
+        <ion-icon class="item-icon" name="speedometer"></ion-icon>
+        <div class="item-text">
+          Clock Speed:
+        </div>
+        <div class="item-variable">
+          {{this.info?.gpuClocks.Value}}
+        </div>
+      </div>
+      <!-- region GPU Load -->
+      <div class="pcInfo">
+        <ion-icon class="item-icon" name="stats-chart"></ion-icon>
+        <div class="item-text">
+          Total Load:
+        </div>
+        <div class="item-variable">
+          {{gpuLoadsAvg|number: '1.1-1'}} %
+        </div>
+      </div>
+      <!-- region GPU Temp -->
+      <div class="pcInfo">
+        <ion-icon class="item-icon" name="thermometer"></ion-icon>
+        <div class="item-text">
+          GPU Temp.:
+        </div>
+        <div class="item-variable">
+          {{this.info?.gpuTemps.Value}}
+        </div>
+      </div>
+      <!-- region GPU Fan -->
+      <div class="pcInfoWithBar">
+        <div class="pcInfo">
+          <ion-icon class="item-icon" name="aperture"></ion-icon>
+          <div class="item-text">
+            Fan Speed:
+          </div>
+          <div class="item-variable">
+            {{this.info?.gpuFan.Value}}
+          </div>
+        </div>
+        <div class="item-bar">
+          <ion-progress-bar [color]="setProgressColor(this.gpuFanPercent)" [value]="this.gpuFanPercent"></ion-progress-bar>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--  <app-explore-container [name]="'info-screen page'"></app-explore-container>-->
 </ion-content>

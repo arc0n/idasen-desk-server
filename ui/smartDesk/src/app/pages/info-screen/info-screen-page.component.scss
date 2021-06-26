@@ -1,0 +1,84 @@
+.grid-element {
+  display: block;
+  margin: 1rem;
+}
+
+.pcHeader {
+  font-size: larger;
+  font-weight: bold;
+  align-content: stretch;
+  display: block;
+  margin: 0 0 1rem 0;
+}
+
+.pcInfoWithBar, .pcInfo {
+  display: flex;
+  margin: 0.5rem 0 0.5rem 0;
+
+  ion-icon {
+    margin: 0 1rem 0 0.5rem;
+  }
+}
+
+.pcInfoWithBar {
+  flex-direction: column;
+  //margin: 0.25rem 0 0.25rem 0;
+  .item-bar {
+    margin: -0.25rem 1rem 0 0.35rem
+  }
+}
+
+.item-variable {
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+
+@media (orientation: portrait) {
+  .content-wrapper {
+    display: grid;
+    height: 100%;
+  }
+}
+
+@media (orientation: landscape) {
+  .content-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+  }
+
+  .pcHeader{
+    //margin: 2rem 0rem;
+    height: 4.5rem;
+  }
+
+  .grid-element {
+    margin: 3rem 0.5rem;
+    min-width: 30%;
+  }
+
+
+
+  .pcInfoWithBar, .pcInfo {
+    margin: 1rem 0 1rem 0;
+
+    .item-bar {
+      margin: -0.25rem 0.75rem 0 0.35rem
+    }
+
+    ion-icon {
+      margin: 0 0.25rem 0 0.25rem
+    }
+  }
+
+  ion-header {
+    display: none;
+
+  }
+
+  ion-tab-bar {
+    display: none;
+  }
+}

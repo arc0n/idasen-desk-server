@@ -4,12 +4,13 @@ import { combineLatest, from, Observable, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { StorageService } from './storage.service';
 import { Desk } from '../models/desk';
+import { Pcinfos } from '../models/pcinfos';
 
 const IP_KEY = 'server-ip';
 const PORT_KEY = 'server-port';
 @Injectable()
 export class BaseResourceService {
-  private baseUrl = 'http://localhost:3000/desk';
+  private baseUrl = 'http://localhost:3000/';
   constructor(private http: HttpClient, private storageSrv: StorageService) {}
 
   public async setServerIp(ip: string, port: number) {
@@ -36,6 +37,10 @@ export class BaseResourceService {
 
   public searchForDesk() {
     return this.http.get<Desk[]>(this.baseUrl + 'desk/search', {});
+  }
+
+  public getPcInfos() {
+    return this.http.get<Pcinfos>(this.baseUrl + 'pcinfos', {});
   }
 
   public connectDesk(): Observable<boolean> {
