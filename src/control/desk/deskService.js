@@ -192,7 +192,6 @@ class DeskService extends EventEmitter {
       // SECOND AND FAST INTERVAL TO CHECK IF MOVING
       const interval2 = setInterval(() => {
         Promise.race([this.deskBridge?.getDesk(), sleep(400)]).then((desk) => {
-          console.log(desk, desk?.isMoving);
           if (!!desk && desk.isMoving) {
             this.emit("position", parseInt(desk.position));
           }
