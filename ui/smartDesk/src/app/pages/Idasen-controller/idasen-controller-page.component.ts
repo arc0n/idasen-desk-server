@@ -1,8 +1,9 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BaseResourceService} from '../../services/base-resource.service';
-import { debounceTime,   switchMap} from 'rxjs/operators';
-import { Subject, Subscription} from "rxjs";
-import { AnimationController} from '@ionic/angular';
+import {debounceTime, switchMap} from 'rxjs/operators';
+import {Subject, Subscription} from "rxjs";
+import {AnimationController} from '@ionic/angular';
+import {WebSocketService} from "../../services/webSocketService";
 
 
 @Component({
@@ -16,22 +17,29 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
   interval: any;
   sliderValue: number;
 
-  constructor(private service: BaseResourceService, private animationCtrl: AnimationController) {
+  constructor(private resourcesService: BaseResourceService, private animationCtrl: AnimationController, private webSocket: WebSocketService) {
 
   }
 
   private subscriptions: Subscription[] = [];
 
   ngOnInit() {
+    this.webSocket.connect();
     this.subscriptions.push(
       this.triggerApiCall$.pipe(
         debounceTime(1000),
         switchMap((value: number) => {
-          return this.service.moveDesk(value)
+          return this.resourcesService.moveDesk(value)
         })
       ).subscribe((val) => {
         // TODO
       }));
+
+    this.subscriptions.push(
+      this.webSocket.messages$.subscribe((msg) => {
+        console.log(msg)
+      })
+    )
 
   }
 
@@ -39,12 +47,6 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
     this.subscriptions.forEach(s => s.unsubscribe());
   }
 
-  /** @internal */
-  connectToDesk() {
-    this.service.connectDesk().subscribe((val) => {
-      console.log('value received: ', val);
-    });
-  }
 
   heightSliderChange(event) {
     const oldValue = this.sliderValue || 0;
@@ -68,7 +70,10 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
         .keyframes(
           [
             //   {offset: 0, transform: 'translateY(0px)'},
-            {offset: 1, transform: `translateY(-${oldValue > this.sliderValue ? oldValue - offset : oldValue + offset}px)`},
+            {
+              offset: 1,
+              transform: `translateY(-${oldValue > this.sliderValue ? oldValue - offset : oldValue + offset}px)`
+            },
 
           ]
         ).play();
