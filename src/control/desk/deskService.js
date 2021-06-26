@@ -162,6 +162,7 @@ class DeskService extends EventEmitter {
         throw new Error("Error while starting the Bluetooth device");
       });
 
+      await sleep(200);
       const interval2 = setInterval(() => {
         Promise.race([this.deskBridge?.getDesk(), sleep(200)]).then((desk) => {
           console.log(desk, desk?.isMoving);
@@ -171,7 +172,6 @@ class DeskService extends EventEmitter {
           if (!desk) clearInterval(interval2);
         });
       }, 300);
-
       const interval = setInterval(() => {
         Promise.race([this.deskBridge?.getDesk(), sleep(200)]).then((desk) => {
           if (!!desk) {
