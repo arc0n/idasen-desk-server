@@ -11,7 +11,8 @@
     "nodemon": "^2.0.7",
     "pretty-ms": "^7.0.0",
     "process": "^0.11.10",
-    "usb": "^1.7.1"
+    "usb": "^1.7.1",
+    "ws": "^7.4.6"
   },
   "scripts": {
     "start": "sudo node src/index.js",
@@ -29,5 +30,9 @@
   "homepage": "https://github.com/21IsOnlyTheHalfTruth/idasen-backend#readme",
   "devDependencies": {
     "cors": "^2.8.5"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.5"
   }
 }
