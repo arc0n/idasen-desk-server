@@ -10,17 +10,19 @@ import { Tab3PageRoutingModule } from './server-controller-routing.module';
 import {IonicStorageModule} from "@ionic/storage-angular";
 import {SharedModule} from "../../services/shared.module";
 import {DeskListComponent} from "./desk-list/desk-list.component";
+import {ColorPickerModule} from "ngx-color-picker";
 
 @NgModule({
-    imports: [
-        IonicModule,
-        CommonModule,
-        FormsModule,
-        ExploreContainerComponentModule,
-        RouterModule.forChild([{path: '', component: ServerControllerPage}]),
-        Tab3PageRoutingModule,
-        ReactiveFormsModule
-    ],
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule,
+    ExploreContainerComponentModule,
+    RouterModule.forChild([{path: '', component: ServerControllerPage}]),
+    Tab3PageRoutingModule,
+    ReactiveFormsModule,
+    ColorPickerModule
+  ],
   declarations: [ServerControllerPage, DeskListComponent],
 })
 export class ServerControllerPageModule {}

@@ -44,6 +44,7 @@ export class ServerControllerPage implements OnInit, OnDestroy {
     serverIpControl: new FormControl(''),
     serverPortControl: new FormControl(null),
   });
+  color: any;
 
   ngOnInit(): void {
     this.subscription.push(

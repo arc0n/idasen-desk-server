@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { BaseResourceService } from '../../services/base-resource.service';
-import { interval, of, Subscription } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
-import { Pcinfos } from '../../models/pcinfos';
+import {Component, OnInit} from '@angular/core';
+import {BaseResourceService} from "../../services/base-resource.service";
+import {interval, Observable, of, Subscription} from "rxjs";
+import {catchError, switchMap} from "rxjs/operators";
+import {Pcinfos} from "../../models/pcinfos";
 
 @Component({
   selector: 'app-info-screen',
@@ -21,16 +21,23 @@ export class InfoScreenPage implements OnInit {
   gpuLoadsAvg: number;
   gpuFanPercent: number;
   mbFanPercent: number[] = [];
+  isConnected: Subscription;
 
   ngOnInit() {
+    this.isConnected = this.service.checkConnection().subscribe();
+
     this.subscriptions.push(
-      interval(1000)
-        .pipe(
-          switchMap((_) => {
-            return this.service.getPcInfos();
-          })
-        )
-        .subscribe((receivedPcInfos) => {
+      interval(1000).pipe(
+        switchMap(() => {
+          return this.service.getPcInfos().pipe(
+          catchError(e => {
+            console.log(e);
+            return of(null);
+          }))
+        })
+      ).subscribe(receivedPcInfos => {
+        if(null) return 0;
+          this.info = receivedPcInfos;
           this.cpuClocksAvgCalculus();
           this.mbTempsAvg = this.calculateAvg(this.info.mbTemps);
           this.gpuLoadsAvg = this.calculateAvg(this.info.gpuLoads);
@@ -38,8 +45,8 @@ export class InfoScreenPage implements OnInit {
           this.mbFanPercent[0] = this.calculateFanPercent(this.info.mbFans[0]);
           this.mbFanPercent[1] = this.calculateFanPercent(this.info.mbFans[1]);
           this.mbFanPercent[2] = this.calculateFanPercent(this.info.mbFans[2]);
-        })
-    );
+      })
+    )
   }
 
   ngOnDestroy() {
