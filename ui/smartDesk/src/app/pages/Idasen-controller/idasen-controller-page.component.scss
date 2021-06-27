@@ -29,8 +29,11 @@
 .desk-image-wrapper{
   margin: auto 3rem 0 3rem;
   height: auto;
-  width: 100%;
   flex-shrink: 1;
   justify-content: center;
 }
-
+@media(max-height: 500px) {
+  .desk-image-wrapper img {
+    display: none;
+  }
+}
