@@ -15,7 +15,6 @@
 
   <div class="content-wrapper">
 
-
     <form class="server-controller-form" [formGroup]="serverForm">
       <ion-item-divider>
         <ion-label>
@@ -36,7 +35,6 @@
           Connections
         </ion-label>
       </ion-item-divider>
-
 
       <div class="connect-wrapper">
         <ion-item button [disabled]="disableButtons || this.testSuccessful == null" (click)="this.triggerConnectionTest$.next()">
@@ -61,10 +59,19 @@
         <ion-item button [disabled]="disableButtons || isConnected" (click)="presentModal()" detail>
           <ion-label>search for desks</ion-label>
         </ion-item>
+      </div>
 
+      <ion-item-divider>
+        <ion-label>
+          Info-Screen Settings
+        </ion-label>
+      </ion-item-divider>
+      <div class="content-wrapper">
+        <ion-item button [(colorPicker)]="color" [style.color]="color">
+          <ion-label>Text-Color Picker for Landscape</ion-label>
+        </ion-item>
       </div>
     </form>
-
   </div>
 
 </ion-content>
