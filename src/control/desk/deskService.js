@@ -35,7 +35,6 @@ class DeskService extends EventEmitter {
    */
   async scanForDesk() {
     log("Scanning for Desks....");
-    // const config = await getConfig(); // TODO is config needed there?
     const bridge = new DeskBridge({
       verbose: false,
     });
@@ -169,8 +168,7 @@ class DeskService extends EventEmitter {
           if (!!desk) {
             this.emit("position", parseInt(desk.position));
             console.log("Desk Position: ", desk.position);
-            // someone did something
-            const idleTime = getIdleTime(); // TODO if removed, update the package.json
+            const idleTime = getIdleTime();
             if (
               // TODO refactor this logic
               idleTime < CHECK_INTERVAL &&

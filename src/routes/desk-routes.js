@@ -1,4 +1,5 @@
 const express = require("express");
+const {getConfig} = require("../control/config");
 const router = express.Router();
 
 module.exports = function getRoutes(deskService) {
@@ -10,7 +11,6 @@ module.exports = function getRoutes(deskService) {
   });
 
   router.get("/config", async (req, res) => {
-    // TODO catch if connected
     await getConfig()
       .then(
         (config) => {
@@ -20,14 +20,12 @@ module.exports = function getRoutes(deskService) {
           res.status(500).send(`Error occurred when getting config: ${e}`);
         }
       )
-      .catch(() =>
+      .catch((e) =>
         res.status(500).send(`Error occurred when getting config: ${e}`)
       );
   });
 
   router.post("/connect/:address", async (req, res) => {
-    // TODO validate input
-
     if (!!req.params.address) {
       console.log(`Attempt to connect to address  ${req.params.address}`);
       await deskService
@@ -47,10 +45,14 @@ module.exports = function getRoutes(deskService) {
   });
 
   router.post("/move/:position", async (req, res) => {
-    // TODO validate input
+    const position = req.params.position;
+    if(position < 7 || position > 60) {
+      res.status(400).send("Invalid position")
+      return;
+    }
 
     await deskService
-      .moveTo(req.params.position)
+      .moveTo(position)
       .then((hasMoved) => res.send(hasMoved))
       .catch((e) => res.status(500).send("Error while setting config: " + e));
   });
