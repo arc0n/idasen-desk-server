@@ -2,6 +2,7 @@ const { Desk } = require("./desk");
 const { log } = require("../utils");
 const { sleep } = require("../utils");
 const { getConfig } = require("../config");
+const EventEmitter = require("events");
 
 const { DeskBridge } = require("./bluetoothDeskBridge");
 const { saveConfig } = require("../config");
@@ -11,9 +12,22 @@ const CHECK_INTERVAL = 5.0; // for updating position
 /**
  * Handler to spawn a child server control the desk via DeskBridge
  */
-class DeskService {
+class DeskService extends EventEmitter {
   constructor() {
+    super();
     this.deskBridge = null;
+
+    /*    /!* TEST LOOPER; REMOVE FOR PRODUCTION*!/
+    let i = 0;
+    let direction = 1;
+    const positions = [8, 9, 11, 15, 22, 25, 28, 30, 35, 40, 50];
+    setInterval(() => {
+      if (i === 0) direction = 1;
+      if (i >= positions.length - 1) direction = -1;
+
+      i = i + direction;
+      this.emit("position", positions[i]);
+    }, 2000);*/
   }
   /**
    * Scan vor desks, returns all found desks or an empty array
@@ -21,7 +35,6 @@ class DeskService {
    */
   async scanForDesk() {
     log("Scanning for Desks....");
-    // const config = await getConfig(); // TODO is config needed there?
     const bridge = new DeskBridge({
       verbose: false,
     });
@@ -148,12 +161,14 @@ class DeskService {
         throw new Error("Error while starting the Bluetooth device");
       });
 
+      await sleep(200);
+
       const interval = setInterval(() => {
-        Promise.race([this.deskBridge?.getDesk(), sleep(500)]).then((desk) => {
+        Promise.race([this.deskBridge?.getDesk(), sleep(200)]).then((desk) => {
           if (!!desk) {
-            console.log("Desk Position: ", desk?.position);
-            // someone did something
-            const idleTime = getIdleTime(); // TODO if removed, update the package.json
+            this.emit("position", parseInt(desk.position));
+            console.log("Desk Position: ", desk.position);
+            const idleTime = getIdleTime();
             if (
               // TODO refactor this logic
               idleTime < CHECK_INTERVAL &&
@@ -171,6 +186,17 @@ class DeskService {
           }
         });
       }, CHECK_INTERVAL * 1000);
+
+      // SECOND AND FAST INTERVAL TO CHECK IF MOVING
+      const interval2 = setInterval(() => {
+        Promise.race([this.deskBridge?.getDesk(), sleep(400)]).then((desk) => {
+          console.log(desk.isMoving);
+          if (!!desk && desk.isMoving) {
+            this.emit("position", parseInt(desk.position));
+          }
+          if (!desk) clearInterval(interval2);
+        });
+      }, 1000);
     } else {
       this.deskBridge.config = {
         deskAddress: config.deskAddress,

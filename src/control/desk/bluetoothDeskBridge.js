@@ -173,7 +173,6 @@ class BluetoothDeskBridge extends EventEmitter {
     if (this.desk) {
       this.desk.on("position", async () => {
         if (!this.deskReady) {
-          // TODO deskReady could be replaced with the promise
           this.deskReady = true;
           this._deskReadyPromiseResolve();
         }

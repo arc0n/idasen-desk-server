@@ -68,7 +68,7 @@ export class ServerControllerPage implements OnInit, OnDestroy {
     );
 
     this.baseResourceService
-      .getStoredData()
+      .getStoredConnectionData()
       .pipe(tap(() => (this.isLoading = true)))
       .subscribe((values) => {
         this.triggerConnectionTest$.next();
@@ -130,7 +130,7 @@ export class ServerControllerPage implements OnInit, OnDestroy {
 
   private async presentToast(msg: string, level: 'primary' | 'danger') {
     const toast = await this.toastController.create({
-      position: 'bottom',
+      position: 'top',
       message: msg,
       color: level,
       duration: 2000,
