@@ -25,9 +25,10 @@ export class InfoScreenPage implements OnInit {
   mbFanPercent: number[] = [];
 
   ngOnInit() {
+
     this.subscriptions.push(
       interval(1000).pipe(
-        switchMap(() => {
+        switchMap((_) => {
           return this.service.getPcInfos()
         })
       ).subscribe(receivedPcInfos => {

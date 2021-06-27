@@ -20,6 +20,9 @@ function getDefaultConfig() {
     deskAddress: null,
     deskMaxPosition: 58,
     connectTimeout: 5.0,
+    position1: 8,
+    position2: 10,
+    position3: 58
   };
 }
 

@@ -6,10 +6,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { BaseResourceService } from '../../services/base-resource.service';
-import { debounceTime, switchMap } from 'rxjs/operators';
-import { Subject, Subscription } from 'rxjs';
-import { AnimationController, IonRange } from '@ionic/angular';
+import {catchError, debounceTime, switchMap} from 'rxjs/operators';
+import {of, Subject, Subscription} from 'rxjs';
+import {AnimationController, IonRange, ToastController} from '@ionic/angular';
 import { WebSocketService } from '../../services/webSocketService';
+import {MemoryPositions} from "../../models/desk";
 
 @Component({
   selector: 'app-idasen-controller',
@@ -18,21 +19,35 @@ import { WebSocketService } from '../../services/webSocketService';
 })
 export class IdasenControllerPage implements OnInit, OnDestroy {
   @ViewChild('deskPicture', { static: false }) deskPicture: any;
-  triggerApiCall$ = new Subject<number>();
+  triggerMoveDeskApiCall$ = new Subject<number>();
   interval: any;
   sliderValue: number;
+  positions: MemoryPositions;
 
   constructor(
     private resourcesService: BaseResourceService,
     private animationCtrl: AnimationController,
-    private webSocket: WebSocketService
+    private webSocket: WebSocketService,
+    private toastController: ToastController,
+
   ) {}
 
   private subscriptions: Subscription[] = [];
 
   ngOnInit() {
+
+    this.resourcesService.getMemoryPositions().pipe(
+      catchError((err)=>{
+        console.log(err)
+        return null;
+      })
+    ).subscribe((pos: MemoryPositions) => {
+      if(!pos) return;
+      this.positions = pos;
+    })
+
     this.resourcesService
-      .getStoredData()
+      .getStoredConnectionData()
       .subscribe((data: { ip: string; port: number }) => {
         this.webSocket.connect(`ws://${data?.ip}:${8080}`);
         // TODO what when error?
@@ -47,15 +62,23 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.triggerApiCall$
+      this.triggerMoveDeskApiCall$
         .pipe(
           debounceTime(1000),
           switchMap((value: number) => {
-            return this.resourcesService.moveDesk(value);
+            return this.resourcesService.moveDesk(value).pipe(
+              catchError(err => {
+                this.presentToast('No Connection to server', 'danger')
+                return of(err)
+              })
+            );
           })
         )
         .subscribe((val) => {
-          // TODO return some value to see if it has moved
+            if(val === false) {
+              this.presentToast('Please connect desk first', 'danger')
+
+            }
         })
     );
   }
@@ -94,6 +117,38 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
   }
 
   heightSliderClicked(event) {
-    this.triggerApiCall$.next(event.target.value);
+    this.triggerMoveDeskApiCall$.next(event.target.value);
+  }
+
+  writeNewPositions(pos: MemoryPositions) {
+    this.resourcesService.putMemoryPositions(pos)
+      .pipe(catchError(() => of(null)))
+      .subscribe(
+      result => {
+        if(!result)
+        {
+          this.presentToast('Error while saving position', 'danger');
+          return;
+
+        }
+        this.presentToast('Memory position saved', 'primary')
+      }
+    )
+  }
+
+  private async presentToast(msg: string, level: 'primary' | 'danger') {
+    const toast = await this.toastController.create({
+      position: 'top',
+      message: msg,
+      color: level,
+      duration: 2000,
+    });
+    toast.present();
+  }
+
+  moveTo(position: number ) {
+    if(!position) return;
+    this.triggerMoveDeskApiCall$.next(position);
+
   }
 }

@@ -10,9 +10,17 @@
 <div class="content-wrapper">
 
   <div class="memory-button-wrapper">
-    <ion-fab-button color="secondary">50</ion-fab-button>
-    <ion-fab-button color="secondary">100</ion-fab-button>
-    <ion-fab-button color="secondary">110</ion-fab-button>
+    <ion-fab-button
+      (click)="moveTo(this.positions?.position1)"
+      color="secondary">{{this.positions?.position1 ||'-'}}</ion-fab-button>
+    <ion-fab-button
+      (click)="moveTo(this.positions?.position2)"
+
+      color="secondary">{{this.positions?.position2 ||'-'}}</ion-fab-button>
+    <ion-fab-button
+      (click)="moveTo(this.positions?.position3)"
+
+      color="secondary">{{this.positions?.position3 ||'-'}}</ion-fab-button>
   </div>
 
 
