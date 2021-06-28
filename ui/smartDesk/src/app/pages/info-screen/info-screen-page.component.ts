@@ -15,6 +15,7 @@ export class InfoScreenPage implements OnInit {
   private subscriptions: Subscription[] = [];
   info: Pcinfos;
   isConnected: boolean;
+  color: any;
 
   /** @internal */
   cpuClocksAvg: number;
@@ -25,6 +26,7 @@ export class InfoScreenPage implements OnInit {
   isConnected: Subscription;
 
   ngOnInit() {
+    this.service.getStoredColor().subscribe((color)=>this.color = color);
     this.service.checkConnection().pipe(catchError(()=> {
       this.isConnected = false;
       return of(null);

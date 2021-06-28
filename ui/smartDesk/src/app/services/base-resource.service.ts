@@ -11,6 +11,7 @@ const PORT_KEY = 'server-port';
 const MEMORY_KEY_1 = 'memory1';
 const MEMORY_KEY_2 = 'memory2';
 const MEMORY_KEY_3 = 'memory3';
+const INFOCOLOR_KEY = 'textcolor';
 
 @Injectable()
 export class BaseResourceService {
@@ -20,6 +21,7 @@ export class BaseResourceService {
     }),
   };*/
   private baseUrl;
+  private color;
 
   constructor(private http: HttpClient, private storageSrv: StorageService) {}
 
@@ -33,6 +35,8 @@ export class BaseResourceService {
       ]);
     }
   }
+
+
 
   public getStoredConnectionData(): Observable<{ ip: string; port: number }> {
     return from(
@@ -90,6 +94,17 @@ export class BaseResourceService {
   public getPcInfos() {
     return this.getStoredConnectionData().pipe(
       mergeMap(() => this.http.get<Pcinfos>(this.baseUrl + 'pcinfos'))
+    );
+  }
+
+
+  public async setInfoscreenColor(color: string){
+    await this.storageSrv.set(INFOCOLOR_KEY, color);
+  }
+
+  public getStoredColor(): Observable<string> {
+    return from(
+     this.storageSrv.get(INFOCOLOR_KEY)
     );
   }
 

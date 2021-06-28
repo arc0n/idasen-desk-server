@@ -30,10 +30,12 @@ export class ServerControllerPage implements OnInit, OnDestroy {
 
   /*** @internal */
   isConnected = false;
-  /**@internal */
+  /*** @internal */
   status: string;
   /*** @internal */
   isLoading: boolean;
+  /*** @internal */
+  color: any;
 
   subscription: Subscription[] = [];
 
@@ -44,9 +46,11 @@ export class ServerControllerPage implements OnInit, OnDestroy {
     serverIpControl: new FormControl(''),
     serverPortControl: new FormControl(null),
   });
-  color: any;
+
 
   ngOnInit(): void {
+    this.baseResourceService.getStoredColor().subscribe((color)=>this.color = color);
+
     this.subscription.push(
       this.triggerConnectionTest$
         .pipe(
@@ -138,5 +142,9 @@ export class ServerControllerPage implements OnInit, OnDestroy {
       duration: 2000,
     });
     toast.present();
+  }
+
+  setColor(event: any) {
+    this.baseResourceService.setInfoscreenColor(event);
   }
 }

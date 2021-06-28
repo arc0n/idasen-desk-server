@@ -8,7 +8,7 @@
 <ion-content [fullscreen]="true" [scrollX]="false">
 <div *ngIf="isConnected; then connected else noConnection"></div>
   <ng-template #connected>
-  <div class="content-wrapper">
+  <div class="content-wrapper" [ngStyle]="{'color': this.color}">
     <div class="grid-element">
       <div class="pcHeader">CPU: <br> {{this.info?.cpuName}}</div>
       <!-- region CPUInfos -->
