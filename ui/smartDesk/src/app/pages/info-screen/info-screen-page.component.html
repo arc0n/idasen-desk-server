@@ -6,8 +6,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true" [scrollX]="false">
-<div> <!-- *ngIf="this.isConnected; then connected else noConnection"> --> </div>
-  <!--<ng-template #connected>-->
+<div *ngIf="isConnected; then connected else noConnection"></div>
+  <ng-template #connected>
   <div class="content-wrapper">
     <div class="grid-element">
       <div class="pcHeader">CPU: <br> {{this.info?.cpuName}}</div>
@@ -156,7 +156,7 @@
       </div>
     </div>
   </div>
-  <!-- </ng-template> -->
+  </ng-template>
 <ng-template #noConnection>
   <div class="content-wrapper">
     <p class="noConnHeader">

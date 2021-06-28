@@ -14,6 +14,7 @@ export class InfoScreenPage implements OnInit {
 
   private subscriptions: Subscription[] = [];
   info: Pcinfos;
+  isConnected: boolean;
 
   /** @internal */
   cpuClocksAvg: number;
@@ -24,27 +25,29 @@ export class InfoScreenPage implements OnInit {
   isConnected: Subscription;
 
   ngOnInit() {
-    this.isConnected = this.service.checkConnection().subscribe();
-
+    this.service.checkConnection().pipe(catchError(()=> {
+      this.isConnected = false;
+      return of(null);
+    })).subscribe(() => this.isConnected = true)
     this.subscriptions.push(
       interval(1000).pipe(
-        switchMap(() => {
-          return this.service.getPcInfos().pipe(
-          catchError(e => {
-            console.log(e);
+        switchMap((_) => {
+          return this.service.getPcInfos().pipe(catchError(() => {
+            this.isConnected = false;
             return of(null);
           }))
         })
       ).subscribe(receivedPcInfos => {
-        if(null) return 0;
-          this.info = receivedPcInfos;
-          this.cpuClocksAvgCalculus();
-          this.mbTempsAvg = this.calculateAvg(this.info.mbTemps);
-          this.gpuLoadsAvg = this.calculateAvg(this.info.gpuLoads);
-          this.gpuFanPercent = this.calculateFanPercent(this.info.gpuFan);
-          this.mbFanPercent[0] = this.calculateFanPercent(this.info.mbFans[0]);
-          this.mbFanPercent[1] = this.calculateFanPercent(this.info.mbFans[1]);
-          this.mbFanPercent[2] = this.calculateFanPercent(this.info.mbFans[2]);
+        if(!receivedPcInfos) return;
+        this.isConnected = true;
+        this.info = receivedPcInfos;
+        this.cpuClocksAvgCalculus();
+        this.mbTempsAvg = this.calculateAvg(this.info.mbTemps);
+        this.gpuLoadsAvg = this.calculateAvg(this.info.gpuLoads);
+        this.gpuFanPercent = this.calculateFanPercent(this.info.gpuFan);
+        this.mbFanPercent[0] = this.calculateFanPercent(this.info.mbFans[0]);
+        this.mbFanPercent[1] = this.calculateFanPercent(this.info.mbFans[1]);
+        this.mbFanPercent[2] = this.calculateFanPercent(this.info.mbFans[2]);
       })
     )
   }
