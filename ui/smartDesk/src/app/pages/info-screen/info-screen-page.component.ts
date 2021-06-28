@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {BaseResourceService} from "../../services/base-resource.service";
-import {interval, Subscription} from "rxjs";
-import {switchMap} from "rxjs/operators";
+import {interval, of, Subscription} from "rxjs";
+import {catchError, switchMap} from "rxjs/operators";
 import {Pcinfos} from "../../models/pcinfos";
 
 @Component({
@@ -16,6 +16,7 @@ export class InfoScreenPage implements OnInit {
 
   private subscriptions: Subscription[] = [];
   info: Pcinfos;
+  isConnected: boolean;
 
   /** @internal */
   cpuClocksAvg: number;
@@ -25,13 +26,21 @@ export class InfoScreenPage implements OnInit {
   mbFanPercent: number[] = [];
 
   ngOnInit() {
-
+    this.service.checkConnection().pipe(catchError(()=> {
+      this.isConnected = false;
+      return of(null);
+    })).subscribe(() => this.isConnected = true)
     this.subscriptions.push(
       interval(1000).pipe(
         switchMap((_) => {
-          return this.service.getPcInfos()
+          return this.service.getPcInfos().pipe(catchError(() => {
+            this.isConnected = false;
+            return of(null);
+          }))
         })
       ).subscribe(receivedPcInfos => {
+        if(!receivedPcInfos) return;
+        this.isConnected = true;
         this.info = receivedPcInfos;
         this.cpuClocksAvgCalculus();
         this.mbTempsAvg = this.calculateAvg(this.info.mbTemps);

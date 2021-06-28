@@ -97,11 +97,11 @@ class InfoworkerService {
                 this.infoArray.push(result);
             })
         }, 1000)
-        console.log("loop started.")
+        //console.log("loop started.")
         setTimeout(() => {
             clearInterval(this.looper);
-            console.log("loop stops.")
-            console.log(this.infoArray.length)
+            //console.log("loop stops.")
+            //console.log(this.infoArray.length)
         }, 100)
 
     }
