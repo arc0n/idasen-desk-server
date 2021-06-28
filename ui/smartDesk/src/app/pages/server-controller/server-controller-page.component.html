@@ -67,8 +67,8 @@
         </ion-label>
       </ion-item-divider>
       <div class="content-wrapper">
-        <ion-item button [(colorPicker)]="color" [style.color]="color">
-          <ion-label>Text-Color Picker for Landscape</ion-label>
+        <ion-item (colorPickerSelect)="setColor($event)" [(colorPicker)]="this.color" button [style.color]="this.color">
+          <ion-label>Text-Color Picker</ion-label>
         </ion-item>
       </div>
     </form>
