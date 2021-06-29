@@ -21,7 +21,6 @@ export class BaseResourceService {
     }),
   };*/
   private baseUrl;
-  private color;
 
   constructor(private http: HttpClient, private storageSrv: StorageService) {}
 
