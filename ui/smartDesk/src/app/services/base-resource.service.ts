@@ -16,7 +16,6 @@ const INFOCOLOR_KEY = 'textcolor';
 @Injectable()
 export class BaseResourceService {
   private baseUrl;
-  private color;
 
   constructor(private http: HttpClient, private storageSrv: StorageService) {
   }

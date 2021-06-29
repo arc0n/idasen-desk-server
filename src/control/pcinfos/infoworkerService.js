@@ -3,7 +3,7 @@ const { PcInfo } = require("./pcInfo");
 
 const http = require('http');
 const options = {
-    hostname: 'localhost',
+    hostname: '192.168.0.150',
     port: 8085,
     path: '/data.json',
     method: 'GET'
