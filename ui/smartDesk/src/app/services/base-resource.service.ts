@@ -14,6 +14,7 @@ const MEMORY_KEY_1 = 'memory1';
 const MEMORY_KEY_2 = 'memory2';
 const MEMORY_KEY_3 = 'memory3';
 const INFOCOLOR_KEY = 'textcolor';
+const DESK_KEY = 'desk';
 
 @Injectable()
 export class BaseResourceService {
@@ -24,8 +25,13 @@ export class BaseResourceService {
   };*/
   private baseUrl;
 
+  private deskAddress = 'e6:d1:b5:45:f6:dd';
+
   constructor(private http: HttpClient, private storageSrv: StorageService) {}
 
+  public async setDeskAddress(address: string) {
+    return this.storageSrv.set(DESK_KEY, address);
+  }
   public async setServerIp(
     ip: string,
     port: number,
@@ -56,14 +62,16 @@ export class BaseResourceService {
         this.storageSrv.get(PORT_KEY),
         this.storageSrv.get(PCIP_KEY),
         this.storageSrv.get(PCPORT_KEY),
+        this.storageSrv.get(DESK_KEY),
       ])
     ).pipe(
-      map(([ip, port, pcip, pcport]) => {
+      map(([ip, port, pcip, pcport, desk]) => {
         if (!port || !ip) {
           this.baseUrl = `http://localhost:${3000}/`;
           return { ip: 'localhost', port: 3000 };
         }
         this.baseUrl = `http://${ip}:${port}/`;
+        this.deskAddress = desk || 'e6:d1:b5:45:f6:dd';
         return { ip, port, pcip, pcport };
       })
     );
@@ -124,7 +132,12 @@ export class BaseResourceService {
   public connectDesk(): Observable<boolean> {
     return this.getStoredConnectionData().pipe(
       mergeMap(() =>
-        this.http.post<any>(this.baseUrl + 'desk/connect/e6:d1:b5:45:f6:dd', {})
+        this.http.post<any>(
+          this.baseUrl +
+            'desk/connect/' +
+            (this.deskAddress || 'e6:d1:b5:45:f6:dd'),
+          {}
+        )
       )
     );
   }

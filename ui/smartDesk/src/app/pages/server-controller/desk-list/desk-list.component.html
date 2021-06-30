@@ -20,7 +20,7 @@
   <div #contentPage>
     <ion-progress-bar [hidden]="!isLoading" type="indeterminate"></ion-progress-bar>
     <ion-list>
-      <ion-item  class="Desk-item" *ngFor="let desk of deskList">
+      <ion-item  class="Desk-item" *ngFor="let desk of deskList" (click)="deskClicked(desk)">
         <ion-label>{{desk.deskName}}</ion-label>
       </ion-item>
     </ion-list>
