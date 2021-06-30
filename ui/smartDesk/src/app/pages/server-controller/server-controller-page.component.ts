@@ -12,6 +12,7 @@ import { DeskListComponent } from './desk-list/desk-list.component';
   styleUrls: ['server-controller-page.component.scss'],
 })
 export class ServerControllerPage implements OnInit, OnDestroy {
+  private error: string;
   constructor(
     private baseResourceService: BaseResourceService,
     private toastController: ToastController,
@@ -100,7 +101,8 @@ export class ServerControllerPage implements OnInit, OnDestroy {
       : this.baseResourceService.connectDesk();
     obs
       .pipe(
-        catchError(() => {
+        catchError((e) => {
+          this.error = JSON.stringify(e);
           return of({ error: 'No connection to server' });
         })
       )
