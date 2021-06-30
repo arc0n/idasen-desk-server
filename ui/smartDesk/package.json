@@ -26,6 +26,7 @@
     "@capacitor/keyboard": "1.0.0",
     "@ionic/angular": "^5.5.2",
     "@ionic/storage-angular": "^3.0.6",
+    "mongoose": "^5.13.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

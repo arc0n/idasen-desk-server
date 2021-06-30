@@ -1,6 +1,9 @@
 // Source: https://github.com/mitsuhiko/idasen-control
 
 const fs = require("fs");
+const { getConfigFromDb } = require("./dbService");
+const { connectToDB } = require("./dbService");
+const { writeToDb } = require("./dbService");
 const { homedir } = require("os");
 const { promisify } = require("util");
 
@@ -13,7 +16,6 @@ function getConfigPath() {
 
 function getDefaultConfig() {
   return {
-    socketPath: "/tmp/idasen-control.sock",
     pidFilePath: "/tmp/idasen-control.pid",
     standThreshold: 30,
     sittingBreakTime: 2 * 60,
@@ -22,7 +24,7 @@ function getDefaultConfig() {
     connectTimeout: 5.0,
     position1: 8,
     position2: 10,
-    position3: 58
+    position3: 58,
   };
 }
 
@@ -30,13 +32,25 @@ let cachedConfig = null;
 
 module.exports.loadConfig = async function loadConfig() {
   const path = getConfigPath();
-  let config = getDefaultConfig();
+  let config;
   try {
-    config = { ...config, ...JSON.parse(await readFile(path).toString()) };
+    //config = { ...config, ...JSON.parse(await readFile(path).toString()) };
+    config = await getConfigFromDb();
   } catch (e) {
     // ignore load errors
   }
-
+  const defaultvalues = getDefaultConfig();
+  config = {
+    pidFilePath: config.pidFilePath || defaultvalues.pidFilePath,
+    standThreshold: config.standThreshold || defaultvalues.standThreshold,
+    sittingBreakTime: config.sittingBreakTime || defaultvalues.sittingBreakTime,
+    deskAddress: config.deskAddress || defaultvalues.deskAddress,
+    deskMaxPosition: config.deskMaxPosition || defaultvalues.deskMaxPosition,
+    connectTimeout: config.connectTimeout || defaultvalues.connectTimeout,
+    position1: 8,
+    position2: 10,
+    position3: 58,
+  };
   cachedConfig = config;
 };
 
@@ -46,8 +60,7 @@ module.exports.getConfig = async function getConfig() {
 };
 
 module.exports.saveConfig = async function saveConfig() {
-  await writeFile(
-    getConfigPath(),
-    JSON.stringify(await module.exports.getConfig(), null, 2)
-  );
+  console.log("writing config to db");
+  return writeToDb(cachedConfig);
+  //await writeFile(getConfigPath(), JSON.stringify(config, null, 2));
 };
