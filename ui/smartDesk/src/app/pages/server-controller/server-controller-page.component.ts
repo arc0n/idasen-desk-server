@@ -98,7 +98,7 @@ export class ServerControllerPage implements OnInit, OnDestroy {
         this.serverForm.patchValue({
           serverIpControl: values.ip || null,
           serverPortControl: values.port || 3000,
-          pcIpControl: values.pcip || null,
+          pcIpControl: values.pcip || "192.168.0.150",
           pcPortControl: values.pcport || 8085,
         });
       });
