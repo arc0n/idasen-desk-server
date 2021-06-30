@@ -1,7 +1,9 @@
 const { PcInfo } = require("./pcInfo");
-
-
 const http = require('http');
+const {writePcInfosToDb} = require("../dbService");
+
+
+
 const options = {
     hostname: '192.168.0.150',
     port: 8085,
@@ -19,16 +21,13 @@ class InfoworkerService {
     }
 
     async checkConnection() {
-        console.time();
+        //console.time();
         const data = await this.performHttpRequest();
-        console.timeEnd();
+        //console.timeEnd();
         return !!data;
     }
 
-    /**
-     *
-     * @returns {Promise<unknown>}
-     */
+    /*** @returns {Promise<unknown>} */
     async performHttpRequest() {
         let resolverFn;
         const p = new Promise((res => {
@@ -73,37 +72,28 @@ class InfoworkerService {
                 this.pcInfos.gpuRamUsed = parsed.Children[0].Children[3].Children[6].Children[1];
                 this.pcInfos.gpuRamTotal = parsed.Children[0].Children[3].Children[6].Children[2];
 
-                //Todo Errorhandling
             })
         })
 
         req.on("error", () => {
             resolverFn(null);
-            //Todo Errorhandling
         })
 
         req.end();
         return p;
-        //Todo: check if connection to pc is available
-
-        //this.startInfoLoop();
     }
 
     startInfoLoop() {
-        //Todo Call in loop and push into infoarray
-        //todo check if a loop is already open
+        setInterval(() => {
+            if(this.infoArray?.length > 0)
+            writePcInfosToDb(this.infoArray[this.infoArray.length-1]);
+        }, 5000)
         this.looper = setInterval(() => {
             this.performHttpRequest().then((result) => {
                 this.infoArray.push(result);
+
             })
         }, 1000)
-        //console.log("loop started.")
-        setTimeout(() => {
-            clearInterval(this.looper);
-            //console.log("loop stops.")
-            //console.log(this.infoArray.length)
-        }, 100)
-
     }
 
     getInfoArray() {

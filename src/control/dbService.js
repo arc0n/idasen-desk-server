@@ -18,7 +18,20 @@ const DeskSchema = new Schema({
   position2: Number,
   position3: Number,
 });
+
+const PcInfoSchema = new Schema({
+  cpuName: String,
+  cpuTemp: Number,
+  mbName: String,
+  mbTemp: Number,
+  gpuName: String,
+  gpuTemp: Number
+});
+
+
+
 const DeskModel = mongoose.model("desk", DeskSchema);
+const PcModel = mongoose.model("pcinfo", PcInfoSchema);
 
 let db = null;
 
@@ -82,5 +95,12 @@ module.exports.writeToDb = async (deskConfig) => {
         }
       }
     ).then(() => res());
+  });
+};
+
+module.exports.writePcInfosToDb = async (pcConf) => {
+  return new Promise((res, rej) => {
+    console.log("pcInfo", pcConf);
+    res();
   });
 };

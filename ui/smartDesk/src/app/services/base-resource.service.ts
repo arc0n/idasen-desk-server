@@ -4,7 +4,7 @@ import { from, Observable, of } from 'rxjs';
 import { catchError, map, mergeMap, timeout } from 'rxjs/operators';
 import { StorageService } from './storage.service';
 import { Desk, MemoryPositions } from '../models/desk';
-import { Pcinfos } from '../models/pcinfos';
+import {PcConnectionValues, Pcinfos} from '../models/pcinfos';
 
 const IP_KEY = 'server-ip';
 const PORT_KEY = 'server-port';
@@ -100,6 +100,27 @@ export class BaseResourceService {
     );
   }
 
+  public getPcConnectionValues(): Observable<PcConnectionValues> {
+    return this.getStoredConnectionData().pipe(
+    mergeMap( () =>
+    this.http.get<PcConnectionValues>(this.baseUrl+'pcinfos/address')
+      .pipe(
+        mergeMap((pcValues) => {
+          if(!pcValues) return of(null);
+          return of(this.writePcValuesToLocalStorage(pcValues))
+            .pipe(map(() => pcValues));
+          })
+        )
+      )
+    )
+  }
+
+  private writePcValuesToLocalStorage(pcValues: PcConnectionValues): Promise<void> {
+    return Promise.all([
+      this.storageSrv.set(PCIP_KEY, pcValues.pcip || "localhost"),
+      this.storageSrv.set(PCPORT_KEY, pcValues.pcport || 8085)
+    ]).then();
+  }
 
   public async setInfoscreenColor(color: string){
     await this.storageSrv.set(INFOCOLOR_KEY, color);

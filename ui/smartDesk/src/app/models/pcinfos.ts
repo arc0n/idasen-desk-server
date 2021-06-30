@@ -6,12 +6,10 @@ export interface Pcinfos {
   cpuLoads: {Value: string}[];
   cpuPowers: string[];
   cpuTemps: {Value: string}[];
-
   //MB
   mbName: string;
   mbFans: {Value: string, Min: string, Max: string}[];
   mbTemps: {Value: string}[];
-
   //GPU
   gpuName: string;
   gpuClocks: {Value: string};
@@ -22,13 +20,17 @@ export interface Pcinfos {
   gpuRamUsed: string[];
   gpuRamTotal: string[];
   gpuTemps: {Value: string};
-
   //RAM
   ramUsed: string;
   ramFree: string;
-
-
 }
+
+export interface PcConnectionValues
+{
+  pcip: string,
+  pcport: number
+}
+
 
 
 

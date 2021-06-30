@@ -10,8 +10,11 @@ const { DeskWebSocket } = require("./routes/desk-socket");
 const app = express();
 const port = 3000;
 
-// start websocket for desk
+// pc Infos variables
 
+
+
+// start websocket for desk
 const deskService = new DeskService();
 const deskWs = new DeskWebSocket(deskService);
 
@@ -67,6 +70,26 @@ app.get("/ping", async (req, res) => {
   log("Received ping");
   res.send(true);
 });
+
+app.get("/pcinfos/address", async (req, res) => {
+  res.send({
+    pcip: "192.168.0.150",
+    pcport: 8085
+  })
+})
+
+app.post("/pcinfos/address", async (req, res) => {
+  if(!req.body || Object.keys(req.body).length > 2 ||
+      Object.keys(req.body).some(key => !['pcip', 'pcport'].includes(key))) {
+    res.status(400).send('invalid body');
+  }
+  else
+  {
+    console.log(req.body);
+    console.log(req.body.pcip + ":" + req.body.pcport);
+    res.send(true);
+  }
+})
 
 app.use("/desk", deskRoutes(deskService));
 

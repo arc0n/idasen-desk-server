@@ -29,12 +29,5 @@ class PcInfo {
         this.gpuRamUsed = obj?.gpuRamUsed;
         this.gpuRamTotal = obj?.gpuRamTotal;
     }
-
-
-
-
-    //TODO: Function for iteration through JSON object with functions
-
 }
-
 module.exports.PcInfo = PcInfo;
