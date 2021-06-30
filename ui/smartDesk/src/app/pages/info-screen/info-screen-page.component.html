@@ -29,7 +29,7 @@
           Total Load:
         </div>
         <div class="item-variable">
-          {{this.info?.cpuLoads.length > 0 ? this.info.cpuLoads[0].Value : "-"}}
+          {{this.info?.cpuLoads?.length > 0 ? this.info.cpuLoads[0].Value : "-"}}
         </div>
       </div>
       <!-- region CoreTemp -->
@@ -39,7 +39,7 @@
           Core-Temp:
         </div>
         <div class="item-variable">
-          {{this.info?.cpuTemps.length > 0 ? this.info.cpuTemps[0].Value : "-"}}
+          {{this.info?.cpuTemps?.length > 0 ? this.info.cpuTemps[0].Value : "-"}}
         </div>
       </div>
     </div>

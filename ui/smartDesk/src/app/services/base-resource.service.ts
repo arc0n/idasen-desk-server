@@ -26,7 +26,12 @@ export class BaseResourceService {
 
   constructor(private http: HttpClient, private storageSrv: StorageService) {}
 
-  public async setServerIp(ip: string, port: number, pcip: string, pcport: number) {
+  public async setServerIp(
+    ip: string,
+    port: number,
+    pcip: string,
+    pcport: number
+  ) {
     const tmp = this.baseUrl;
     this.baseUrl = `http://${ip}:${port}/`;
     if (this.baseUrl !== tmp) {
@@ -34,16 +39,24 @@ export class BaseResourceService {
         this.storageSrv.set(IP_KEY, ip),
         this.storageSrv.set(PORT_KEY, port),
         this.storageSrv.set(PCIP_KEY, pcip),
-        this.storageSrv.set(PCPORT_KEY, pcport)
+        this.storageSrv.set(PCPORT_KEY, pcport),
       ]);
     }
   }
 
-
-
-  public getStoredConnectionData(): Observable<{ ip: string; port: number; pcip?: string; pcport?: number }> {
+  public getStoredConnectionData(): Observable<{
+    ip: string;
+    port: number;
+    pcip?: string;
+    pcport?: number;
+  }> {
     return from(
-      Promise.all([this.storageSrv.get(IP_KEY), this.storageSrv.get(PORT_KEY), this.storageSrv.get(PCIP_KEY), this.storageSrv.get(PCPORT_KEY)])
+      Promise.all([
+        this.storageSrv.get(IP_KEY),
+        this.storageSrv.get(PORT_KEY),
+        this.storageSrv.get(PCIP_KEY),
+        this.storageSrv.get(PCPORT_KEY),
+      ])
     ).pipe(
       map(([ip, port, pcip, pcport]) => {
         if (!port || !ip) {
@@ -51,7 +64,7 @@ export class BaseResourceService {
           return { ip: 'localhost', port: 3000 };
         }
         this.baseUrl = `http://${ip}:${port}/`;
-        return {ip, port, pcip, pcport};
+        return { ip, port, pcip, pcport };
       })
     );
   }
@@ -83,7 +96,7 @@ export class BaseResourceService {
     return this.getStoredConnectionData().pipe(
       mergeMap(() => {
         this.writeMemoryToLocalStorage(positions);
-        return this.http.post(this.baseUrl + '/desk/memory', positions);
+        return this.http.post(this.baseUrl + 'desk/memory', positions);
       })
     );
   }
@@ -100,15 +113,12 @@ export class BaseResourceService {
     );
   }
 
-
-  public async setInfoscreenColor(color: string){
+  public async setInfoscreenColor(color: string) {
     await this.storageSrv.set(INFOCOLOR_KEY, color);
   }
 
   public getStoredColor(): Observable<string> {
-    return from(
-     this.storageSrv.get(INFOCOLOR_KEY)
-    );
+    return from(this.storageSrv.get(INFOCOLOR_KEY));
   }
 
   public connectDesk(): Observable<boolean> {

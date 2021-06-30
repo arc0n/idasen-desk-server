@@ -12,7 +12,6 @@ import { DeskListComponent } from './desk-list/desk-list.component';
   styleUrls: ['server-controller-page.component.scss'],
 })
 export class ServerControllerPage implements OnInit, OnDestroy {
-  private error: string;
   constructor(
     private baseResourceService: BaseResourceService,
     private toastController: ToastController,
@@ -49,9 +48,10 @@ export class ServerControllerPage implements OnInit, OnDestroy {
     pcPortControl: new FormControl(null),
   });
 
-
   ngOnInit(): void {
-    this.baseResourceService.getStoredColor().subscribe((color)=>this.color = color);
+    this.baseResourceService
+      .getStoredColor()
+      .subscribe((color) => (this.color = color));
 
     this.subscription.push(
       this.triggerConnectionTest$
@@ -69,7 +69,12 @@ export class ServerControllerPage implements OnInit, OnDestroy {
         .pipe(debounceTime(500))
         .subscribe((rawVal) => {
           this.baseResourceService
-            .setServerIp(rawVal.serverIpControl, rawVal.serverPortControl, rawVal.pcIpControl, rawVal.pcPortControl)
+            .setServerIp(
+              rawVal.serverIpControl,
+              rawVal.serverPortControl,
+              rawVal.pcIpControl,
+              rawVal.pcPortControl
+            )
             .then(() => this.triggerConnectionTest$.next());
         })
     );
@@ -84,7 +89,7 @@ export class ServerControllerPage implements OnInit, OnDestroy {
           serverIpControl: values.ip || null,
           serverPortControl: values.port || 3000,
           pcIpControl: values.pcip || null,
-          pcPortControl: values.pcport || 8085
+          pcPortControl: values.pcport || 8085,
         });
       });
   }
@@ -111,7 +116,6 @@ export class ServerControllerPage implements OnInit, OnDestroy {
     obs
       .pipe(
         catchError((e) => {
-          this.error = JSON.stringify(e);
           return of({ error: 'No connection to server' });
         })
       )
