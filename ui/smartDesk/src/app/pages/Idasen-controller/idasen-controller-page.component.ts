@@ -113,8 +113,9 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
           {
             offset: 1,
             transform: `translateY(-${
-              oldValue > newValue ? oldValue - offset : oldValue + offset
-            }px)`,
+              (oldValue > newValue ? oldValue - offset : oldValue + offset) /
+              1.5
+            }%)`,
           },
         ])
         .play();

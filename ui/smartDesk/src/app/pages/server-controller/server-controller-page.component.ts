@@ -5,6 +5,7 @@ import { of, Subject, Subscription } from 'rxjs';
 import { catchError, debounceTime, switchMap, tap } from 'rxjs/operators';
 import { ModalController, ToastController } from '@ionic/angular';
 import { DeskListComponent } from './desk-list/desk-list.component';
+import { WebSocketService } from '../../services/webSocketService';
 
 @Component({
   selector: 'app-server-controller',
@@ -15,7 +16,8 @@ export class ServerControllerPage implements OnInit, OnDestroy {
   constructor(
     private baseResourceService: BaseResourceService,
     private toastController: ToastController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private webSocket: WebSocketService
   ) {}
 
   /** @internal */
@@ -61,7 +63,15 @@ export class ServerControllerPage implements OnInit, OnDestroy {
             return this.baseResourceService.checkConnection();
           })
         )
-        .subscribe((val) => (this.testSuccessful = val))
+        .subscribe((val) => {
+          this.testSuccessful = val;
+          this.baseResourceService
+            .getStoredConnectionData()
+            .subscribe((data: { ip: string; port: number }) => {
+              this.webSocket.connect(`ws://${data?.ip}:${8080}`);
+              // TODO what when error?
+            });
+        })
     );
 
     this.subscription.push(
