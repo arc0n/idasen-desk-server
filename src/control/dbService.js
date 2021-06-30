@@ -71,7 +71,6 @@ function getConfigCopy(deskConfig) {
 
 module.exports.writeToDb = async (deskConfig) => {
   return new Promise((res, rej) => {
-    console.log("deskConfig", deskConfig);
     const existing = DeskModel.findOneAndUpdate(
       {},
       getConfigCopy(deskConfig),
@@ -85,7 +84,8 @@ module.exports.writeToDb = async (deskConfig) => {
             if (err) return handleError(err);
           });
         }
+        res();
       }
-    ).then(() => res());
+    );
   });
 };
