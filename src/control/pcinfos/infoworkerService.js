@@ -33,7 +33,6 @@ class InfoworkerService {
 
     const req = http.request(options, (result) => {
       let data = "";
-      console.log(`Received Data.`);
       result.on("data", (chunk) => {
         data += chunk;
       });
