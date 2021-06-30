@@ -30,10 +30,12 @@ export class ServerControllerPage implements OnInit, OnDestroy {
 
   /*** @internal */
   isConnected = false;
-  /**@internal */
+  /*** @internal */
   status: string;
   /*** @internal */
   isLoading: boolean;
+  /*** @internal */
+  color: any;
 
   subscription: Subscription[] = [];
 
@@ -43,9 +45,14 @@ export class ServerControllerPage implements OnInit, OnDestroy {
   serverForm = new FormGroup({
     serverIpControl: new FormControl(''),
     serverPortControl: new FormControl(null),
+    pcIpControl: new FormControl(''),
+    pcPortControl: new FormControl(null),
   });
 
+
   ngOnInit(): void {
+    this.baseResourceService.getStoredColor().subscribe((color)=>this.color = color);
+
     this.subscription.push(
       this.triggerConnectionTest$
         .pipe(
@@ -62,7 +69,7 @@ export class ServerControllerPage implements OnInit, OnDestroy {
         .pipe(debounceTime(500))
         .subscribe((rawVal) => {
           this.baseResourceService
-            .setServerIp(rawVal.serverIpControl, rawVal.serverPortControl)
+            .setServerIp(rawVal.serverIpControl, rawVal.serverPortControl, rawVal.pcIpControl, rawVal.pcPortControl)
             .then(() => this.triggerConnectionTest$.next());
         })
     );
@@ -76,6 +83,8 @@ export class ServerControllerPage implements OnInit, OnDestroy {
         this.serverForm.patchValue({
           serverIpControl: values.ip || null,
           serverPortControl: values.port || 3000,
+          pcIpControl: values.pcip || null,
+          pcPortControl: values.pcport || 8085
         });
       });
   }
@@ -137,5 +146,9 @@ export class ServerControllerPage implements OnInit, OnDestroy {
       duration: 2000,
     });
     toast.present();
+  }
+
+  setColor(event: any) {
+    this.baseResourceService.setInfoscreenColor(event);
   }
 }
