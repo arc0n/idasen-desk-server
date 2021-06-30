@@ -58,9 +58,15 @@ var corsOptions = {
 app.get("/pcinfos", async (req, res) => {
   await pcService
     .checkConnection()
-    .then((r) =>
-      r ? pcService.startInfoLoop() : console.log("No Connection.")
-    );
+    .then((r) => {
+      if(r){
+        if(!pcService.looper) pcService.startInfoLoop()
+      }
+      else
+      {
+        console.log("No Connection.")
+      }
+    });
   const pcInfos = pcService.pcInfos;
 
   res.send(pcInfos);

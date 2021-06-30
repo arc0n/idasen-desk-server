@@ -16,7 +16,6 @@ class InfoworkerService {
 
     constructor() {
         this.property = null;
-        this.infoArray = [];
         this.looper = null;
     }
 
@@ -84,20 +83,16 @@ class InfoworkerService {
     }
 
     startInfoLoop() {
+        if(this.looper) return;
         setInterval(() => {
-            if(this.infoArray?.length > 0)
-            writePcInfosToDb(this.infoArray[this.infoArray.length-1]);
+            if(this.pcInfos)
+            {
+                writePcInfosToDb(this.pcInfos);
+            }
         }, 5000)
         this.looper = setInterval(() => {
-            this.performHttpRequest().then((result) => {
-                this.infoArray.push(result);
-
-            })
-        }, 1000)
-    }
-
-    getInfoArray() {
-        return this.infoArray || [];
+            this.performHttpRequest().then((result) => {            })
+        }, 2000)
     }
 
 
