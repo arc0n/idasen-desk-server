@@ -38,6 +38,10 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
+  ionViewWillEnter() {
+    this.ngOnInit();
+  }
+
   ngOnInit() {
     this.resourcesService
       .getMemoryPositions()
@@ -101,31 +105,33 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
   }
 
   tryWebsocketConnection() {
-    this.resourcesService
-      .getStoredConnectionData()
-      .subscribe((data: { ip: string; port: number }) => {
-        this.webSocket.connect(`ws://${data?.ip}:${8080}`).then((val) => {
-          if (val) {
-            this.subscriptions.push(
-              this.webSocket.messages$.subscribe((height: number) => {
-                if (height !== this.sliderValue) {
-                  this.performAnimation(height, this.sliderValue);
-                  this.sliderValue = height;
-                }
-              })
-            );
-          } else {
-            this.presentToast(
-              'No Connection to server, retry in 1 second',
-              'danger'
-            );
-            setTimeout(() => {
-              this.tryWebsocketConnection();
-            }, 1000);
-          }
-        });
-        // TODO what when error?
-      });
+    this.subscriptions.push(
+      this.resourcesService
+        .getStoredConnectionData()
+        .subscribe((data: { ip: string; port: number }) => {
+          this.webSocket.connect(`ws://${data?.ip}:${8080}`).then((val) => {
+            if (val) {
+              this.subscriptions.push(
+                this.webSocket.messages$.subscribe((height: number) => {
+                  if (height !== this.sliderValue) {
+                    this.performAnimation(height, this.sliderValue);
+                    this.sliderValue = height;
+                  }
+                })
+              );
+            } else {
+              this.presentToast(
+                'No Connection to server, please retry with different ip',
+                'danger'
+              );
+              /*              this.timeout = setTimeout(() => {
+                this.tryWebsocketConnection();
+              }, 10000);*/
+            }
+          });
+          // TODO what when error?
+        })
+    );
   }
 
   ngOnDestroy() {
