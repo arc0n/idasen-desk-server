@@ -65,12 +65,6 @@ export class ServerControllerPage implements OnInit, OnDestroy {
         )
         .subscribe((val) => {
           this.testSuccessful = val;
-          this.baseResourceService
-            .getStoredConnectionData()
-            .subscribe((data: { ip: string; port: number }) => {
-              this.webSocket.connect(`ws://${data?.ip}:${8080}`);
-              // TODO what when error?
-            });
         })
     );
 
@@ -98,7 +92,7 @@ export class ServerControllerPage implements OnInit, OnDestroy {
         this.serverForm.patchValue({
           serverIpControl: values.ip || null,
           serverPortControl: values.port || 3000,
-          pcIpControl: values.pcip || "192.168.0.150",
+          pcIpControl: values.pcip || '192.168.0.150',
           pcPortControl: values.pcport || 8085,
         });
       });
