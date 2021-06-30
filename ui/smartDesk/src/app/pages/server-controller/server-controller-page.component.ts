@@ -45,6 +45,8 @@ export class ServerControllerPage implements OnInit, OnDestroy {
   serverForm = new FormGroup({
     serverIpControl: new FormControl(''),
     serverPortControl: new FormControl(null),
+    pcIpControl: new FormControl(''),
+    pcPortControl: new FormControl(null),
   });
 
 
@@ -67,7 +69,7 @@ export class ServerControllerPage implements OnInit, OnDestroy {
         .pipe(debounceTime(500))
         .subscribe((rawVal) => {
           this.baseResourceService
-            .setServerIp(rawVal.serverIpControl, rawVal.serverPortControl)
+            .setServerIp(rawVal.serverIpControl, rawVal.serverPortControl, rawVal.pcIpControl, rawVal.pcPortControl)
             .then(() => this.triggerConnectionTest$.next());
         })
     );
@@ -81,6 +83,8 @@ export class ServerControllerPage implements OnInit, OnDestroy {
         this.serverForm.patchValue({
           serverIpControl: values.ip || null,
           serverPortControl: values.port || 3000,
+          pcIpControl: values.pcip || null,
+          pcPortControl: values.pcport || 8085
         });
       });
   }
