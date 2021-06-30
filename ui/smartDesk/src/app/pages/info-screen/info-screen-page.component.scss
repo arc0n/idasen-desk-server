@@ -33,6 +33,19 @@
   margin-right: 1rem;
 }
 
+.noConnHeader{
+  font-size: 2rem;
+  align-self: end;
+  justify-self: center;
+}
+
+.noConnText {
+  align-self: start;
+  justify-self: center;
+  width: 66%;
+  text-align: center;
+}
+
 
 @media (orientation: portrait) {
   .content-wrapper {
@@ -42,6 +55,7 @@
 }
 
 @media (orientation: landscape) {
+
   .content-wrapper {
     display: flex;
     flex-direction: row;
@@ -50,7 +64,6 @@
   }
 
   .pcHeader{
-    //margin: 2rem 0rem;
     height: 4.5rem;
   }
 
@@ -80,5 +93,18 @@
 
   ion-tab-bar {
     display: none;
+  }
+
+  .noConnHeader{
+    margin: 50px;
+    justify-self: center;
+  }
+
+  .noConnText {
+    margin: 50px;
+    align-self: center;
+    justify-self: left;
+    width: 30%;
+    text-align: left;
   }
 }

@@ -6,11 +6,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { BaseResourceService } from '../../services/base-resource.service';
-import {catchError, debounceTime, switchMap} from 'rxjs/operators';
-import {of, Subject, Subscription} from 'rxjs';
-import {AnimationController, IonRange, ToastController} from '@ionic/angular';
+import { catchError, debounceTime, switchMap } from 'rxjs/operators';
+import { of, Subject, Subscription } from 'rxjs';
+import { AnimationController, IonRange, ToastController } from '@ionic/angular';
 import { WebSocketService } from '../../services/webSocketService';
-import {MemoryPositions} from "../../models/desk";
+import { MemoryPositions } from '../../models/desk';
 
 @Component({
   selector: 'app-idasen-controller',
@@ -28,23 +28,29 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
     private resourcesService: BaseResourceService,
     private animationCtrl: AnimationController,
     private webSocket: WebSocketService,
-    private toastController: ToastController,
-
+    private toastController: ToastController
   ) {}
+
+  /**
+   * @internal
+   */
+  memoryEnabled = false;
 
   private subscriptions: Subscription[] = [];
 
   ngOnInit() {
-
-    this.resourcesService.getMemoryPositions().pipe(
-      catchError((err)=>{
-        console.log(err)
-        return null;
-      })
-    ).subscribe((pos: MemoryPositions) => {
-      if(!pos) return;
-      this.positions = pos;
-    })
+    this.resourcesService
+      .getMemoryPositions()
+      .pipe(
+        catchError((err) => {
+          console.log(err);
+          return null;
+        })
+      )
+      .subscribe((pos: MemoryPositions) => {
+        if (!pos) return;
+        this.positions = pos;
+      });
 
     this.resourcesService
       .getStoredConnectionData()
@@ -67,18 +73,17 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
           debounceTime(1000),
           switchMap((value: number) => {
             return this.resourcesService.moveDesk(value).pipe(
-              catchError(err => {
-                this.presentToast('No Connection to server', 'danger')
-                return of(err)
+              catchError((err) => {
+                this.presentToast('No Connection to server', 'danger');
+                return of(err);
               })
             );
           })
         )
         .subscribe((val) => {
-            if(val === false) {
-              this.presentToast('Please connect desk first', 'danger')
-
-            }
+          if (val === false) {
+            this.presentToast('Please connect desk first', 'danger');
+          }
         })
     );
   }
@@ -121,22 +126,22 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
   }
 
   writeNewPositions(pos: MemoryPositions) {
-    this.resourcesService.putMemoryPositions(pos)
+    this.resourcesService
+      .putMemoryPositions(pos)
       .pipe(catchError(() => of(null)))
-      .subscribe(
-      result => {
-        if(!result)
-        {
+      .subscribe((result) => {
+        if (!result) {
           this.presentToast('Error while saving position', 'danger');
           return;
-
         }
-        this.presentToast('Memory position saved', 'primary')
-      }
-    )
+        this.presentToast('Memory position saved', 'primary');
+      });
   }
 
-  private async presentToast(msg: string, level: 'primary' | 'danger') {
+  private async presentToast(
+    msg: string,
+    level: 'primary' | 'danger' | 'success'
+  ) {
     const toast = await this.toastController.create({
       position: 'top',
       message: msg,
@@ -146,9 +151,30 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
     toast.present();
   }
 
-  moveTo(position: number ) {
-    if(!position) return;
-    this.triggerMoveDeskApiCall$.next(position);
+  memoryButtonClicked(index: 'position1' | 'position2' | 'position3') {
+    if (this.memoryEnabled) {
+      this.memoryEnabled = false;
+      this.positions[index] = this.sliderValue;
+      this.resourcesService
+        .putMemoryPositions(this.positions)
+        .pipe(
+          catchError((err) => {
+            console.log(err);
+            this.presentToast('Error on saving memory position', 'danger');
+            return of();
+          })
+        )
+        .subscribe(() => {
+          this.presentToast('memory position saved', 'success');
+        });
+    } else {
+      this.moveTo(this.positions[index]);
+    }
+  }
 
+  moveTo(position: number) {
+    if (!position) return;
+
+    this.triggerMoveDeskApiCall$.next(position);
   }
 }

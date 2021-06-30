@@ -6,7 +6,9 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true" [scrollX]="false">
-  <div class="content-wrapper">
+<div *ngIf="isConnected; then connected else noConnection"></div>
+  <ng-template #connected>
+  <div class="content-wrapper" [ngStyle]="{'color': this.color}">
     <div class="grid-element">
       <div class="pcHeader">CPU: <br> {{this.info?.cpuName}}</div>
       <!-- region CPUInfos -->
@@ -27,7 +29,7 @@
           Total Load:
         </div>
         <div class="item-variable">
-          {{this.info?.cpuLoads.length > 0 ? this.info.cpuLoads[0].Value : "-"}}
+          {{this.info?.cpuLoads?.length > 0 ? this.info.cpuLoads[0].Value : "-"}}
         </div>
       </div>
       <!-- region CoreTemp -->
@@ -37,7 +39,7 @@
           Core-Temp:
         </div>
         <div class="item-variable">
-          {{this.info?.cpuTemps.length > 0 ? this.info.cpuTemps[0].Value : "-"}}
+          {{this.info?.cpuTemps?.length > 0 ? this.info.cpuTemps[0].Value : "-"}}
         </div>
       </div>
     </div>
@@ -154,7 +156,17 @@
       </div>
     </div>
   </div>
-
+  </ng-template>
+<ng-template #noConnection>
+  <div class="content-wrapper">
+    <p class="noConnHeader">
+      No Connection.
+    </p>
+    <p class="noConnText">
+      Please check the "Server Control" tab if the correct IP-Address and Port are set.
+    </p>
+  </div>
+</ng-template>
 
   <!--  <app-explore-container [name]="'info-screen page'"></app-explore-container>-->
 </ion-content>

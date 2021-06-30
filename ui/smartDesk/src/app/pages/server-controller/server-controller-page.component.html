@@ -15,7 +15,6 @@
 
   <div class="content-wrapper">
 
-
     <form class="server-controller-form" [formGroup]="serverForm">
       <ion-item-divider>
         <ion-label>
@@ -33,10 +32,23 @@
       </ion-item>
       <ion-item-divider>
         <ion-label>
+          PC Settings
+        </ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label>PC IP:</ion-label>
+        <ion-input formControlName="pcIpControl" placeholder="Enter PC IP"></ion-input>
+      </ion-item>
+
+      <ion-item type="number">
+        <ion-label>PC Port:</ion-label>
+        <ion-input formControlName="pcPortControl" placeholder="Enter PC Port"></ion-input>
+      </ion-item>
+      <ion-item-divider>
+        <ion-label>
           Connections
         </ion-label>
       </ion-item-divider>
-
 
       <div class="connect-wrapper">
         <ion-item button [disabled]="disableButtons || this.testSuccessful == null" (click)="this.triggerConnectionTest$.next()">
@@ -61,12 +73,19 @@
         <ion-item button [disabled]="disableButtons || isConnected" (click)="presentModal()" detail>
           <ion-label>search for desks</ion-label>
         </ion-item>
+      </div>
 
+      <ion-item-divider>
+        <ion-label>
+          Info-Screen Settings
+        </ion-label>
+      </ion-item-divider>
+      <div class="content-wrapper">
+        <ion-item (colorPickerSelect)="setColor($event)" [(colorPicker)]="this.color" button [style.color]="this.color">
+          <ion-label>Text-Color Picker</ion-label>
+        </ion-item>
       </div>
     </form>
-
-    {{ this.error}}
-
   </div>
 
 </ion-content>

@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import {IonicStorageModule} from "@ionic/storage-angular";
 import {StorageService} from "./services/storage.service";
 import {SharedModule} from "./services/shared.module";
+import {ColorPickerModule} from "ngx-color-picker";
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,7 +21,8 @@ import {SharedModule} from "./services/shared.module";
     AppRoutingModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),
-    SharedModule.forRoot()
+    SharedModule.forRoot(),
+    ColorPickerModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
