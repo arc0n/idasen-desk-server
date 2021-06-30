@@ -107,6 +107,17 @@ export class BaseResourceService {
     );
   }
 
+
+  public async setInfoscreenColor(color: string){
+    await this.storageSrv.set(INFOCOLOR_KEY, color);
+  }
+
+  public getStoredColor(): Observable<string> {
+    return from(
+     this.storageSrv.get(INFOCOLOR_KEY)
+    );
+  }
+
   public connectDesk(): Observable<boolean> {
     return this.getStoredConnectionData().pipe(
       mergeMap(() =>

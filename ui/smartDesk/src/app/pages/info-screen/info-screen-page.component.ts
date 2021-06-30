@@ -23,7 +23,6 @@ export class InfoScreenPage implements OnInit {
   gpuLoadsAvg: number;
   gpuFanPercent: number;
   mbFanPercent: number[] = [];
-  isConnected: Subscription;
 
   ngOnInit() {
     this.service.getStoredColor().subscribe((color)=>this.color = color);
