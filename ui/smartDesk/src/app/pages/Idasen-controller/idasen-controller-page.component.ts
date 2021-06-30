@@ -151,13 +151,10 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
     toast.present();
   }
 
-  memoryButtonClicked(
-    position: number,
-    index: 'position1' | 'position2' | 'position3'
-  ) {
+  memoryButtonClicked(index: 'position1' | 'position2' | 'position3') {
     if (this.memoryEnabled) {
       this.memoryEnabled = false;
-      this.positions[index] = position;
+      this.positions[index] = this.sliderValue;
       this.resourcesService
         .putMemoryPositions(this.positions)
         .pipe(
