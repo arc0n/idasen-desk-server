@@ -14,7 +14,6 @@ class InfoworkerService {
 
     constructor() {
         this.property = null;
-        this.infoArray = [];
         this.looper = null;
     }
 
@@ -90,25 +89,18 @@ class InfoworkerService {
     }
 
     startInfoLoop() {
-        //Todo Call in loop and push into infoarray
-        //todo check if a loop is already open
+        if(this.looper) return;
+        setInterval(() => {
+            if(this.pcInfos)
+            {
+                //writePcInfosToDb(this.pcInfos);
+            }
+        }, 5000)
         this.looper = setInterval(() => {
-            this.performHttpRequest().then((result) => {
-                this.infoArray.push(result);
-            })
-        }, 1000)
-        //console.log("loop started.")
-        setTimeout(() => {
-            clearInterval(this.looper);
-            //console.log("loop stops.")
-            //console.log(this.infoArray.length)
-        }, 100)
-
+            this.performHttpRequest().then((result) => {            })
+        }, 2000)
     }
 
-    getInfoArray() {
-        return this.infoArray || [];
-    }
 
 
 }

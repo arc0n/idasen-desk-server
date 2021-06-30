@@ -157,16 +157,16 @@
     </div>
   </div>
   </ng-template>
-<ng-template #noConnection>
-  <div class="content-wrapper">
-    <p class="noConnHeader">
-      No Connection.
-    </p>
-    <p class="noConnText">
-      Please check the "Server Control" tab if the correct IP-Address and Port are set.
-    </p>
-  </div>
-</ng-template>
+  <ng-template #noConnection>
+    <div class="content-wrapper" [ngStyle]="{'color': this.color}">
+      <p class="noConnHeader">
+        No Connection.
+      </p>
+      <p class="noConnText">
+        Please check the "Server Settings" tab if the correct IP-Address and Port are set.
+      </p>
+    </div>
+  </ng-template>
 
   <!--  <app-explore-container [name]="'info-screen page'"></app-explore-container>-->
 </ion-content>
