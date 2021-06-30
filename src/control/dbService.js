@@ -75,6 +75,7 @@ module.exports.writeToDb = async (deskConfig) => {
       {},
       getConfigCopy(deskConfig),
       (err, result) => {
+        res();
         if (err) {
           handleError(err);
         }
@@ -84,7 +85,6 @@ module.exports.writeToDb = async (deskConfig) => {
             if (err) return handleError(err);
           });
         }
-        res();
       }
     );
   });
