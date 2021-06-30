@@ -27,10 +27,20 @@
   }
 }
 .desk-image-wrapper{
+  position: relative;
   margin: auto 3rem 0 3rem;
   height: auto;
   flex-shrink: 1;
   justify-content: center;
+}
+
+.desk-top-image{
+  position: absolute;
+  top: 30%;
+  transform: translateY(-10%);
+  z-index: -1;
+
+
 }
 @media(max-height: 500px) {
   .desk-image-wrapper img {

@@ -45,6 +45,11 @@ function handleError(err) {
 module.exports.getConfigFromDb = async () => {
   return new Promise((res, rej) => {
     DeskModel.find({}, (err, docs) => {
+      if (!docs) {
+        res({});
+        return;
+      }
+
       res(docs[0]);
     });
   });
