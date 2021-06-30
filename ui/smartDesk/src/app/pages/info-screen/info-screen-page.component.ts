@@ -1,7 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseResourceService } from '../../services/base-resource.service';
 import { interval, Observable, of, Subscription } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import {
+  catchError,
+  map,
+  switchMap,
+  take,
+  takeUntil,
+  takeWhile,
+  tap,
+} from 'rxjs/operators';
 import { Pcinfos } from '../../models/pcinfos';
 
 @Component({
@@ -9,7 +17,7 @@ import { Pcinfos } from '../../models/pcinfos';
   templateUrl: 'info-screen-page.component.html',
   styleUrls: ['info-screen-page.component.scss'],
 })
-export class InfoScreenPage implements OnInit {
+export class InfoScreenPage implements OnInit, OnDestroy {
   constructor(private service: BaseResourceService) {}
 
   private subscriptions: Subscription[] = [];
@@ -25,6 +33,7 @@ export class InfoScreenPage implements OnInit {
   mbFanPercent: number[] = [];
 
   ngOnInit() {
+    console.log('init');
     this.service.getStoredColor().subscribe((color) => (this.color = color));
     this.service
       .checkConnection()
