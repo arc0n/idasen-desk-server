@@ -18,7 +18,7 @@ const CONNECTION_ERROR = 'error-string';
   templateUrl: './desk-list.component.html',
   styleUrls: ['./desk-list.component.scss'],
 })
-export class DeskListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DeskListComponent implements OnInit, OnDestroy {
   @ViewChild('contentPage') contentPage: ElementRef;
 
   deskList: Desk[] = [];
@@ -38,18 +38,6 @@ export class DeskListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchForDesks();
   }
 
-  ngAfterViewInit() {
-    /*    console.log(this.contentPage);
-    const gesture = this.gestureCtrl.create({
-      direction: 'y',
-
-      el: this.contentPage.nativeElement,
-      onMove: (detail) => {
-        this.onMove(detail);
-      },
-    } as GestureConfig);
-    gesture.enable();*/
-  }
   ngOnDestroy() {
     this.searchSubscription?.unsubscribe();
     this.dismissToast();
@@ -85,6 +73,16 @@ export class DeskListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  private async presentToast(msg: string, level: 'primary' | 'danger') {
+    const toast = await this.toastController.create({
+      position: 'top',
+      message: msg,
+      color: level,
+      duration: 2000,
+    });
+    toast.present();
+  }
+
   async presentToastWithOptions() {
     const toast = await this.toastController.create({
       id: CONNECTION_ERROR,
@@ -102,5 +100,14 @@ export class DeskListComponent implements OnInit, AfterViewInit, OnDestroy {
       ],
     });
     await toast.present();
+  }
+
+  deskClicked(desk: Desk) {
+    this.service
+      .setDeskAddress(desk.deskAddress)
+      .then(() => this.presentToast('new Desk configured', 'primary'));
+    setTimeout(() => {
+      this.dismissModal();
+    }, 1500);
   }
 }

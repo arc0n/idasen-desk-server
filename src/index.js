@@ -53,11 +53,11 @@ var corsOptions = {
   credentials: true,
 };*/
 app.get("/pcinfos", async (req, res) => {
-  await pcService
-    .checkConnection()
-    .then((r) =>
-      r ? pcService.startInfoLoop() : console.log("No Connection.")
-    );
+  await pcService.checkConnection().then((r) => {
+    if (r) {
+      if (!pcService.looper) pcService.startInfoLoop();
+    }
+  });
   const pcInfos = pcService.pcInfos;
 
   res.send(pcInfos);

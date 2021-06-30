@@ -187,15 +187,19 @@ class DeskService extends EventEmitter {
         });
       }, CHECK_INTERVAL * 1000);
 
-      /*      // SECOND AND FAST INTERVAL TO CHECK IF MOVING
-      const interval2 = setInterval(() => {
+      // SECOND AND FAST INTERVAL TO CHECK IF MOVING
+           const interval2 = setInterval(() => {
         Promise.race([this.deskBridge?.getDesk(), sleep(400)]).then((desk) => {
-          if (!!desk) {
+          if (!desk) {
+            clearInterval(interval2);
+            return;
+          }
+
+          if (!!desk && desk.isMoving) {
             this.emit("position", parseInt(desk.position));
           }
-          if (!desk) clearInterval(interval2);
         });
-      }, 1000);*/
+      }, 1000);
     } else {
       this.deskBridge.config = {
         deskAddress: config.deskAddress,

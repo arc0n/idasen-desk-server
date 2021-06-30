@@ -52,20 +52,32 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
         this.positions = pos;
       });
 
-    this.resourcesService
+    this.tryWebsocketConnection();
+
+    /* this.resourcesService
       .getStoredConnectionData()
       .subscribe((data: { ip: string; port: number }) => {
         this.webSocket.connect(`ws://${data?.ip}:${8080}`);
         // TODO what when error?
       });
-    this.subscriptions.push(
-      this.webSocket.messages$.subscribe((height: number) => {
-        if (height !== this.sliderValue) {
-          this.performAnimation(height, this.sliderValue);
-          this.sliderValue = height;
-        }
-      })
-    );
+
+    this.resourcesService
+      .getStoredConnectionData()
+      .subscribe((data: { ip: string; port: number }) => {
+        this.webSocket.connect(`ws://${data?.ip}:${8080}`).then((val) => {
+          if (val) {
+            this.subscriptions.push(
+              this.webSocket.messages$.subscribe((height: number) => {
+                if (height !== this.sliderValue) {
+                  this.performAnimation(height, this.sliderValue);
+                  this.sliderValue = height;
+                }
+              })
+            );
+          }
+        });
+        // TODO what when error?
+      });*/
 
     this.subscriptions.push(
       this.triggerMoveDeskApiCall$
@@ -86,6 +98,34 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
           }
         })
     );
+  }
+
+  tryWebsocketConnection() {
+    this.resourcesService
+      .getStoredConnectionData()
+      .subscribe((data: { ip: string; port: number }) => {
+        this.webSocket.connect(`ws://${data?.ip}:${8080}`).then((val) => {
+          if (val) {
+            this.subscriptions.push(
+              this.webSocket.messages$.subscribe((height: number) => {
+                if (height !== this.sliderValue) {
+                  this.performAnimation(height, this.sliderValue);
+                  this.sliderValue = height;
+                }
+              })
+            );
+          } else {
+            this.presentToast(
+              'No Connection to server, retry in 1 second',
+              'danger'
+            );
+            setTimeout(() => {
+              this.tryWebsocketConnection();
+            }, 1000);
+          }
+        });
+        // TODO what when error?
+      });
   }
 
   ngOnDestroy() {
@@ -114,7 +154,8 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
           {
             offset: 1,
             transform: `translateY(-${
-              (oldValue > newValue ? oldValue - offset : oldValue + offset) / 2
+              (oldValue > newValue ? oldValue - offset : oldValue + offset) /
+              1.5
             }%)`,
           },
         ])
