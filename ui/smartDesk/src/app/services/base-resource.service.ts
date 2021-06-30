@@ -30,6 +30,7 @@ export class BaseResourceService {
   constructor(private http: HttpClient, private storageSrv: StorageService) {}
 
   public async setDeskAddress(address: string) {
+    address = address.trim();
     this.deskAddress = address;
     return this.storageSrv.set(DESK_KEY, address);
   }

@@ -23,6 +23,7 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
   interval: any;
   sliderValue: number;
   positions: MemoryPositions;
+  private socketConnected = false;
 
   constructor(
     private resourcesService: BaseResourceService,
@@ -38,8 +39,8 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  ionViewWillEnter() {
-    this.ngOnInit();
+  ionViewDidEnter() {
+    if (!this.socketConnected) this.tryWebsocketConnection();
   }
 
   ngOnInit() {
@@ -55,8 +56,6 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
         if (!pos) return;
         this.positions = pos;
       });
-
-    this.tryWebsocketConnection();
 
     /* this.resourcesService
       .getStoredConnectionData()
@@ -110,7 +109,9 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
         .getStoredConnectionData()
         .subscribe((data: { ip: string; port: number }) => {
           this.webSocket.connect(`ws://${data?.ip}:${8080}`).then((val) => {
+            console.log(val);
             if (val) {
+              this.socketConnected = true;
               this.subscriptions.push(
                 this.webSocket.messages$.subscribe((height: number) => {
                   if (height !== this.sliderValue) {
@@ -124,9 +125,9 @@ export class IdasenControllerPage implements OnInit, OnDestroy {
                 'No Connection to server, please retry with different ip',
                 'danger'
               );
-              /*              this.timeout = setTimeout(() => {
+              /*              setTimeout(() => {
                 this.tryWebsocketConnection();
-              }, 10000);*/
+              }, 5000);*/
             }
           });
           // TODO what when error?

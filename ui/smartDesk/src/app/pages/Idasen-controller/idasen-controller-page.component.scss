@@ -27,9 +27,9 @@
   }
 }
 .desk-image-wrapper{
+  flex-grow: 1;
   position: relative;
-  margin: auto 3rem 0 3rem;
-  height: auto;
+  margin: auto 1rem auto 1rem;
   flex-shrink: 1;
   justify-content: center;
 }
@@ -42,7 +42,12 @@
 
 
 }
-@media(max-height: 500px) {
+.flex-wrapper {
+  height: 100%;
+  display: flex;
+  align-content: center;
+}
+@media(max-height: 700px) {
   .desk-image-wrapper img {
     display: none;
   }

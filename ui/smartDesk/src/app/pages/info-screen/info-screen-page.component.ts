@@ -3,6 +3,7 @@ import { BaseResourceService } from '../../services/base-resource.service';
 import { interval, Observable, of, Subscription } from 'rxjs';
 import {
   catchError,
+  filter,
   map,
   switchMap,
   take,
@@ -18,6 +19,7 @@ import { Pcinfos } from '../../models/pcinfos';
   styleUrls: ['info-screen-page.component.scss'],
 })
 export class InfoScreenPage implements OnInit, OnDestroy {
+  private isOpen = false;
   constructor(private service: BaseResourceService) {}
 
   private subscriptions: Subscription[] = [];
@@ -31,6 +33,14 @@ export class InfoScreenPage implements OnInit, OnDestroy {
   gpuLoadsAvg: number;
   gpuFanPercent: number;
   mbFanPercent: number[] = [];
+
+  ionViewDidEnter() {
+    this.isOpen = true;
+  }
+
+  ionViewWillLeave() {
+    this.isOpen = false;
+  }
 
   ngOnInit() {
     console.log('init');
@@ -47,6 +57,7 @@ export class InfoScreenPage implements OnInit, OnDestroy {
     this.subscriptions.push(
       interval(1000)
         .pipe(
+          filter(() => this.isOpen),
           switchMap((_) => {
             return this.service.getPcInfos().pipe(
               catchError(() => {
